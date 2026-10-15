@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TengoBolo · De bolo en bolo | Creativa Network</title>
+<meta name="description" content="TengoBolo es la red donde artistas (música, pintura, fotografía, diseño…) encuentran proyectos y agencias que contratan talento. Crea tu perfil gratis y envía propuestas.">
+<link rel="canonical" href="https://SITE_URL/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:title" content="TengoBolo · De bolo en bolo">
+<meta property="og:description" content="La red de artistas y agencias de Creativa Network. Crea tu perfil y encuentra proyectos.">
+<meta property="og:url" content="https://SITE_URL/">
+<meta property="og:image" content="https://SITE_URL/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#c8641a">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"TengoBolo","alternateName":"TengoBolo · Creativa Network","url":"https://SITE_URL/","inLanguage":"es","description":"Red de artistas y agencias para encontrar proyectos y talento."}</script>
+<style>
+:root{--ink:#2a1d14;--ink2:#6b5646;--bg:#fbf6ee;--card:#fff;--line:#e8dccb;--accent:#c8641a;--accent2:#8a3f0e}
+*{box-sizing:border-box}
+body{margin:0;font:17px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+header{max-width:760px;margin:0 auto;padding:20px 16px 0}
+h1{font-size:44px;line-height:1.05;margin:8px 0 6px;color:var(--accent2)}
+h2{font-size:24px;margin:28px 0 8px}
+.lead{font-size:22px;margin:0 0 4px}
+.sub{color:var(--ink2);margin:0 0 16px}
+nav{display:flex;flex-wrap:wrap;gap:6px;max-width:760px;margin:0 auto;padding:8px 16px;border-bottom:1px solid var(--line)}
+nav button{min-height:44px;padding:0 14px;border:0;background:none;font:inherit;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent}
+nav button[aria-current=true]{color:var(--ink);border-color:var(--accent)}
+main{max-width:760px;margin:0 auto;padding:8px 16px 48px}
+.hero{width:100%;height:300px;object-fit:cover;border-radius:14px;margin:16px 0}
+.btn{min-height:48px;padding:0 20px;border:0;border-radius:10px;background:var(--accent);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.btn.sec{background:none;color:var(--accent2);border:1px solid var(--accent2)}
+.btn:disabled{opacity:.6}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0}
+.card h3{margin:0 0 4px;font-size:18px}.meta{color:var(--ink2);font-size:15px}
+form{display:grid;gap:12px;margin:12px 0}
+label{display:grid;gap:4px;color:var(--ink2);font-size:15px}
+input,textarea,select{font:inherit;font-size:16px;padding:11px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.msg{padding:12px 14px;border-radius:10px;margin:10px 0}.ok{background:#e9f4e4}.err{background:#fbe5e0}.info{background:#fdf0da}
+ol{padding-left:22px}
+footer{max-width:760px;margin:0 auto;padding:16px;color:var(--ink2);font-size:14px;border-top:1px solid var(--line)}
+@media(min-width:700px){h1{font-size:60px}}
+</style>
+</head>
+<body>
+<header>
+  <p class="meta" style="margin:0">Creativa Network</p>
+  <h1>TengoBolo</h1>
+  <p class="lead" id="slogan">De bolo en bolo.</p>
+  <p class="sub">Un bolo es una actuación o un encargo. Aquí artistas y agencias se encuentran: tú tienes el talento, yo tengo bolo.</p>
+</header>
+<nav aria-label="Secciones" id="nav"></nav>
+<main id="view"></main>
+<footer>Versión piloto de TengoBolo · Creativa Network. Si recargas la página tendrás que volver a entrar.</footer>
+<script>
+const API='https://bolo-backend-pd6z.onrender.com';
+let session=null, me=null, tab='inicio';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const list=s=>s.split(',').map(x=>x.trim()).filter(Boolean);
+async function call(path,{method='GET',body,auth}={}){
+  let r;
+  try{r=await fetch(API+path,{method,headers:{'Content-Type':'application/json',...(auth&&session?{Authorization:'Bearer '+session.access_token}:{})},body:body===undefined?undefined:JSON.stringify(body)});}
+  catch{throw new Error('No se pudo conectar con el servidor. Si estaba dormido, espera 1 minuto y vuelve a intentarlo.');}
+  if(r.status===204)return null;
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(d.error||'Algo ha fallado. Inténtalo de nuevo.');
+  return d;
+}
+function setTab(t){tab=t;render();window.scrollTo(0,0);}
+function renderNav(){
+  const items=[['inicio','Inicio'],['artistas','Artistas'],['proyectos','Proyectos'],['publicar','Publicar'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
+  $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
+}
+function msg(kind,text){return `<div class="msg ${kind}" role="status">${esc(text)}</div>`;}
+function needLogin(){return `<h2>Necesitas entrar</h2><p>Para ver esto, crea tu cuenta o entra.</p><div class="row"><button class="btn" id="go">Crear cuenta o entrar</button></div>`;}
+async function render(){
+  renderNav();const v=$('#view');
+  if(['artistas','proyectos','publicar','perfil'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
+  if(tab==='inicio')return home(v);
+  if(tab==='entrar')return enter(v);
+  if(tab==='artistas')return artists(v);
+  if(tab==='proyectos')return projects(v);
+  if(tab==='publicar')return publish(v);
+  if(tab==='perfil')return profile(v);
+}
+function home(v){
+  const confirmed=/type=(signup|email)|access_token=/.test(location.hash);
+  const failed=/error=|error_description=/.test(location.hash);
+  if(confirmed||failed)history.replaceState(null,'',location.pathname);
+  v.innerHTML=`${confirmed?msg('ok','Correo confirmado. Ya puedes entrar con tu cuenta.'):''}${failed?msg('err','El enlace del correo no es válido o ha caducado. Crea la cuenta otra vez o pide un correo nuevo.'):''}
+  <img class="hero" src="hero.jpg" alt="Paleta, guitarra y cámara con un apretón de manos al fondo" width="800" height="1067">
+  <h2>Qué es TengoBolo</h2>
+  <p>Una red donde los artistas muestran su trabajo y las agencias publican proyectos y reciben propuestas. Música, pintura, fotografía, diseño, audiovisual y más. Gratis para empezar.</p>
+  <div class="row">${session?'<button class="btn" id="a">Ver proyectos</button>':'<button class="btn" id="a">Crear cuenta gratis</button>'}</div>
+  <h2>Cómo funciona</h2>
+  <ol><li>El artista crea su cuenta y su perfil con disciplina, ciudad y portfolio.</li><li>La agencia publica un proyecto con presupuesto.</li><li>El artista envía su propuesta y la agencia elige.</li></ol>`;
+  $('#a').onclick=()=>setTab(session?'proyectos':'entrar');
+}
+function enter(v,mode='register',note=''){
+  if(session){v.innerHTML='<h2>Sesión iniciada</h2><div class="row"><button class="btn" id="p">Mi perfil</button></div>';$('#p').onclick=()=>setTab('perfil');return;}
+  v.innerHTML=`<h2>${mode==='register'?'Crear cuenta':'Entrar'}</h2>
+  <div class="row"><button class="btn ${mode==='register'?'':'sec'}" id="m1">Crear cuenta</button><button class="btn ${mode==='login'?'':'sec'}" id="m2">Ya tengo cuenta</button></div>${note}
+  <form id="f">${mode==='register'?`<label>Nombre<input name="name" required minlength="2" autocomplete="name"></label><label>Soy<select name="role"><option value="artist">Artista</option><option value="agency">Agencia</option></select></label>`:''}
+  <label>Correo<input name="email" type="email" required autocomplete="email"></label>
+  <label>Contraseña${mode==='register'?' (mínimo 12 caracteres)':''}<input name="password" type="password" required minlength="${mode==='register'?12:1}" autocomplete="${mode==='register'?'new-password':'current-password'}"></label>
+  <div id="e"></div><button class="btn" type="submit">${mode==='register'?'Crear cuenta':'Entrar'}</button></form>`;
+  $('#m1').onclick=()=>enter(v,'register');$('#m2').onclick=()=>enter(v,'login');
+  $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const b=e.target.querySelector('button[type=submit]');b.disabled=true;b.textContent='Un momento…';$('#e').innerHTML='';
+    try{
+      if(mode==='register'){const r=await call('/api/auth/register',{method:'POST',body:{email:f.email,password:f.password,name:f.name,role:f.role}});enter(v,'login',msg('info',((r&&r.message)||'Revisa tu correo para confirmar la cuenta.')+' Después de confirmar, vuelve aquí y entra.'));}
+      else{const r=await call('/api/auth/login',{method:'POST',body:{email:f.email,password:f.password}});session=r.session;me=null;setTab('perfil');}
+    }catch(x){$('#e').innerHTML=msg('err',x.message);b.disabled=false;b.textContent=mode==='register'?'Crear cuenta':'Entrar';}};
+}
+async function getMe(){if(!me)me=await call('/api/me',{auth:true});return me;}
+async function loading(v,fn){v.innerHTML='<p role="status">Cargando… (la primera vez puede tardar hasta 1 minuto)</p>';try{await fn();}catch(x){v.innerHTML=msg('err',x.message);}}
+function artists(v){loading(v,async()=>{const a=await call('/api/artists',{auth:true});
+  v.innerHTML='<h2>Artistas</h2>'+(a.length?a.map(x=>`<div class="card"><h3>${esc(x.name)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}</div>${x.bio?`<p>${esc(x.bio)}</p>`:''}${x.portfolio_url&&/^https?:\/\//.test(x.portfolio_url)?`<a href="${esc(x.portfolio_url)}" target="_blank" rel="noopener nofollow">Portfolio</a>`:''}</div>`).join(''):'<p>Todavía no hay artistas con perfil.</p>');});}
+function projects(v){loading(v,async()=>{const [p,m]=await Promise.all([call('/api/projects',{auth:true}),getMe()]);
+  v.innerHTML='<h2>Proyectos abiertos</h2>'+(p.length?p.map((x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p>${esc(x.description)}</p>${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`).join(''):'<p>No hay proyectos abiertos todavía.</p>');
+  v.querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>{const x=p[b.dataset.i],box=$('#pf'+b.dataset.i);
+    box.innerHTML=`<form><label>Tu propuesta<textarea name="message" required minlength="10" rows="4"></textarea></label><label>Importe en € (opcional)<input name="amount" type="number" min="0"></label><div class="e"></div><button class="btn" type="submit">Enviar</button></form>`;b.style.display='none';
+    box.querySelector('form').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+      try{await call('/api/proposals',{method:'POST',auth:true,body:{project_id:x.id,message:f.message,amount_eur:f.amount?Number(f.amount):null}});box.innerHTML=msg('ok','Propuesta enviada. La agencia la verá.');}
+      catch(err){e.target.querySelector('.e').innerHTML=msg('err',err.message);}};});});}
+function publish(v){loading(v,async()=>{const m=await getMe();
+  if(m.role!=='agency'){v.innerHTML='<h2>Publicar un proyecto</h2><p>Solo las agencias publican proyectos.</p>';return;}
+  v.innerHTML=`<h2>Publicar un proyecto</h2><form id="f"><label>Título<input name="title" required minlength="3"></label><label>Descripción<textarea name="description" required minlength="10" rows="4"></textarea></label><label>Disciplinas (separadas por comas)<input name="disciplines"></label><label>Ciudad<input name="location"></label><label>Presupuesto en €<input name="budget" type="number" min="0"></label><div id="e"></div><button class="btn" type="submit">Publicar</button></form>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+    try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:f.description,disciplines:list(f.disciplines),location:f.location,budget_eur:f.budget?Number(f.budget):null}});v.innerHTML=msg('ok','Proyecto publicado. Ya aparece en Proyectos.');}
+    catch(err){$('#e').innerHTML=msg('err',err.message);}};});}
+function profile(v){loading(v,async()=>{const m=await getMe();
+  v.innerHTML=`<h2>Mi perfil</h2><form id="f"><label>Nombre<input name="name" required minlength="2" value="${esc(m.name)}"></label><label>Sobre mí<textarea name="bio" rows="4">${esc(m.bio)}</textarea></label><label>Disciplinas (separadas por comas)<input name="disciplines" value="${esc((m.disciplines||[]).join(', '))}"></label><label>Ciudad<input name="location" value="${esc(m.location)}"></label><label>Enlace a tu portfolio (https://…)<input name="portfolio_url" value="${esc(m.portfolio_url)}"></label><div id="e"></div><button class="btn" type="submit">Guardar</button></form><div class="row"><button class="btn sec" id="out">Salir</button></div>`;
+  $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+    try{me=await call('/api/me',{method:'PATCH',auth:true,body:{name:f.name,bio:f.bio,disciplines:list(f.disciplines),location:f.location,portfolio_url:f.portfolio_url}});$('#e').innerHTML=msg('ok','Guardado.');}
+    catch(err){$('#e').innerHTML=msg('err',err.message);}};
+  $('#out').onclick=async()=>{try{await call('/api/auth/logout',{method:'POST',auth:true,body:{refresh_token:session.refresh_token}});}catch{}session=null;me=null;setTab('inicio');};});}
+call('/health').catch(()=>{});
+render();
+</script>
+</body>
+</html>
