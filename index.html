@@ -71,9 +71,9 @@ footer{max-width:760px;margin:0 auto;padding:16px;color:var(--ink2);font-size:14
 <footer>Versión piloto de TengoBolo · Creativa Network. Si recargas la página tendrás que volver a entrar.</footer>
 <script>
 const API='https://bolo-backend-pd6z.onrender.com';
-function freeBanner(){return `<div class="promo"><b>Registro gratis para todos.</b> Los artistas envían su primera propuesta gratis; a partir de la segunda hace falta el plan de pago (<a href="#" data-go="precios">ver Precios</a>).</div>`;}
-function payBox(){return `<div class="promo"><b>Tu primera propuesta era gratis.</b> Para enviar más propuestas necesitas el plan de pago: <span class="ph">[PRECIO Y MODALIDAD: pendiente]</span>.
-  <ol><li>Haz una transferencia bancaria: titular <span class="ph">[TITULAR: pendiente]</span>, IBAN <span class="ph">[IBAN: pendiente]</span>, importe <span class="ph">[PRECIO: pendiente]</span>.</li><li>Concepto: <b>TengoBolo + el correo de tu cuenta</b>.</li><li>Escríbenos con el justificante a <span class="ph">[CORREO DE CONTACTO: pendiente]</span> y activaremos tu cuenta.</li></ol></div>`;}
+function freeBanner(){return `<div class="promo"><b>Registro gratis para todos.</b> Los artistas envían su primera propuesta gratis; a partir de la segunda hace falta un plan de pago desde 5 € al mes (<a href="#" data-go="precios">ver Precios</a>).</div>`;}
+function payBox(){return `<div class="promo"><b>Tu primera propuesta era gratis.</b> Para enviar más propuestas necesitas el plan Artista: 5 € al mes o 50 € al año (<a href="#" data-go="precios">ver Precios</a>).
+  <ol><li>Haz una transferencia: titular <span class="ph">[TITULAR: pendiente]</span>, IBAN <span class="ph">[IBAN: pendiente]</span>.</li><li>Concepto: <b>TengoBolo + el correo de tu cuenta + plan</b>.</li><li>Escríbenos con el justificante a <span class="ph">[CORREO DE CONTACTO: pendiente]</span> y activaremos tu cuenta.</li></ol></div>`;}
 let session=null, me=null, tab='inicio';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -139,11 +139,15 @@ function enter(v,mode='register',note=''){
 }
 function pricing(v){
   v.innerHTML=`<h2>Precios</h2>${freeBanner()}
-  <p><b>Agencias, particulares y empresas:</b> gratis. <b>Artistas:</b> registro gratis, ver proyectos gratis y primera propuesta gratis. Desde la segunda propuesta: <span class="ph">[PRECIO Y MODALIDAD: pendiente]</span>.</p>
-  <h2>Cómo activar el plan de pago</h2>
-  <ol><li>Haz una transferencia bancaria con estos datos.</li><li>Escríbenos con el justificante.</li><li>Activamos tu cuenta y ya puedes enviar propuestas.</li></ol>
-  <div class="card"><p>Titular: <span class="ph">[TITULAR: pendiente]</span></p><p>IBAN: <span class="ph">[IBAN: pendiente]</span></p><p>Importe: <span class="ph">[PRECIO: pendiente]</span></p><p>Concepto: <b>TengoBolo + el correo de tu cuenta</b></p><p>Contacto para el justificante: <span class="ph">[CORREO DE CONTACTO: pendiente]</span></p></div>
-  <p class="sub">Datos de pago aún no publicados: esta sección es un marcador de posición.</p>`;
+  <p><b>Agencias, particulares y empresas:</b> gratis, sin comisión. <b>Artistas:</b> registro gratis, ver proyectos gratis y la primera propuesta gratis.</p>
+  <div class="card"><h3>Gratis</h3><p><b>0 €</b>. 1 propuesta.</p></div>
+  <div class="card"><h3>Artista</h3><p><b>5 € al mes</b> o <b>50 € al año</b>. Propuestas sin límite.</p></div>
+  <div class="card"><h3>Destacado</h3><p><b>10 € al mes</b> o <b>100 € al año</b>. Incluye: <span class="ph">[BENEFICIOS DE DESTACADO: pendiente]</span></p></div>
+  <p class="meta">IVA: <span class="ph">[IVA incluido o no: pendiente]</span></p>
+  <h2>Cómo pagar</h2>
+  <ol><li>Elige plan (mensual o anual) y haz una transferencia bancaria con estos datos.</li><li>En el concepto pon: <b>TengoBolo + el correo de tu cuenta + plan</b>.</li><li>Escríbenos con el justificante y activaremos tu cuenta.</li></ol>
+  <div class="card"><p>Titular: <span class="ph">[TITULAR: pendiente]</span></p><p>IBAN: <span class="ph">[IBAN: pendiente]</span></p><p>Contacto para el justificante: <span class="ph">[CORREO DE CONTACTO: pendiente]</span></p></div>
+  <p class="sub">Pago por transferencia manual. Datos de pago aún no publicados: esta sección es un marcador de posición.</p>`;
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.go);});
 }
 const STAT={pending:'Pendiente',accepted:'Aceptada',rejected:'Rechazada'};
