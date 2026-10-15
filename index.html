@@ -89,7 +89,7 @@ async function call(path,{method='GET',body,auth}={}){
 }
 function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){
-  const items=[['inicio','Inicio'],['artistas','Artistas'],['proyectos','Proyectos'],['publicar','Publicar'],['precios','Precios'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  const items=[['inicio','Inicio'],['artistas','Artistas'],['proyectos','Proyectos'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
 }
@@ -97,10 +97,11 @@ function msg(kind,text){return `<div class="msg ${kind}" role="status">${esc(tex
 function needLogin(){return `<h2>Necesitas entrar</h2><p>Para ver esto, crea tu cuenta o entra.</p><div class="row"><button class="btn" id="go">Crear cuenta o entrar</button></div>`;}
 async function render(){
   renderNav();const v=$('#view');
-  if(['artistas','proyectos','publicar','perfil'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
+  if(['artistas','proyectos','publicar','propuestas','perfil'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
   if(tab==='inicio')return home(v);
   if(tab==='entrar')return enter(v);
   if(tab==='precios')return pricing(v);
+  if(tab==='propuestas')return proposalsView(v);
   if(tab==='artistas')return artists(v);
   if(tab==='proyectos')return projects(v);
   if(tab==='publicar')return publish(v);
@@ -145,6 +146,17 @@ function pricing(v){
   <p class="sub">Datos de pago aún no publicados: esta sección es un marcador de posición.</p>`;
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.go);});
 }
+const STAT={pending:'Pendiente',accepted:'Aceptada',rejected:'Rechazada'};
+function proposalsView(v){loading(v,async()=>{
+  const m=await getMe();
+  const [ps,po,pc]=await Promise.all([call('/api/proposals',{auth:true}),call('/api/projects',{auth:true}),call('/api/projects?status=closed',{auth:true})]);
+  const proj=Object.fromEntries([...po,...pc].map(x=>[x.id,x]));
+  const agency=m.role==='agency';
+  const names={};
+  if(agency)await Promise.all([...new Set(ps.map(x=>x.artist_id))].map(async id=>{try{names[id]=(await call('/api/profiles/'+encodeURIComponent(id),{auth:true})).name;}catch{names[id]='Artista';}}));
+  v.innerHTML=`<h2>${agency?'Propuestas recibidas':'Mis propuestas'}</h2>`+(ps.length?ps.map(x=>`<div class="card"><h3>${esc(proj[x.project_id]?.title||'Proyecto')}</h3><div class="meta">${agency?'De '+esc(names[x.artist_id])+' · ':''}${esc(STAT[x.status]||x.status)}${x.amount_eur!=null?' · '+esc(x.amount_eur)+' €':''} · ${esc(String(x.created_at).slice(0,10))}</div><p>${esc(x.message)}</p>${agency&&x.status==='pending'?`<div class="row"><button class="btn" data-d="accepted" data-id="${esc(x.id)}">Aceptar</button><button class="btn sec" data-d="rejected" data-id="${esc(x.id)}">Rechazar</button></div>`:''}</div>`).join(''):`<p>${agency?'Todavía no has recibido propuestas.':'Todavía no has enviado propuestas.'}</p>`);
+  v.querySelectorAll('button[data-d]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await call('/api/proposals/'+encodeURIComponent(b.dataset.id)+'/status',{method:'PATCH',auth:true,body:{status:b.dataset.d}});proposalsView(v);}catch(e){b.disabled=false;v.insertAdjacentHTML('afterbegin',msg('err',e.message));}});
+});}
 async function getMe(){if(!me)me=await call('/api/me',{auth:true});return me;}
 async function loading(v,fn){v.innerHTML='<p role="status">Cargando… (la primera vez puede tardar hasta 1 minuto)</p>';try{await fn();}catch(x){v.innerHTML=msg('err',x.message);}}
 const SOCIALS=[['instagram','Instagram'],['facebook','Facebook'],['tiktok','TikTok'],['youtube','YouTube'],['soundcloud','SoundCloud'],['linkedin','LinkedIn'],['website','Web']];
