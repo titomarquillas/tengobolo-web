@@ -8,7 +8,7 @@
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="canonical" href="https://tengobolo-web.onrender.com/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
@@ -26,6 +26,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="TengoBolo">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"TengoBolo","alternateName":"TengoBolo · Creativa Network","url":"https://tengobolo-web.onrender.com/","inLanguage":"es","description":"Red de artistas y agencias para encontrar proyectos y talento."}</script>
 <style>
 :root{--ink:#141414;--ink2:#5d5750;--bg:#f5f1ea;--card:#fffdf9;--line:#ddd5c8;--accent:#b5522f;--accent2:#8f3d20;--tint:#efe3d6;--sun:#e8c9a8;--serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;--font:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif}
@@ -421,7 +422,7 @@ function setupInstall(){
     how.hidden=false;
     how.style.cssText='background:#f5f1ea;border-radius:6px;padding:12px 14px;color:#141414';
     const mac=/macintosh/i.test(ua)&&!ios&&!/chrome|chromium|edg/i.test(ua);
-    how.innerHTML=ios?'<b>En iPhone o iPad (Safari):</b><ol><li>Pulsa el botón Compartir (el cuadrado con la flecha hacia arriba).</li><li>Elige "Añadir a pantalla de inicio".</li><li>Pulsa "Añadir". Ya tienes el icono del corazón en tu móvil.</li></ol>'
+    how.innerHTML=ios?'<b>En iPhone o iPad:</b><p style="margin:4px 0">Tiene que ser en <b>Safari</b> (la brújula azul). No funciona desde dentro de WhatsApp, Instagram u otras apps: copia el enlace y pégalo en Safari.</p><ol><li>Abajo del todo, pulsa el botón Compartir (el cuadrado con la flecha hacia arriba).</li><li>Desliza el menú hacia arriba hasta ver "Añadir a pantalla de inicio" (si no sale, pulsa "Más").</li><li>Pulsa "Añadir". Ya tienes el icono del corazón en tu móvil.</li></ol>'
     :mac?'<b>En Mac (Safari):</b><ol><li>En el menú de arriba, pulsa Archivo.</li><li>Elige "Añadir al Dock".</li><li>Pulsa "Añadir". Ya tienes TengoBolo como app en el Dock.</li></ol>'
     :(/chrome|edg/i.test(ua)&&!android)?'<b>En Chrome o Edge del ordenador:</b><ol><li>Mira a la derecha de la barra de direcciones: aparece un icono de instalar (una pantalla con una flecha).</li><li>Si no lo ves, abre el menú de tres puntos, ve a "Enviar, guardar y compartir" (o "Guardar y compartir") y elige "Instalar TengoBolo".</li><li>Si ya la instalaste antes, ábrela desde Aplicaciones o el Launchpad: Chrome no vuelve a ofrecerla.</li></ol>'
     :android?'<b>En Android (Chrome):</b><ol><li>Pulsa los tres puntos arriba a la derecha.</li><li>Elige "Instalar aplicación" o "Añadir a pantalla de inicio".</li><li>Confirma. Ya tienes el icono del corazón en tu móvil.</li></ol>'
