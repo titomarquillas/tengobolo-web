@@ -110,6 +110,8 @@ fieldset{border:0;padding:0;margin:0}.steps{color:var(--ink2);font-size:13px;let
 .end{margin:70px 0 10px;padding:56px 0 8px;border-top:1px solid var(--ink);display:grid;gap:18px;justify-items:start}
 .end h2{margin:0;font-size:clamp(34px,8vw,74px);line-height:1;max-width:14em}.end h2 em{color:var(--accent)}
 .biglogo{display:block;width:min(320px,72vw);height:auto;margin:0 0 10px}
+.fbar{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-items:end;max-width:none;box-sizing:border-box;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin:12px 0}
+.fbar select,.fbar input{width:100%;min-width:0;box-sizing:border-box}
 .dg{border:1px solid var(--line,#ddd);border-radius:10px;padding:6px 12px;margin:6px 0;background:#fffdf9}.dg summary{cursor:pointer;font-weight:600;padding:6px 0}.dg label{display:inline-flex;gap:6px;align-items:center;margin:3px 14px 3px 0;font-weight:400;font-size:15px}.dg input{width:auto;margin:0}
 .concept{margin:34px 0 10px;padding:26px 0;border-top:1px solid var(--ink);display:grid;gap:12px;max-width:44em}
 .concept h2{margin:0;font-size:clamp(28px,6vw,44px);line-height:1.05}.concept p{margin:0;color:var(--ink2);font-size:18px}
@@ -273,9 +275,16 @@ function mediaHtml(media,editable){
   const videos=vi.map(m=>`<div class="card">${m.embed?`<div class="video"><iframe src="${esc(m.embed)}" title="${esc(m.caption||'Vídeo')}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`:`<a href="${esc(m.url)}" target="_blank" rel="noopener nofollow">${esc(m.caption||m.url)}</a>`}${m.caption&&m.embed?`<div class="meta">${esc(m.caption)}</div>`:''}${editable?`<div class="row"><button class="btn sec" data-del="${esc(m.id)}">Borrar vídeo</button></div>`:''}</div>`).join('');
   return {photos,videos,nPhotos:ph.length,nVideos:vi.length};
 }
-function artists(v){loading(v,async()=>{const a=await call('/api/artists',{auth:true});
-  v.innerHTML='<h2>Artistas</h2>'+(a.length?a.map(x=>`<div class="card"><div class="head">${avatar(x)}<div><h3>${esc(x.name)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}</div></div></div>${x.bio?`<p>${esc(x.bio)}</p>`:''}${socialLinks(x)}<div class="row"><button class="btn sec" data-p="${esc(x.id)}">Ver perfil completo</button></div></div>`).join(''):'<p>Todavía no hay artistas con perfil.</p>');
-  v.querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>viewProfile(v,b.dataset.p));});}
+const qs=(q,page)=>{const u=new URLSearchParams();['q','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});if(page>1)u.set('page',page);const t=u.toString();return t?'?'+t:'';};
+const filterBar=q=>`<form class="fbar" novalidate><label>Buscar<input name="q" maxlength="60" value="${esc(q.q||'')}" placeholder="Nombre o palabra"></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${x}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row" style="margin:0"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" data-clear>Quitar filtros</button></div></form>`;
+const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim());
+function wireFilters(v,q,go){const f=v.querySelector('form.fbar');f.onsubmit=e=>{e.preventDefault();go(Object.fromEntries(new FormData(f)));};f.querySelector('[data-clear]').onclick=()=>go({});}
+function artistCard(x){return `<div class="card"><div class="head">${avatar(x)}<div><h3>${esc(x.name)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}</div></div></div>${x.bio?`<p>${esc(x.bio)}</p>`:''}${socialLinks(x)}<div class="row"><button class="btn sec" data-p="${esc(x.id)}">Ver perfil completo</button></div></div>`;}
+function artists(v,q={}){loading(v,async()=>{let page=1;const a=await call('/api/artists'+qs(q,1),{auth:true});
+  v.innerHTML='<h2>Artistas</h2>'+filterBar(q)+`<div id="res">${a.length?a.map(artistCard).join(''):(hasQ(q)?'<p>No hay artistas con esos filtros. Prueba con menos filtros.</p>':'<p>Todavía no hay artistas con perfil.</p>')}</div>`+(a.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
+  wireFilters(v,q,nq=>artists(v,nq));
+  const bind=()=>v.querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>viewProfile(v,b.dataset.p));bind();
+  const more=$('#more');if(more)more.onclick=async()=>{more.disabled=true;try{page++;const n=await call('/api/artists'+qs(q,page),{auth:true});$('#res').insertAdjacentHTML('beforeend',n.map(artistCard).join(''));bind();if(n.length<20)more.remove();else more.disabled=false;}catch(err){more.disabled=false;}};});}
 function viewProfile(v,id){loading(v,async()=>{const p=await call('/api/profiles/'+encodeURIComponent(id),{auth:true});const m=mediaHtml(p.media,false);
   v.innerHTML=`<p><button class="btn sec" id="back">← Volver</button></p><div class="head">${avatar(p)}<div><h2 style="margin:0">${esc(p.name)}</h2><div class="meta">${esc((p.disciplines||[]).join(', '))}${p.location?' · '+esc(p.location):''}</div></div></div>${p.bio?`<p>${esc(p.bio)}</p>`:''}${socialLinks(p)}${m.photos?'<h2>Fotos</h2>'+m.photos:''}${m.videos?'<h2>Vídeos</h2>'+m.videos:''}${!m.photos&&!m.videos?'<p class="meta">Este perfil todavía no tiene fotos ni vídeos.</p>':''}`;
   $('#back').onclick=()=>artists(v);});}
@@ -287,13 +296,17 @@ function boloInfo(x){const t=[];
   (x.extras||[]).forEach(k=>t.push(`<span class="tag">${esc(EXTRA[k]||k)}</span>`));
   if(x.requires_insurance)t.push('<span class="tag">Exige seguro de responsabilidad civil</span>');
   return (t.length?`<div>${t.join('')}</div>`:'')+(x.rider?`<p class="meta"><b>Rider:</b> ${esc(x.rider)}</p>`:'');}
-function projects(v){loading(v,async()=>{const [p,m]=await Promise.all([call('/api/projects',{auth:true}),getMe()]);
-  v.innerHTML='<h2>Proyectos abiertos</h2>'+(p.length?p.map((x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p>${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`).join(''):'<p>No hay proyectos abiertos todavía.</p>');
-  v.querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>{const x=p[b.dataset.i],box=$('#pf'+b.dataset.i);
+function projects(v,q={}){loading(v,async()=>{let page=1;const [p,m]=await Promise.all([call('/api/projects'+qs(q,1),{auth:true}),getMe()]);
+  const all=[...p];
+  const card=(x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p>${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`;
+  v.innerHTML='<h2>Proyectos abiertos</h2>'+filterBar(q)+`<div id="res">${p.length?p.map(card).join(''):(hasQ(q)?'<p>No hay proyectos con esos filtros. Prueba con menos filtros.</p>':'<p>No hay proyectos abiertos todavía.</p>')}</div>`+(p.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
+  wireFilters(v,q,nq=>projects(v,nq));
+  const bind=()=>v.querySelectorAll('button[data-i]:not([data-b])').forEach(b=>{b.dataset.b='1';b.onclick=()=>{const x=all[b.dataset.i],box=$('#pf'+b.dataset.i);
     box.innerHTML=`<form><label>Tu propuesta<textarea name="message" required minlength="10" rows="4"></textarea></label><label>Importe en € (opcional)<input name="amount" type="number" min="0"></label>${x.requires_insurance?'<label class="chk"><input type="checkbox" name="ins" required> Confirmo que tengo seguro de responsabilidad civil</label>':''}<div class="e"></div><button class="btn" type="submit">Enviar</button></form>`;b.style.display='none';
     box.querySelector('form').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
       try{await call('/api/proposals',{method:'POST',auth:true,body:{project_id:x.id,message:f.message,amount_eur:f.amount?Number(f.amount):null,insurance_confirmed:!!f.ins}});me=null;box.innerHTML=msg('ok','Propuesta enviada. El cliente la verá.');b.style.display='none';}
-      catch(err){e.target.querySelector('.e').innerHTML=msg('err',err.message);}};});});}
+      catch(err){e.target.querySelector('.e').innerHTML=msg('err',err.message);}};};});bind();
+  const more=$('#more');if(more)more.onclick=async()=>{more.disabled=true;try{page++;const n=await call('/api/projects'+qs(q,page),{auth:true});const base=all.length;all.push(...n);$('#res').insertAdjacentHTML('beforeend',n.map((x,i)=>card(x,base+i)).join(''));bind();if(n.length<20)more.remove();else more.disabled=false;}catch(err){more.disabled=false;}};});}
 function publish(v){loading(v,async()=>{const m=await getMe();
   if(m.role!=='agency'){v.innerHTML='<h2>Publicar un bolo</h2><p>Solo las agencias publican bolos.</p>';return;}
   const today=new Date().toISOString().slice(0,10);
