@@ -163,6 +163,7 @@ html.sa main{padding-bottom:calc(130px + env(safe-area-inset-bottom))}
 html.sa footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 }
 .adslot{margin:22px 0;padding:10px 12px;border:1px solid var(--line);background:var(--card);border-radius:6px;text-align:center}.adslot small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}.adslot.free{background:transparent;border:1px dashed var(--line);min-height:64px;display:flex;align-items:center;justify-content:center;padding:8px}.adslot.free small{margin:0;opacity:.75}.adslot a{display:block}.adslot img{max-width:100%;height:auto;max-height:120px;object-fit:contain;border-radius:4px}
+.ficha{margin:8px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--card)}.ficha label{min-width:0}.ficha input,.ficha select{width:100%;min-width:0}@media(max-width:430px){.ficha{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -371,7 +372,7 @@ function boloInfo(x){const t=[];
   return (t.length?`<div>${t.join('')}</div>`:'')+(x.rider?`<p class="meta"><b>Rider:</b> ${esc(x.rider)}</p>`:'');}
 function projects(v,q={}){loading(v,async()=>{let page=1;const [p,m]=await Promise.all([call('/api/projects'+qs(q,1),{auth:true}),getMe()]);
   const all=[...p];
-  const card=(x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p>${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`;
+  const card=(x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p style="white-space:pre-line">${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`;
   v.innerHTML='<h2>Proyectos abiertos</h2>'+filterBar(q)+`<div id="res">${p.length?p.map(card).join(''):(hasQ(q)?'<p>No hay proyectos con esos filtros. Prueba con menos filtros.</p>':'<p>No hay proyectos abiertos todavía.</p>')}</div>`+(p.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
   wireFilters(v,q,nq=>projects(v,nq));
   const bind=()=>v.querySelectorAll('button[data-i]:not([data-b])').forEach(b=>{b.dataset.b='1';b.onclick=()=>{const x=all[b.dataset.i],box=$('#pf'+b.dataset.i);
@@ -386,15 +387,21 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   const ARTS=['Música','Pintura','Fotografía','Diseño','Audiovisual','Danza','Teatro','Otro'];
   v.innerHTML=`<h2>Publicar un bolo</h2><p class="steps" id="st"></p>
   <form id="f" novalidate>
-  <fieldset data-s="0"><h3>1. Qué y dónde</h3>
+  <fieldset data-s="0"><h3>1. Qué evento es</h3>
     <label>Título del bolo<input name="title" required minlength="3" maxlength="150" placeholder="Ej: Música en directo para una boda"></label>
     <label>Tipo de arte<select name="art">${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(a=>`<option>${a}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Si no está en la lista, escribe cuál (opcional)<input name="art_other" maxlength="60"></label>
-    <label>Descripción<textarea name="description" required minlength="10" rows="4" placeholder="Qué necesitas, duración, público..."></textarea></label>
-    <label>Lugar (ciudad o zona)<input name="location" maxlength="120"></label></fieldset>
-  <fieldset data-s="1" hidden><h3>2. Fechas y dinero</h3>
-    <label>Fecha del bolo<input name="event_date" type="date" required min="${today}"></label>
-    <label>Fecha límite para recibir propuestas (opcional)<input name="deadline" type="date" min="${today}"></label>
-    <label>Presupuesto en € (opcional)<input name="budget" type="number" min="0"></label></fieldset>
+    <div class="ficha"><label>Tipo de evento<select name="evtype"><option value="">Elige uno</option><option>Boda</option><option>Cumpleaños o fiesta privada</option><option>Evento de empresa</option><option>Concierto o festival</option><option>Inauguración o exposición</option><option>Sala, bar o restaurante</option><option>Otro</option></select></label>
+    <label>Espacio<select name="space"><option value="">Elige uno</option><option>Interior</option><option>Exterior</option><option>Interior y exterior</option></select></label>
+    <label>Lugar (ciudad o zona)<input name="location" maxlength="120"></label>
+    <label>Asistentes (aprox.)<input name="guests" type="number" min="1" inputmode="numeric"></label></div>
+    <label>Detalles (qué necesitas, ambiente, público...)<textarea name="description" required minlength="10" maxlength="3000" rows="4" placeholder="Cuéntanos qué buscas"></textarea></label></fieldset>
+  <fieldset data-s="1" hidden><h3>2. Fecha, horario y dinero</h3>
+    <div class="ficha"><label>Fecha del bolo<input name="event_date" type="date" required min="${today}"></label>
+    <label>Presupuesto en € (opcional)<input name="budget" type="number" min="0" inputmode="numeric"></label>
+    <label>Hora de inicio<input name="t_from" type="time"></label>
+    <label>Hora de fin<input name="t_to" type="time"></label>
+    <label>Duración de la actuación (opcional)<input name="dur" maxlength="40" placeholder="Ej: 2 pases de 45 min"></label>
+    <label>Fecha límite para propuestas (opcional)<input name="deadline" type="date" min="${today}"></label></div></fieldset>
   <fieldset data-s="2" hidden><h3>3. Extras y requisitos</h3>
     <p class="meta">Marca lo que ofreces:</p>
     <label class="chk"><input type="checkbox" name="x_equipo"> Equipo de sonido/luz</label>
@@ -416,10 +423,11 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   $('#f').onsubmit=async e=>{e.preventDefault();if(step<fs.length-1){$('#nx').click();return;}const f=Object.fromEntries(new FormData(e.target));
     const dl=f.deadline||null;if(dl&&dl>f.event_date){$('#e').innerHTML=msg('err','La fecha límite no puede ser posterior al bolo.');return;}
     const b=$('#ok');b.disabled=true;
-    try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:f.description,disciplines:[((f.art_other||'').trim()||f.art)],location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
+    try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:fichaText(f)+f.description,disciplines:[((f.art_other||'').trim()||f.art)],location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
       v.innerHTML=msg('ok','Bolo publicado. Ya aparece en Proyectos. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}
     catch(err){b.disabled=false;if(err.status===402){$('#e').innerHTML=payBox();}else $('#e').innerHTML=msg('err',err.message);}};});}
 // Reduce la foto en el navegador (máx. 1600 px, JPEG) antes de subirla: así caben muchas en el almacén gratuito.
+function fichaText(f){const r=[['Tipo de evento',f.evtype],['Espacio',f.space],['Asistentes',f.guests],['Horario',f.t_from?(f.t_from+(f.t_to?' a '+f.t_to:'')):''],['Actuación',f.dur]].filter(x=>x[1]);return r.length?r.map(x=>x[0]+': '+x[1]).join('\n')+'\n\n':'';}
 async function shrink(file){
   if(!/^image\//.test(file.type))throw new Error('Elige un archivo de imagen (JPG, PNG o WebP).');
   let bmp;try{bmp=await createImageBitmap(file);}catch{throw new Error('No se puede leer esa imagen. Prueba con una foto JPG.');}
