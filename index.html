@@ -109,7 +109,8 @@ fieldset{border:0;padding:0;margin:0}.steps{color:var(--ink2);font-size:13px;let
 @media(min-width:760px){.duo{grid-template-columns:1fr 1fr}}
 .end{margin:70px 0 10px;padding:56px 0 8px;border-top:1px solid var(--ink);display:grid;gap:18px;justify-items:start}
 .end h2{margin:0;font-size:clamp(34px,8vw,74px);line-height:1;max-width:14em}.end h2 em{color:var(--accent)}
-.biglogo{display:block;width:min(240px,58vw);height:auto;margin:0 0 6px}
+.biglogo{display:block;width:min(320px,72vw);height:auto;margin:0 0 10px}
+.dg{border:1px solid var(--line,#ddd);border-radius:10px;padding:6px 12px;margin:6px 0;background:#fffdf9}.dg summary{cursor:pointer;font-weight:600;padding:6px 0}.dg label{display:inline-flex;gap:6px;align-items:center;margin:3px 14px 3px 0;font-weight:400;font-size:15px}.dg input{width:auto;margin:0}
 .concept{margin:34px 0 10px;padding:26px 0;border-top:1px solid var(--ink);display:grid;gap:12px;max-width:44em}
 .concept h2{margin:0;font-size:clamp(28px,6vw,44px);line-height:1.05}.concept p{margin:0;color:var(--ink2);font-size:18px}
 </style>
@@ -129,6 +130,7 @@ function payBox(){return `<div class="promo"><b>Tu primer bolo era gratis.</b> P
 let session=null, me=null, tab='inicio';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DISC=[["Música", ["Cantante", "Cantante de ópera", "Cantautor/a", "Coro", "Banda de versiones", "Orquesta de baile / verbena", "Dúo o trío acústico", "Pianista", "Guitarrista", "Violín y cuerdas", "Cuarteto / orquesta de cámara", "Música clásica", "Jazz", "Flamenco (cante y guitarra)", "Rumba", "Mariachi", "Gospel", "Tributo a un artista", "Rap / hip hop", "Beatbox", "DJ", "Karaoke", "Música de calle"]], ["Teatro e interpretación", ["Interpretación (actor/actriz)", "Teatro", "Teatro infantil", "Monólogo / humor", "Improvisación", "Títeres y marionetas", "Cuentacuentos", "Narrador/a", "Locución y doblaje", "Presentador/a / maestro de ceremonias"]], ["Danza", ["Danza contemporánea", "Ballet clásico", "Flamenco (baile)", "Danza oriental", "Bailes latinos", "Tango", "Swing", "Danza urbana / breakdance", "Sardana y danza tradicional", "Bailarines de espectáculo"]], ["Circo y variedades", ["Magia", "Mentalismo", "Payaso / clown", "Malabares", "Acrobacia", "Zancudos", "Show de fuego", "Aéreos (telas, aro)", "Contorsionismo", "Mimo", "Estatua viva", "Ventriloquia", "Globoflexia", "Cabaret / burlesque", "Transformismo / drag"]], ["Animación y eventos", ["Animador/a infantil", "Animador/a de eventos", "Personajes y disfraces", "Pintacaras", "Espectáculo infantil", "Fiesta temática"]], ["Artes plásticas", ["Pintura", "Escultura", "Muralismo / graffiti", "Ilustración", "Caricaturista en vivo", "Retratista", "Cerámica", "Artesanía", "Arte floral", "Body painting", "Performance artística", "Arte digital"]], ["Imagen y audiovisual", ["Fotografía", "Fotografía de eventos", "Vídeo", "Videoclip", "Cine y cortometraje", "Animación", "VJ / visuales", "Drones", "Diseño gráfico", "Diseño de moda"]], ["Palabra", ["Poesía", "Spoken word", "Escritura"]], ["Otras", ["Otro"]]];const DISC_ALL=DISC.flatMap(g=>g[1]);
 const list=s=>s.split(',').map(x=>x.trim()).filter(Boolean);
 async function call(path,{method='GET',body,auth}={}){
   let r;
@@ -168,7 +170,7 @@ function home(v){
   ${freeBanner()}
   <section class="hero8">
     <div>
-      <img class="biglogo" src="logo.png" alt="TengoBolo" width="240" height="253">
+      <img class="biglogo" src="logo.png" alt="TengoBolo" width="320" height="337">
       <span class="eyebrow">Creativa Network · Artistas y agencias</span>
       <h2 class="mega">Tu próximo bolo <em>empieza aquí</em></h2>
       <p class="lead">Enseña tu trabajo, encuentra proyectos y ponte en contacto. Perfil y propuestas gratis, siempre.</p>
@@ -300,7 +302,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   <form id="f" novalidate>
   <fieldset data-s="0"><h3>1. Qué y dónde</h3>
     <label>Título del bolo<input name="title" required minlength="3" maxlength="150" placeholder="Ej: Música en directo para una boda"></label>
-    <label>Tipo de arte<select name="art">${ARTS.map(a=>`<option>${a}</option>`).join('')}</select></label>
+    <label>Tipo de arte<select name="art">${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(a=>`<option>${a}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Si no está en la lista, escribe cuál (opcional)<input name="art_other" maxlength="60"></label>
     <label>Descripción<textarea name="description" required minlength="10" rows="4" placeholder="Qué necesitas, duración, público..."></textarea></label>
     <label>Lugar (ciudad o zona)<input name="location" maxlength="120"></label></fieldset>
   <fieldset data-s="1" hidden><h3>2. Fechas y dinero</h3>
@@ -328,7 +330,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   $('#f').onsubmit=async e=>{e.preventDefault();if(step<fs.length-1){$('#nx').click();return;}const f=Object.fromEntries(new FormData(e.target));
     const dl=f.deadline||null;if(dl&&dl>f.event_date){$('#e').innerHTML=msg('err','La fecha límite no puede ser posterior al bolo.');return;}
     const b=$('#ok');b.disabled=true;
-    try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:f.description,disciplines:[f.art],location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
+    try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:f.description,disciplines:[((f.art_other||'').trim()||f.art)],location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
       v.innerHTML=msg('ok','Bolo publicado. Ya aparece en Proyectos. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}
     catch(err){b.disabled=false;if(err.status===402){$('#e').innerHTML=payBox();}else $('#e').innerHTML=msg('err',err.message);}};});}
 // Reduce la foto en el navegador (máx. 1600 px, JPEG) antes de subirla: así caben muchas en el almacén gratuito.
@@ -343,13 +345,15 @@ async function shrink(file){
 function profile(v){loading(v,async()=>{const m=await getMe();const full=await call('/api/profiles/'+encodeURIComponent(m.id),{auth:true});const md=mediaHtml(full.media,true);
   v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?'Plan: gratuito, propuestas sin límite':(m.plan==='free'?'Plan: gratuito (primer bolo gratis)':'Plan Cliente: bolos ilimitados')}</p>
   <div class="head">${avatar(m)}<div><label>Foto de perfil<input type="file" id="av" accept="image/*"></label></div></div><div id="ae"></div>
-  <form id="f"><label>Nombre<input name="name" required minlength="2" value="${esc(m.name)}"></label><label>Sobre mí<textarea name="bio" rows="4">${esc(m.bio)}</textarea></label><label>Disciplinas (separadas por comas)<input name="disciplines" value="${esc((m.disciplines||[]).join(', '))}"></label><label>Ciudad<input name="location" value="${esc(m.location)}"></label><label>Enlace a tu portfolio (https://…)<input name="portfolio_url" value="${esc(m.portfolio_url)}"></label>
+  <form id="f"><label>Nombre<input name="name" required minlength="2" value="${esc(m.name)}"></label><label>Sobre mí<textarea name="bio" rows="4">${esc(m.bio)}</textarea></label><div><b>Disciplinas</b> <span class="meta">(máximo 12)</span>${DISC.map(g=>`<details class="dg"${g[1].some(x=>(m.disciplines||[]).includes(x))?' open':''}><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}"${(m.disciplines||[]).includes(x)?' checked':''}>${x}</label>`).join('')}</details>`).join('')}</div><label>Otras disciplinas (opcional, separadas por comas)<input name="disciplines_other" value="${esc((m.disciplines||[]).filter(x=>!DISC_ALL.includes(x)).join(', '))}"></label><label>Ciudad<input name="location" value="${esc(m.location)}"></label><label>Enlace a tu portfolio (https://…)<input name="portfolio_url" value="${esc(m.portfolio_url)}"></label>
   <h3 style="margin:8px 0 0">Redes</h3>${SOCIALS.map(([k,n])=>`<label>${n}${k==='website'?' (https://…)':' (enlace completo, https://…)'}<input name="${k}" type="url" value="${esc(m[k])}" placeholder="https://"></label>`).join('')}
   <div id="e"></div><button class="btn" type="submit">Guardar</button></form>
   <div class="sect"><h2>Fotos (${md.nPhotos}/8)</h2>${md.photos||'<p class="meta">Aún no has subido fotos.</p>'}<label>Añadir foto<input type="file" id="ph" accept="image/*"></label><div id="pe"></div></div>
   <div class="sect"><h2>Vídeos (${md.nVideos}/5)</h2>${md.videos||'<p class="meta">Aún no has añadido vídeos.</p>'}<form id="vf"><label>Enlace de YouTube, Vimeo, Instagram, Facebook o TikTok<input name="url" type="url" required placeholder="https://"></label><button class="btn" type="submit">Añadir vídeo</button><div id="ve"></div></form></div>
   <div class="row"><button class="btn sec" id="out">Salir</button></div>`;
-  $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const body={name:f.name,bio:f.bio,disciplines:list(f.disciplines),location:f.location,portfolio_url:f.portfolio_url};SOCIALS.forEach(([k])=>body[k]=(f[k]||'').trim());
+  $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const body={name:f.name,bio:f.bio,disciplines:[...new Set([...[...e.target.querySelectorAll('input[name=d]:checked')].map(x=>x.value),...list(f.disciplines_other||'')])],location:f.location,portfolio_url:f.portfolio_url};SOCIALS.forEach(([k])=>body[k]=(f[k]||'').trim());
+    if(body.disciplines.length>12){$('#e').innerHTML=msg('err','Máximo 12 disciplinas. Quita alguna.');return;}
+    if(body.disciplines.some(x=>x.length>60)){$('#e').innerHTML=msg('err','Cada disciplina puede tener como máximo 60 letras.');return;}
     try{me=await call('/api/me',{method:'PATCH',auth:true,body});$('#e').innerHTML=msg('ok','Guardado.');}catch(err){$('#e').innerHTML=msg('err',err.message);}};
   const busy=(id,t)=>{$(id).innerHTML=msg('info',t);};
   $('#av').onchange=async e=>{const f=e.target.files[0];if(!f)return;busy('#ae','Subiendo foto…');try{const image=await shrink(f);await call('/api/me/avatar',{method:'POST',auth:true,body:{image}});me=null;profile(v);}catch(err){$('#ae').innerHTML=msg('err',err.message);}};
