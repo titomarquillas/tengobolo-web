@@ -150,6 +150,18 @@ nav button[aria-current=true]:after{top:0;bottom:auto;left:12px;right:12px}
 main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 footer p{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
 }
+html.sa,html.sa body{overscroll-behavior-y:none}
+html.sa body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html.sa input,html.sa textarea,html.sa select,html.sa [contenteditable]{-webkit-user-select:text;user-select:text}
+@media(max-width:700px){
+html.sa header{position:sticky;top:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+html.sa header .bar{padding-bottom:8px}
+html.sa nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;gap:0;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:rgba(255,253,249,.97);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.06);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+html.sa nav button{min-height:56px;padding:0 16px;font-size:15px}
+html.sa nav button[aria-current=true]:after{top:0;bottom:auto;left:12px;right:12px}
+html.sa main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+html.sa footer p{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+}
 </style>
 </head>
 <body>
@@ -434,6 +446,7 @@ call('/health').catch(()=>{});
 let deferredInstall=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;setupInstall();});
 window.addEventListener('appinstalled',()=>{deferredInstall=null;const b=document.getElementById('appbox');if(b)b.hidden=true;});
+if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true)document.documentElement.classList.add('sa');
 function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}
 function setupInstall(){
   const box=document.getElementById('appbox');if(!box||isStandalone())return;
@@ -453,7 +466,7 @@ function setupInstall(){
     how.scrollIntoView({behavior:'smooth',block:'nearest'});
   };
 }
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+if('serviceWorker' in navigator){let had=!!navigator.serviceWorker.controller,rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!rl){rl=true;location.reload();}had=true;});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update().catch(()=>{});document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update().catch(()=>{});});}).catch(()=>{}));}
 restore().then(render);
 </script>
 </body>
