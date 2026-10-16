@@ -1,3 +1,5 @@
+TengoBolo: index.html (con logo)
+Código completo de index.html. Alternativa si no se puede enviar el archivo: copiar todo el texto de abajo en un archivo llamado index.html.
 <!doctype html>
 <html lang="es">
 <head>
@@ -5,6 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TengoBolo · De bolo en bolo | Creativa Network</title>
 <meta name="description" content="TengoBolo es la red donde artistas (música, pintura, fotografía, diseño…) encuentran proyectos y agencias que contratan talento. Crea tu perfil gratis y envía propuestas.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 <link rel="canonical" href="https://tengobolo-web.onrender.com/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
@@ -62,7 +66,7 @@ footer{max-width:760px;margin:0 auto;padding:16px;color:var(--ink2);font-size:14
 <body>
 <header>
   <p class="meta" style="margin:0">Creativa Network</p>
-  <h1>TengoBolo</h1>
+  <div class="brand"><img src="logo.png" alt="Logotipo de TengoBolo" width="64" height="64"><h1>TengoBolo</h1></div>
   <p class="lead" id="slogan">De bolo en bolo.</p>
   <p class="sub">Un bolo es una actuación o un encargo. Aquí artistas y agencias se encuentran: tú tienes el talento, yo tengo bolo.</p>
 </header>
@@ -113,6 +117,7 @@ function home(v){
   if(confirmed||failed)history.replaceState(null,'',location.pathname);
   v.innerHTML=`${confirmed?msg('ok','Correo confirmado. Ya puedes entrar con tu cuenta.'):''}${failed?msg('err','El enlace del correo no es válido o ha caducado. Crea la cuenta otra vez o pide un correo nuevo.'):''}
   ${freeBanner()}
+  <img class="herologo" src="logo.png" alt="TengoBolo, de bolo en bolo" width="260" height="260">
   <img class="hero" src="hero.jpg" alt="Paleta, guitarra y cámara con un apretón de manos al fondo" width="800" height="1067">
   <h2>Qué es TengoBolo</h2>
   <p>Una red donde los artistas muestran su trabajo y las agencias publican proyectos y reciben propuestas. Música, pintura, fotografía, diseño, audiovisual y más. Gratis para registrarte; los artistas envían su primera propuesta gratis.</p>
