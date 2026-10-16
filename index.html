@@ -144,11 +144,11 @@ input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:tex
 @media(display-mode:standalone) and (max-width:700px){
 header{position:sticky;top:0;backdrop-filter:none;-webkit-backdrop-filter:none}
 header .bar{padding-bottom:8px}
-nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;gap:0;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:rgba(255,253,249,.97);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.06);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
-nav button{min-height:56px;padding:0 16px;font-size:15px}
-nav button[aria-current=true]:after{top:0;bottom:auto;left:12px;right:12px}
-main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
-footer p{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;overflow:visible;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:rgba(255,253,249,.97);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.06);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+nav button{min-height:48px;padding:0 2px;font-size:13.5px;line-height:1.15;white-space:normal;min-width:0}
+nav button[aria-current=true]:after{top:0;bottom:auto;left:10px;right:10px}
+main{padding-bottom:calc(130px + env(safe-area-inset-bottom))}
+footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 }
 html.sa,html.sa body{overscroll-behavior-y:none}
 html.sa body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -156,11 +156,11 @@ html.sa input,html.sa textarea,html.sa select,html.sa [contenteditable]{-webkit-
 @media(max-width:700px){
 html.sa header{position:sticky;top:0;backdrop-filter:none;-webkit-backdrop-filter:none}
 html.sa header .bar{padding-bottom:8px}
-html.sa nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;gap:0;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:rgba(255,253,249,.97);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.06);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
-html.sa nav button{min-height:56px;padding:0 16px;font-size:15px}
-html.sa nav button[aria-current=true]:after{top:0;bottom:auto;left:12px;right:12px}
-html.sa main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
-html.sa footer p{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+html.sa nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;overflow:visible;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:rgba(255,253,249,.97);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.06);-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+html.sa nav button{min-height:48px;padding:0 2px;font-size:13.5px;line-height:1.15;white-space:normal;min-width:0}
+html.sa nav button[aria-current=true]:after{top:0;bottom:auto;left:10px;right:10px}
+html.sa main{padding-bottom:calc(130px + env(safe-area-inset-bottom))}
+html.sa footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 }
 </style>
 </head>
