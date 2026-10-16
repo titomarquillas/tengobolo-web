@@ -15,13 +15,17 @@
 <meta property="og:title" content="TengoBolo · Creativa Network">
 <meta property="og:description" content="La red de artistas y agencias de Creativa Network. Crea tu perfil y encuentra proyectos.">
 <meta property="og:url" content="https://tengobolo-web.onrender.com/">
-<meta property="og:image" content="https://tengobolo-web.onrender.com/og-2.jpg">
+<meta property="og:image" content="https://tengobolo-web.onrender.com/og-3.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Mosaico en blanco y negro de artistas con el logo de TengoBolo">
-<meta name="twitter:image" content="https://tengobolo-web.onrender.com/og-2.jpg">
+<meta name="twitter:image" content="https://tengobolo-web.onrender.com/og-3.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#c8641a">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TengoBolo">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"TengoBolo","alternateName":"TengoBolo · Creativa Network","url":"https://tengobolo-web.onrender.com/","inLanguage":"es","description":"Red de artistas y agencias para encontrar proyectos y talento."}</script>
 <style>
 :root{--ink:#141414;--ink2:#5d5750;--bg:#f5f1ea;--card:#fffdf9;--line:#ddd5c8;--accent:#b5522f;--accent2:#8f3d20;--tint:#efe3d6;--sun:#e8c9a8;--serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;--font:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif}
@@ -70,6 +74,7 @@ ol{padding-left:22px}
 .sect{border-top:1px solid var(--line);margin-top:24px;padding-top:4px}
 footer{background:var(--ink);color:#cfc7ba;margin-top:auto}footer p{max-width:1040px;margin:0 auto;padding:22px 20px;font-size:13px;letter-spacing:.03em}
 .promo{border:1px solid var(--line);background:var(--card);border-left:3px solid var(--accent);border-radius:4px;padding:12px 16px;margin:16px 0;font-size:15px}
+.appbox{display:flex;gap:18px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:18px 20px;margin:26px 0}.appbox[hidden],.appbox .how[hidden]{display:none}.appbox img{width:64px;height:64px;border-radius:14px}.appbox h3{margin:0 0 4px;font-weight:400;font-size:22px}.appbox p{margin:0;font-size:15px;color:var(--ink2)}.appbox .how{flex-basis:100%;font-size:14px;color:var(--ink2);margin-top:4px}.appbox .how li{margin:3px 0}
 .promo a{color:var(--accent2);font-weight:600}
 [hidden]{display:none!important}
 .ph{background:#f6ecb9;border:1px dashed #9b8a2b;padding:1px 6px;border-radius:4px;color:#141414}
@@ -191,8 +196,9 @@ function home(v){
       <p class="lead">Enseña tu trabajo, encuentra proyectos y ponte en contacto. Perfil y propuestas gratis, siempre.</p>
       <div class="row"><button class="btn" id="a">${session?'Ver proyectos':'Crear cuenta gratis'}</button><button class="lnk" data-go="precios">Ver precios →</button></div>
     </div>
-    <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Mosaico en blanco y negro de artistas: música, pintura, circo, teatro y más" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
+    <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Mosaico en blanco y negro de pintores y músicos" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
   </section>
+  <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
   <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Un punto de encuentro entre el talento y quien lo necesita</h2>
     <p>TengoBolo conecta a artistas (músicos, pintores, escultores, poetas, performers, solos o en grupo) con agencias, locales y particulares que buscan una actuación para su evento: una boda, un cumpleaños, una inauguración o una noche en un bar.</p>
     <p>Los clientes publican lo que necesitan, con fecha y presupuesto, y los artistas responden con su propuesta. Tú te pones de acuerdo directamente con la otra parte.</p>
@@ -213,6 +219,7 @@ function home(v){
     <div class="du b"><span class="eyebrow">Agencias y clientes</span><h3>Encuentra talento</h3><p>Alta y primer bolo gratis. Después, suscripción mensual de 15 €, sin comisión.</p><button class="btn" data-go="entrar">Publicar un bolo</button></div>
   </div>
   <section class="end"><span class="eyebrow">TengoBolo</span><h2>Hoy puede empezar tu <em>próximo bolo</em></h2><button class="btn" data-go="entrar">Empezar gratis</button></section>`;
+  setupInstall();
   $('#a').onclick=()=>setTab(session?'proyectos':'entrar');
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
   v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{PRE={discipline:b.dataset.d};setTab(session?'artistas':'entrar');});
@@ -399,6 +406,25 @@ function profile(v){loading(v,async()=>{const m=await getMe();const full=await c
   v.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('¿Borrar?'))return;try{await call('/api/media/'+encodeURIComponent(b.dataset.del),{method:'DELETE',auth:true});profile(v);}catch(err){alert(err.message);}});
   $('#out').onclick=async()=>{try{await call('/api/auth/logout',{method:'POST',auth:true,body:{refresh_token:session.refresh_token}});}catch{}session=null;keep();me=null;setTab('inicio');};});}
 call('/health').catch(()=>{});
+
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;setupInstall();});
+window.addEventListener('appinstalled',()=>{deferredInstall=null;const b=document.getElementById('appbox');if(b)b.hidden=true;});
+function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}
+function setupInstall(){
+  const box=document.getElementById('appbox');if(!box||isStandalone())return;
+  box.hidden=false;
+  const btn=document.getElementById('inst'),how=document.getElementById('how');
+  const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua),android=/android/i.test(ua);
+  btn.onclick=async()=>{
+    if(deferredInstall){deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;return;}
+    how.hidden=false;
+    how.innerHTML=ios?'<b>En iPhone o iPad (Safari):</b><ol><li>Pulsa el botón Compartir (el cuadrado con la flecha hacia arriba).</li><li>Elige "Añadir a pantalla de inicio".</li><li>Pulsa "Añadir". Ya tienes el icono del corazón en tu móvil.</li></ol>'
+    :android?'<b>En Android (Chrome):</b><ol><li>Pulsa los tres puntos arriba a la derecha.</li><li>Elige "Instalar aplicación" o "Añadir a pantalla de inicio".</li><li>Confirma. Ya tienes el icono del corazón en tu móvil.</li></ol>'
+    :'<b>En el móvil:</b> abre esta web en Safari (iPhone) o Chrome (Android) y sigue estos pasos. iPhone: Compartir &gt; "Añadir a pantalla de inicio". Android: menú de tres puntos &gt; "Instalar aplicación". En ordenador con Chrome o Edge: icono de instalar en la barra de direcciones.';
+  };
+}
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 restore().then(render);
 </script>
 </body>
