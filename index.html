@@ -162,6 +162,7 @@ html.sa nav button[aria-current=true]:after{top:0;bottom:auto;left:10px;right:10
 html.sa main{padding-bottom:calc(130px + env(safe-area-inset-bottom))}
 html.sa footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 }
+.adslot{margin:22px 0;padding:10px 12px;border:1px solid var(--line);background:var(--card);border-radius:6px;text-align:center}.adslot small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}.adslot a{display:block}.adslot img{max-width:100%;height:auto;max-height:120px;object-fit:contain;border-radius:4px}
 </style>
 </head>
 <body>
@@ -184,6 +185,10 @@ function keep(){try{if(session&&session.refresh_token)localStorage.setItem(RK,se
 async function restore2(){try{const r=await fetch(API+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:session.refresh_token})});if(r.ok){const d=await r.json();session=d.session;keep();}}catch{}}
 async function restore(){let t=null;try{t=localStorage.getItem(RK);}catch{}if(!t)return;try{const r=await fetch(API+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:t})});if(!r.ok){if(r.status===401){try{localStorage.removeItem(RK);}catch{}}return;}const d=await r.json();session=d.session;keep();}catch{}}
 const $=s=>document.querySelector(s);
+/* PUBLICIDAD (preparada, apagada): mientras ADS este vacio no se muestra nada ni se reserva espacio.
+   Para activar un hueco: ADS.inicio={marca:'Nombre',img:'https://.../banner.jpg',url:'https://...',alt:'texto'} (https obligatorio). Huecos: inicio, lista (1 de cada 8 tarjetas). */
+const ADS={};
+function adSlot(id){const a=ADS[id];if(!a||!/^https:\/\//.test(a.url||'')||!/^https:\/\//.test(a.img||''))return '';return `<aside class="adslot" aria-label="Publicidad"><small>Publicidad${a.marca?' · '+esc(a.marca):''}</small><a href="${esc(a.url)}" target="_blank" rel="sponsored noopener"><img src="${esc(a.img)}" alt="${esc(a.alt||a.marca||'Anuncio')}" loading="lazy"></a></aside>`;}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const DISC=[["Música", ["Cantante", "Cantante de ópera", "Cantautor/a", "Coro", "Banda de versiones", "Orquesta de baile / verbena", "Dúo o trío acústico", "Pianista", "Guitarrista", "Violín y cuerdas", "Cuarteto / orquesta de cámara", "Música clásica", "Jazz", "Flamenco (cante y guitarra)", "Rumba", "Mariachi", "Gospel", "Tributo a un artista", "Rap / hip hop", "Beatbox", "DJ", "Karaoke", "Música de calle"]], ["Teatro e interpretación", ["Interpretación (actor/actriz)", "Teatro", "Teatro infantil", "Monólogo / humor", "Improvisación", "Títeres y marionetas", "Cuentacuentos", "Narrador/a", "Locución y doblaje", "Presentador/a / maestro de ceremonias"]], ["Danza", ["Danza contemporánea", "Ballet clásico", "Flamenco (baile)", "Danza oriental", "Bailes latinos", "Tango", "Swing", "Danza urbana / breakdance", "Sardana y danza tradicional", "Bailarines de espectáculo"]], ["Circo y variedades", ["Magia", "Mentalismo", "Payaso / clown", "Malabares", "Acrobacia", "Zancudos", "Show de fuego", "Aéreos (telas, aro)", "Contorsionismo", "Mimo", "Estatua viva", "Ventriloquia", "Globoflexia", "Cabaret / burlesque", "Transformismo / drag"]], ["Animación y eventos", ["Animador/a infantil", "Animador/a de eventos", "Personajes y disfraces", "Pintacaras", "Espectáculo infantil", "Fiesta temática"]], ["Artes plásticas", ["Pintura", "Escultura", "Muralismo / graffiti", "Ilustración", "Caricaturista en vivo", "Retratista", "Cerámica", "Artesanía", "Arte floral", "Body painting", "Performance artística", "Arte digital"]], ["Imagen y audiovisual", ["Fotografía", "Fotografía de eventos", "Vídeo", "Videoclip", "Cine y cortometraje", "Animación", "VJ / visuales", "Drones", "Diseño gráfico", "Diseño de moda"]], ["Palabra", ["Poesía", "Spoken word", "Escritura"]], ["Otras", ["Otro"]]];const DISC_ALL=DISC.flatMap(g=>g[1]);
 const list=s=>s.split(',').map(x=>x.trim()).filter(Boolean);
@@ -240,6 +245,7 @@ function home(v){
     <p>Los clientes publican lo que necesitan, con fecha y presupuesto, y los artistas responden con su propuesta. Tú te pones de acuerdo directamente con la otra parte.</p>
     <p><b>Nuestra política es simple:</b> los artistas usan la plataforma gratis y sin límite; los clientes tienen su primer bolo gratis y después una cuota plana. Nunca cobramos comisión sobre lo que ganas. TengoBolo solo pone en contacto a las partes y no interviene en el contrato entre ellas.</p>
   </section>
+  ${adSlot('inicio')}
   <div class="sech"><h2>Disciplinas</h2><span>Más de 80 formas de crear</span></div>
   <p class="meta" style="margin:0 0 14px">Pulsa una disciplina para ver los artistas que la practican.</p>
   ${groupsHtml()}
@@ -348,7 +354,7 @@ const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim(
 function wireFilters(v,q,go){const f=v.querySelector('form.fbar');f.onsubmit=e=>{e.preventDefault();go(Object.fromEntries(new FormData(f)));};f.querySelector('[data-clear]').onclick=()=>go({});}
 function artistCard(x){return `<div class="card"><div class="head">${avatar(x)}<div><h3>${esc(x.name)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}</div></div></div>${x.bio?`<p>${esc(x.bio)}</p>`:''}${socialLinks(x)}<div class="row"><button class="btn sec" data-p="${esc(x.id)}">Ver perfil completo</button></div></div>`;}
 function artists(v,q={}){loading(v,async()=>{let page=1;const a=await call('/api/artists'+qs(q,1),{auth:true});
-  v.innerHTML='<h2>Artistas</h2>'+filterBar(q)+`<div id="res">${a.length?a.map(artistCard).join(''):(hasQ(q)?'<p>No hay artistas con esos filtros. Prueba con menos filtros.</p>':'<p>Todavía no hay artistas con perfil.</p>')}</div>`+(a.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
+  v.innerHTML='<h2>Artistas</h2>'+filterBar(q)+`<div id="res">${a.length?a.map((x,i)=>artistCard(x)+((i+1)%8===0?adSlot('lista'):'')).join(''):(hasQ(q)?'<p>No hay artistas con esos filtros. Prueba con menos filtros.</p>':'<p>Todavía no hay artistas con perfil.</p>')}</div>`+(a.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
   wireFilters(v,q,nq=>artists(v,nq));
   const bind=()=>v.querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>viewProfile(v,b.dataset.p));bind();
   const more=$('#more');if(more)more.onclick=async()=>{more.disabled=true;try{page++;const n=await call('/api/artists'+qs(q,page),{auth:true});$('#res').insertAdjacentHTML('beforeend',n.map(artistCard).join(''));bind();if(n.length<20)more.remove();else more.disabled=false;}catch(err){more.disabled=false;}};});}
