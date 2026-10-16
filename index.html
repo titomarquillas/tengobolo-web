@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://tengobolo-web.onrender.com/og-3.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#c8641a">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.json">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="TengoBolo">
@@ -417,11 +417,15 @@ function setupInstall(){
   const btn=document.getElementById('inst'),how=document.getElementById('how');
   const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua),android=/android/i.test(ua);
   btn.onclick=async()=>{
-    if(deferredInstall){deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;return;}
+    if(deferredInstall){try{deferredInstall.prompt();await deferredInstall.userChoice;}catch{}deferredInstall=null;return;}
     how.hidden=false;
+    how.style.cssText='background:#f5f1ea;border-radius:6px;padding:12px 14px;color:#141414';
+    const mac=/macintosh/i.test(ua)&&!ios&&!/chrome|chromium|edg/i.test(ua);
     how.innerHTML=ios?'<b>En iPhone o iPad (Safari):</b><ol><li>Pulsa el botón Compartir (el cuadrado con la flecha hacia arriba).</li><li>Elige "Añadir a pantalla de inicio".</li><li>Pulsa "Añadir". Ya tienes el icono del corazón en tu móvil.</li></ol>'
+    :mac?'<b>En Mac (Safari):</b><ol><li>En el menú de arriba, pulsa Archivo.</li><li>Elige "Añadir al Dock".</li><li>Pulsa "Añadir". Ya tienes TengoBolo como app en el Dock.</li></ol>'
     :android?'<b>En Android (Chrome):</b><ol><li>Pulsa los tres puntos arriba a la derecha.</li><li>Elige "Instalar aplicación" o "Añadir a pantalla de inicio".</li><li>Confirma. Ya tienes el icono del corazón en tu móvil.</li></ol>'
-    :'<b>En el móvil:</b> abre esta web en Safari (iPhone) o Chrome (Android) y sigue estos pasos. iPhone: Compartir &gt; "Añadir a pantalla de inicio". Android: menú de tres puntos &gt; "Instalar aplicación". En ordenador con Chrome o Edge: icono de instalar en la barra de direcciones.';
+    :'<b>Así se instala en tu dispositivo:</b><ul><li><b>iPhone o iPad:</b> abre esta web en Safari, pulsa Compartir y "Añadir a pantalla de inicio".</li><li><b>Mac con Safari:</b> menú Archivo y "Añadir al Dock".</li><li><b>Android:</b> en Chrome, menú de tres puntos e "Instalar aplicación".</li><li><b>Ordenador con Chrome o Edge:</b> icono de instalar a la derecha de la barra de direcciones.</li></ul>';
+    how.scrollIntoView({behavior:'smooth',block:'nearest'});
   };
 }
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
