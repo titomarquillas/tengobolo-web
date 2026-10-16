@@ -125,7 +125,7 @@ fieldset{border:0;padding:0;margin:0}.steps{color:var(--ink2);font-size:13px;let
   <nav aria-label="Secciones" id="nav"></nav>
 </header>
 <main id="view"></main>
-<footer><p>Versión piloto de TengoBolo · Creativa Network. Si recargas la página tendrás que volver a entrar.</p></footer>
+<footer><p>Versión piloto de TengoBolo · Creativa Network. </p></footer>
 <script>
 const API='https://bolo-backend-pd6z.onrender.com';
 const GCOL=['#8e7cd0','#2fb3bc','#d4a58a','#b5522f','#f09fb5','#141414','#6f8f5f','#d8a93a','#9a9a9a'];
@@ -134,6 +134,10 @@ function freeBanner(){return `<div class="promo"><b>Artistas: gratis, siempre.</
 function payBox(){return `<div class="promo"><b>Tu primer bolo era gratis.</b> Para publicar más bolos necesitas el plan Cliente: 15 € al mes o 150 € al año, sin comisión (<a href="#" data-go="precios">ver Precios</a>).
   <ol><li>Haz una transferencia: titular <span class="ph">[TITULAR: pendiente]</span>, IBAN <span class="ph">[IBAN: pendiente]</span>.</li><li>Concepto: <b>TengoBolo + el correo de tu cuenta + plan Cliente</b>.</li><li>Escríbenos con el justificante a <span class="ph">[CORREO DE CONTACTO: pendiente]</span> y activaremos tu cuenta.</li></ol></div>`;}
 let session=null, me=null, tab='inicio';
+const RK='tb_rt';
+function keep(){try{if(session&&session.refresh_token)localStorage.setItem(RK,session.refresh_token);else localStorage.removeItem(RK);}catch{}}
+async function restore2(){try{const r=await fetch(API+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:session.refresh_token})});if(r.ok){const d=await r.json();session=d.session;keep();}}catch{}}
+async function restore(){let t=null;try{t=localStorage.getItem(RK);}catch{}if(!t)return;try{const r=await fetch(API+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:t})});if(!r.ok){if(r.status===401){try{localStorage.removeItem(RK);}catch{}}return;}const d=await r.json();session=d.session;keep();}catch{}}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const DISC=[["Música", ["Cantante", "Cantante de ópera", "Cantautor/a", "Coro", "Banda de versiones", "Orquesta de baile / verbena", "Dúo o trío acústico", "Pianista", "Guitarrista", "Violín y cuerdas", "Cuarteto / orquesta de cámara", "Música clásica", "Jazz", "Flamenco (cante y guitarra)", "Rumba", "Mariachi", "Gospel", "Tributo a un artista", "Rap / hip hop", "Beatbox", "DJ", "Karaoke", "Música de calle"]], ["Teatro e interpretación", ["Interpretación (actor/actriz)", "Teatro", "Teatro infantil", "Monólogo / humor", "Improvisación", "Títeres y marionetas", "Cuentacuentos", "Narrador/a", "Locución y doblaje", "Presentador/a / maestro de ceremonias"]], ["Danza", ["Danza contemporánea", "Ballet clásico", "Flamenco (baile)", "Danza oriental", "Bailes latinos", "Tango", "Swing", "Danza urbana / breakdance", "Sardana y danza tradicional", "Bailarines de espectáculo"]], ["Circo y variedades", ["Magia", "Mentalismo", "Payaso / clown", "Malabares", "Acrobacia", "Zancudos", "Show de fuego", "Aéreos (telas, aro)", "Contorsionismo", "Mimo", "Estatua viva", "Ventriloquia", "Globoflexia", "Cabaret / burlesque", "Transformismo / drag"]], ["Animación y eventos", ["Animador/a infantil", "Animador/a de eventos", "Personajes y disfraces", "Pintacaras", "Espectáculo infantil", "Fiesta temática"]], ["Artes plásticas", ["Pintura", "Escultura", "Muralismo / graffiti", "Ilustración", "Caricaturista en vivo", "Retratista", "Cerámica", "Artesanía", "Arte floral", "Body painting", "Performance artística", "Arte digital"]], ["Imagen y audiovisual", ["Fotografía", "Fotografía de eventos", "Vídeo", "Videoclip", "Cine y cortometraje", "Animación", "VJ / visuales", "Drones", "Diseño gráfico", "Diseño de moda"]], ["Palabra", ["Poesía", "Spoken word", "Escritura"]], ["Otras", ["Otro"]]];const DISC_ALL=DISC.flatMap(g=>g[1]);
@@ -142,6 +146,7 @@ async function call(path,{method='GET',body,auth}={}){
   let r;
   try{r=await fetch(API+path,{method,headers:{'Content-Type':'application/json',...(auth&&session?{Authorization:'Bearer '+session.access_token}:{})},body:body===undefined?undefined:JSON.stringify(body)});}
   catch{throw new Error('No se pudo conectar con el servidor. Si estaba dormido, espera 1 minuto y vuelve a intentarlo.');}
+  if(r.status===401&&auth&&session&&!arguments[1]._r){const old=session;await restore2();if(session&&session!==old)return call(path,{method,body,auth,_r:1});}
   if(r.status===204)return null;
   const d=await r.json().catch(()=>({}));
   if(!r.ok){const er=new Error(d.error||'Algo ha fallado. Inténtalo de nuevo.');er.status=r.status;throw er;}
@@ -182,7 +187,7 @@ function home(v){
       <p class="lead">Enseña tu trabajo, encuentra proyectos y ponte en contacto. Perfil y propuestas gratis, siempre.</p>
       <div class="row"><button class="btn" id="a">${session?'Ver proyectos':'Crear cuenta gratis'}</button><button class="lnk" data-go="precios">Ver precios →</button></div>
     </div>
-    <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Paleta, guitarra y cámara con un apretón de manos al fondo" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
+    <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Mosaico en blanco y negro de artistas: música, pintura, circo, teatro y más" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
   </section>
   <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Un punto de encuentro entre el talento y quien lo necesita</h2>
     <p>TengoBolo conecta a artistas (músicos, pintores, escultores, poetas, performers, solos o en grupo) con agencias, locales y particulares que buscan una actuación para su evento: una boda, un cumpleaños, una inauguración o una noche en un bar.</p>
@@ -220,7 +225,7 @@ function enter(v,mode='register',note=''){
   $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const b=e.target.querySelector('button[type=submit]');b.disabled=true;b.textContent='Un momento…';$('#e').innerHTML='';
     try{
       if(mode==='register'){const r=await call('/api/auth/register',{method:'POST',body:{email:f.email,password:f.password,name:f.name,role:f.role}});enter(v,'login',msg('info',((r&&r.message)||'Revisa tu correo para confirmar la cuenta.')+' Después de confirmar, vuelve aquí y entra.'));}
-      else{const r=await call('/api/auth/login',{method:'POST',body:{email:f.email,password:f.password}});session=r.session;me=null;setTab('perfil');}
+      else{const r=await call('/api/auth/login',{method:'POST',body:{email:f.email,password:f.password}});session=r.session;keep();me=null;setTab('perfil');}
     }catch(x){$('#e').innerHTML=msg('err',x.message);b.disabled=false;b.textContent=mode==='register'?'Crear cuenta':'Entrar';}};
 }
 function about(v){
@@ -248,6 +253,14 @@ function pricing(v){
   <div class="card"><h3>Cliente · Plan 1, mensual</h3><p><b>15 € al mes</b>, suscripción mensual. Bolos ilimitados, sin comisión. Cancelas cuando quieras.</p></div>
   <div class="card"><h3>Cliente · Plan 2, anual</h3><p><b>150 € al año</b> (equivale a 12,50 € al mes: 2 meses gratis). Bolos ilimitados, sin comisión.</p></div>
   <p class="meta">Precios sin IVA. IVA: <span class="ph">[IVA: pendiente de confirmar con el gestor]</span></p>
+<h2>Preguntas frecuentes</h2>
+  <details class="card"><summary><b>¿Cobráis comisión?</b></summary><p>No. Nunca cobramos comisión por los bolos. El trato y el pago entre artista y cliente son directos.</p></details>
+  <details class="card"><summary><b>¿Es gratis para los artistas?</b></summary><p>Sí. Crear el perfil y enviar propuestas es gratis y sin límite.</p></details>
+  <details class="card"><summary><b>¿Qué pasa con mi primer bolo como cliente?</b></summary><p>Es gratis. Para publicar más bolos necesitas el plan Cliente (15 € al mes o 150 € al año).</p></details>
+  <details class="card"><summary><b>¿Cómo se paga el plan?</b></summary><p>Por ahora, por transferencia bancaria manual. No hay pagos con tarjeta en la web. Los datos de pago se publicarán aquí.</p></details>
+  <details class="card"><summary><b>¿Puedo cancelar cuando quiera?</b></summary><p>Sí, el plan mensual se puede cancelar en cualquier momento.</p></details>
+  <details class="card"><summary><b>¿Los precios llevan IVA?</b></summary><p>Los precios se muestran sin IVA. Estamos confirmando el tratamiento del IVA.</p></details>
+  <details class="card"><summary><b>¿Cuándo se ven los datos de contacto?</b></summary><p>Cuando el cliente acepta una propuesta.</p></details>
   <h2>Cómo pagar</h2>
   <ol><li>Elige tu plan (Cliente mensual o anual, o Artista Pro) y haz una transferencia bancaria con estos datos.</li><li>En el concepto pon: <b>TengoBolo + el correo de tu cuenta + plan</b>.</li><li>Escríbenos con el justificante y activaremos tu cuenta.</li></ol>
   <div class="card"><p>Titular: <span class="ph">[TITULAR: pendiente]</span></p><p>IBAN: <span class="ph">[IBAN: pendiente]</span></p><p>Contacto para el justificante: <span class="ph">[CORREO DE CONTACTO: pendiente]</span></p></div>
@@ -380,9 +393,9 @@ function profile(v){loading(v,async()=>{const m=await getMe();const full=await c
   $('#ph').onchange=async e=>{const f=e.target.files[0];if(!f)return;busy('#pe','Subiendo foto…');try{const image=await shrink(f);await call('/api/media/photo',{method:'POST',auth:true,body:{image}});profile(v);}catch(err){$('#pe').innerHTML=msg('err',err.message);}};
   $('#vf').onsubmit=async e=>{e.preventDefault();const url=new FormData(e.target).get('url');try{await call('/api/media/video',{method:'POST',auth:true,body:{url}});profile(v);}catch(err){$('#ve').innerHTML=msg('err',err.message);}};
   v.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('¿Borrar?'))return;try{await call('/api/media/'+encodeURIComponent(b.dataset.del),{method:'DELETE',auth:true});profile(v);}catch(err){alert(err.message);}});
-  $('#out').onclick=async()=>{try{await call('/api/auth/logout',{method:'POST',auth:true,body:{refresh_token:session.refresh_token}});}catch{}session=null;me=null;setTab('inicio');};});}
+  $('#out').onclick=async()=>{try{await call('/api/auth/logout',{method:'POST',auth:true,body:{refresh_token:session.refresh_token}});}catch{}session=null;keep();me=null;setTab('inicio');};});}
 call('/health').catch(()=>{});
-render();
+restore().then(render);
 </script>
 </body>
 </html>
