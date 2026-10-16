@@ -109,6 +109,9 @@ fieldset{border:0;padding:0;margin:0}.steps{color:var(--ink2);font-size:13px;let
 @media(min-width:760px){.duo{grid-template-columns:1fr 1fr}}
 .end{margin:70px 0 10px;padding:56px 0 8px;border-top:1px solid var(--ink);display:grid;gap:18px;justify-items:start}
 .end h2{margin:0;font-size:clamp(34px,8vw,74px);line-height:1;max-width:14em}.end h2 em{color:var(--accent)}
+.biglogo{display:block;width:min(240px,58vw);height:auto;margin:0 0 6px}
+.concept{margin:34px 0 10px;padding:26px 0;border-top:1px solid var(--ink);display:grid;gap:12px;max-width:44em}
+.concept h2{margin:0;font-size:clamp(28px,6vw,44px);line-height:1.05}.concept p{margin:0;color:var(--ink2);font-size:18px}
 </style>
 </head>
 <body>
@@ -138,7 +141,7 @@ async function call(path,{method='GET',body,auth}={}){
 }
 function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){paint();
-  const items=[['inicio','Inicio'],['artistas','Artistas'],['proyectos','Proyectos'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  const items=[['inicio','Inicio'],['artistas','Artistas'],['proyectos','Proyectos'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],['quienes','Quiénes somos'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
 }
@@ -150,6 +153,7 @@ async function render(){
   if(tab==='inicio')return home(v);
   if(tab==='entrar')return enter(v);
   if(tab==='precios')return pricing(v);
+  if(tab==='quienes')return about(v);
   if(tab==='propuestas')return proposalsView(v);
   if(tab==='artistas')return artists(v);
   if(tab==='proyectos')return projects(v);
@@ -164,12 +168,18 @@ function home(v){
   ${freeBanner()}
   <section class="hero8">
     <div>
+      <img class="biglogo" src="logo.png" alt="TengoBolo" width="240" height="253">
       <span class="eyebrow">Creativa Network · Artistas y agencias</span>
       <h2 class="mega">Tu próximo bolo <em>empieza aquí</em></h2>
       <p class="lead">Enseña tu trabajo, encuentra proyectos y ponte en contacto. Perfil y propuestas gratis, siempre.</p>
       <div class="row"><button class="btn" id="a">${session?'Ver proyectos':'Crear cuenta gratis'}</button><button class="lnk" data-go="precios">Ver precios →</button></div>
     </div>
     <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Paleta, guitarra y cámara con un apretón de manos al fondo" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
+  </section>
+  <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Un punto de encuentro entre el talento y quien lo necesita</h2>
+    <p>TengoBolo conecta a artistas (músicos, pintores, escultores, poetas, performers, solos o en grupo) con agencias, locales y particulares que buscan una actuación para su evento: una boda, un cumpleaños, una inauguración o una noche en un bar.</p>
+    <p>Los clientes publican lo que necesitan, con fecha y presupuesto, y los artistas responden con su propuesta. Tú te pones de acuerdo directamente con la otra parte.</p>
+    <p><b>Nuestra política es simple:</b> los artistas usan la plataforma gratis y sin límite; los clientes tienen su primer bolo gratis y después una cuota plana. Nunca cobramos comisión sobre lo que ganas. TengoBolo solo pone en contacto a las partes y no interviene en el contrato entre ellas.</p>
   </section>
   <div class="sech"><h2>Disciplinas</h2><span>Seis formas de crear</span></div>
   <div class="wall"><button class="wk " data-go="artistas" aria-label="Música"><svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="g0" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cdbff2"/><stop offset=".6" stop-color="#8e7cd0"/><stop offset="1" stop-color="#4b3f8f"/></linearGradient></defs><rect width="400" height="500" fill="url(#g0)"/><ellipse cx="200" cy="250" rx="40" ry="120" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="3" transform="rotate(-20 200 250)"/><ellipse cx="200" cy="254" rx="62" ry="130" fill="none" stroke="rgba(255,255,255,0.68)" stroke-width="4" transform="rotate(-13 200 250)"/><ellipse cx="200" cy="258" rx="84" ry="140" fill="none" stroke="rgba(255,255,255,0.61)" stroke-width="5" transform="rotate(-6 200 250)"/><ellipse cx="200" cy="262" rx="106" ry="150" fill="none" stroke="rgba(255,255,255,0.54)" stroke-width="3" transform="rotate(1 200 250)"/><ellipse cx="200" cy="266" rx="128" ry="160" fill="none" stroke="rgba(255,255,255,0.47)" stroke-width="4" transform="rotate(8 200 250)"/><ellipse cx="200" cy="270" rx="150" ry="170" fill="none" stroke="rgba(255,255,255,0.40)" stroke-width="5" transform="rotate(15 200 250)"/><ellipse cx="200" cy="274" rx="172" ry="180" fill="none" stroke="rgba(255,255,255,0.33)" stroke-width="3" transform="rotate(22 200 250)"/><ellipse cx="200" cy="278" rx="194" ry="190" fill="none" stroke="rgba(255,255,255,0.26)" stroke-width="4" transform="rotate(29 200 250)"/><ellipse cx="200" cy="282" rx="216" ry="200" fill="none" stroke="rgba(255,255,255,0.19)" stroke-width="5" transform="rotate(36 200 250)"/></svg><span class="cap"><span><small>01</small><b>Música</b></span><i>→</i></span></button><button class="wk lt" data-go="artistas" aria-label="Pintura"><svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="500" fill="#efe6d8"/><circle cx="230" cy="190" r="120" fill="#b5522f"/><path d="M60 500V330a110 110 0 0 1 220 0v170z" fill="#141414"/><path d="M40 420c60-40 120 30 200-10s100-30 130-70" fill="none" stroke="#efe6d8" stroke-width="10" stroke-linecap="round"/></svg><span class="cap"><span><small>02</small><b>Pintura</b></span><i>→</i></span></button><button class="wk " data-go="artistas" aria-label="Fotografía"><svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="g2" cx=".4" cy=".35" r=".9"><stop offset="0" stop-color="#6b6b6b"/><stop offset="1" stop-color="#0d0d0d"/></radialGradient><clipPath id="cg2"><path d="M40 500V260a160 190 0 0 1 320 0v240z"/></clipPath></defs><rect width="400" height="500" fill="url(#g2)"/><g clip-path="url(#cg2)"><rect x="-100" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="-66" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="-32" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="2" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="36" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="70" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="104" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="138" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="172" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="206" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="240" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="274" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="308" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/><rect x="342" y="-50" width="14" height="700" fill="rgba(255,255,255,.55)" transform="rotate(24 200 250)"/></g></svg><span class="cap"><span><small>03</small><b>Fotografía</b></span><i>→</i></span></button><button class="wk lt" data-go="artistas" aria-label="Danza"><svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1d8c6"/><stop offset="1" stop-color="#c99275"/></linearGradient></defs><rect width="400" height="500" fill="url(#g3)"/><path d="M-20 120c90-70 160 70 250 0s130-40 190-10" fill="none" stroke="rgba(255,255,255,0.80)" stroke-width="2"/><path d="M-20 156c90-70 160 70 250 0s130-40 190-10" fill="none" stroke="rgba(255,255,255,0.74)" stroke-width="4"/><path d="M-20 192c90-70 160 70 250 0s130-40 190-10" fill="none" stroke="rgba(255,255,255,0.68)" stroke-width="2"/><path d="M-20 228c90-70 160 70 250 0s130-40 190-10" fill="none" stroke="rgba(255,255,255,0.62)" stroke-width="4"/><path d="M-20 264c90-70 160 70 250 0s130-40 190-10" fill="none" stroke="rgba(255,255,255,0.56)" stroke-width="2"/><path d="M-20 300c90-70 160 70 250 0s130-40 190-10" fill="none" stroke="rgba(255,255,255,0.50)" stroke-width="4"/><path d="M-20 336c90-70 160 70 250 0s130-40 190-10" fill="none" stroke="rgba(255,255,255,0.44)" stroke-width="2"/><path d="M-20 372c90-70 160 70 250 0s130-40 190-10" fill="none" stroke="rgba(255,255,255,0.38)" stroke-width="4"/><path d="M-20 408c90-70 160 70 250 0s130-40 190-10" fill="none" stroke="rgba(255,255,255,0.32)" stroke-width="2"/></svg><span class="cap"><span><small>04</small><b>Danza</b></span><i>→</i></span></button><button class="wk " data-go="artistas" aria-label="Teatro"><svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="500" fill="#2fb7bd"/><rect y="320" width="400" height="180" fill="#8bd5d6"/><path d="M110 500V250a90 90 0 0 1 180 0v250z" fill="#f2a0b6"/><circle cx="318" cy="96" r="26" fill="#141414"/><rect x="30" y="60" width="70" height="120" fill="none" stroke="#fff" stroke-width="3"/></svg><span class="cap"><span><small>05</small><b>Teatro</b></span><i>→</i></span></button><button class="wk lt" data-go="artistas" aria-label="Diseño"><svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="500" fill="#e9e2d3"/><path d="M0 330a200 200 0 0 1 400 0z" fill="#141414"/><rect x="215" y="70" width="120" height="120" fill="#b5522f"/><circle cx="110" cy="130" r="64" fill="none" stroke="#141414" stroke-width="3"/><path d="M0 420h400M0 450h400" stroke="#141414" stroke-width="1"/></svg><span class="cap"><span><small>06</small><b>Diseño</b></span><i>→</i></span></button></div>
@@ -202,6 +212,22 @@ function enter(v,mode='register',note=''){
       if(mode==='register'){const r=await call('/api/auth/register',{method:'POST',body:{email:f.email,password:f.password,name:f.name,role:f.role}});enter(v,'login',msg('info',((r&&r.message)||'Revisa tu correo para confirmar la cuenta.')+' Después de confirmar, vuelve aquí y entra.'));}
       else{const r=await call('/api/auth/login',{method:'POST',body:{email:f.email,password:f.password}});session=r.session;me=null;setTab('perfil');}
     }catch(x){$('#e').innerHTML=msg('err',x.message);b.disabled=false;b.textContent=mode==='register'?'Crear cuenta':'Entrar';}};
+}
+function about(v){
+  v.innerHTML=`<h2>Quiénes somos</h2>
+  <p>TengoBolo es un proyecto en fase piloto que pone en contacto a artistas con quienes buscan una actuación para sus eventos. Estamos empezando y mejorando la plataforma con la ayuda de los primeros usuarios.</p>
+  <div class="card"><h3>Responsable del servicio</h3>
+  <p>Titular: <span class="ph">[NOMBRE Y APELLIDOS DEL TITULAR: pendiente]</span></p>
+  <p>NIF: <span class="ph">[NIF: pendiente]</span></p>
+  <p>Domicilio: <span class="ph">[DOMICILIO: pendiente]</span></p>
+  <p>Alta de actividad (autónomo): <span class="ph">[ALTA / FECHA: pendiente]</span></p>
+  <p>Registro de la marca TengoBolo: <span class="ph">[REGISTRO DE MARCA: pendiente]</span></p>
+  <p>Correo de contacto: <span class="ph">[CORREO DE CONTACTO: pendiente]</span></p></div>
+  <h3>Qué hacemos y qué no</h3>
+  <p>TengoBolo solo facilita el contacto entre artistas y clientes. No es agencia de representación ni parte del contrato que ambos acuerden.</p>
+  <h3>Información legal</h3>
+  <ul><li>Aviso legal: <span class="ph">[pendiente de revisión]</span></li><li>Política de privacidad: <span class="ph">[pendiente de revisión]</span></li><li>Condiciones de uso: <span class="ph">[pendiente de revisión]</span></li></ul>
+  <p class="sub">Estos datos se completarán cuando el titular formalice su alta de actividad.</p>`;
 }
 function pricing(v){
   v.innerHTML=`<h2>Precios</h2>${freeBanner()}
