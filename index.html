@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TengoBolo | Creativa Network</title>
-<meta name="description" content="TengoBolo es la red donde artistas (música, pintura, fotografía, diseño…) encuentran proyectos y agencias que contratan talento. Crea tu perfil gratis y envía propuestas.">
+<meta name="description" content="TengoBolo es la red donde artistas (música, pintura, fotografía, diseño…) encuentran proyectos y agencias que contratan talento. Crea tu perfil gratis y envía propuestas sin límite.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
@@ -120,9 +120,9 @@ fieldset{border:0;padding:0;margin:0}.steps{color:var(--ink2);font-size:13px;let
 <footer><p>Versión piloto de TengoBolo · Creativa Network. Si recargas la página tendrás que volver a entrar.</p></footer>
 <script>
 const API='https://bolo-backend-pd6z.onrender.com';
-function freeBanner(){return `<div class="promo"><b>Registro gratis para todos.</b> Los artistas envían su primera propuesta gratis; a partir de la segunda hace falta un plan de pago desde 5 € al mes (<a href="#" data-go="precios">ver Precios</a>).</div>`;}
-function payBox(){return `<div class="promo"><b>Tu primera propuesta era gratis.</b> Para enviar más propuestas necesitas el plan Artista: 5 € al mes o 50 € al año (<a href="#" data-go="precios">ver Precios</a>).
-  <ol><li>Haz una transferencia: titular <span class="ph">[TITULAR: pendiente]</span>, IBAN <span class="ph">[IBAN: pendiente]</span>.</li><li>Concepto: <b>TengoBolo + el correo de tu cuenta + plan</b>.</li><li>Escríbenos con el justificante a <span class="ph">[CORREO DE CONTACTO: pendiente]</span> y activaremos tu cuenta.</li></ol></div>`;}
+function freeBanner(){return `<div class="promo"><b>Artistas: gratis, siempre.</b> Agencias, empresas y particulares: alta y primer bolo gratis; después, suscripción mensual de 15 €, sin comisión (<a href="#" data-go="precios">ver Precios</a>).</div>`;}
+function payBox(){return `<div class="promo"><b>Tu primer bolo era gratis.</b> Para publicar más bolos necesitas el plan Cliente: 15 € al mes o 150 € al año, sin comisión (<a href="#" data-go="precios">ver Precios</a>).
+  <ol><li>Haz una transferencia: titular <span class="ph">[TITULAR: pendiente]</span>, IBAN <span class="ph">[IBAN: pendiente]</span>.</li><li>Concepto: <b>TengoBolo + el correo de tu cuenta + plan Cliente</b>.</li><li>Escríbenos con el justificante a <span class="ph">[CORREO DE CONTACTO: pendiente]</span> y activaremos tu cuenta.</li></ol></div>`;}
 let session=null, me=null, tab='inicio';
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -166,7 +166,7 @@ function home(v){
     <div>
       <span class="eyebrow">Creativa Network · Artistas y agencias</span>
       <h2 class="mega">Tu próximo bolo <em>empieza aquí</em></h2>
-      <p class="lead">Enseña tu trabajo, encuentra proyectos y ponte en contacto. Registro gratis y primera propuesta gratis.</p>
+      <p class="lead">Enseña tu trabajo, encuentra proyectos y ponte en contacto. Perfil y propuestas gratis, siempre.</p>
       <div class="row"><button class="btn" id="a">${session?'Ver proyectos':'Crear cuenta gratis'}</button><button class="lnk" data-go="precios">Ver precios →</button></div>
     </div>
     <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Paleta, guitarra y cámara con un apretón de manos al fondo" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
@@ -181,8 +181,8 @@ function home(v){
   </div>
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
   <div class="duo">
-    <div class="du a"><span class="eyebrow">Artistas</span><h3>Muestra tu obra</h3><p>Portfolio, propuestas a proyectos reales y tu primera propuesta gratis.</p><button class="btn" data-go="entrar">Crear mi perfil</button></div>
-    <div class="du b"><span class="eyebrow">Agencias y clientes</span><h3>Encuentra talento</h3><p>Publica tu bolo y recibe propuestas. Gratis y sin comisión.</p><button class="btn" data-go="entrar">Publicar un bolo</button></div>
+    <div class="du a"><span class="eyebrow">Artistas</span><h3>Muestra tu obra</h3><p>Portfolio y propuestas a proyectos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar">Crear mi perfil</button></div>
+    <div class="du b"><span class="eyebrow">Agencias y clientes</span><h3>Encuentra talento</h3><p>Alta y primer bolo gratis. Después, suscripción mensual de 15 €, sin comisión.</p><button class="btn" data-go="entrar">Publicar un bolo</button></div>
   </div>
   <section class="end"><span class="eyebrow">TengoBolo</span><h2>Hoy puede empezar tu <em>próximo bolo</em></h2><button class="btn" data-go="entrar">Empezar gratis</button></section>`;
   $('#a').onclick=()=>setTab(session?'proyectos':'entrar');
@@ -205,13 +205,15 @@ function enter(v,mode='register',note=''){
 }
 function pricing(v){
   v.innerHTML=`<h2>Precios</h2>${freeBanner()}
-  <p><b>Agencias, particulares y empresas:</b> gratis, sin comisión. <b>Artistas:</b> registro gratis, ver proyectos gratis y la primera propuesta gratis.</p>
-  <div class="card"><h3>Gratis</h3><p><b>0 €</b>. 1 propuesta.</p></div>
-  <div class="card"><h3>Artista</h3><p><b>5 € al mes</b> o <b>50 € al año</b>. Propuestas sin límite.</p></div>
-  <div class="card"><h3>Destacado</h3><p><b>10 € al mes</b> o <b>100 € al año</b>. Incluye: <span class="ph">[BENEFICIOS DE DESTACADO: pendiente]</span></p></div>
-  <p class="meta">IVA: <span class="ph">[IVA incluido o no: pendiente]</span></p>
+  <p><b>Artistas:</b> gratis, con propuestas sin límite. <b>Agencias, particulares y empresas:</b> alta y primer bolo gratis; después, una cuota plana. Nunca cobramos comisión.</p>
+  <div class="card"><h3>Artista</h3><p><b>0 €</b>. Perfil, proyectos y propuestas sin límite.</p></div>
+  <div class="card"><h3>Artista Pro (opcional)</h3><p><b>5 € al mes</b>. Perfil destacado: <span class="ph">[BENEFICIOS DE PRO: pendiente]</span></p></div>
+  <div class="card"><h3>Cliente: primer bolo</h3><p><b>0 €</b>. Alta gratis y tu primer bolo publicado gratis.</p></div>
+  <div class="card"><h3>Cliente · Plan 1, mensual</h3><p><b>15 € al mes</b>, suscripción mensual. Bolos ilimitados, sin comisión. Cancelas cuando quieras.</p></div>
+  <div class="card"><h3>Cliente · Plan 2, anual</h3><p><b>150 € al año</b> (equivale a 12,50 € al mes: 2 meses gratis). Bolos ilimitados, sin comisión.</p></div>
+  <p class="meta">Precios sin IVA. IVA: <span class="ph">[IVA: pendiente de confirmar con el gestor]</span></p>
   <h2>Cómo pagar</h2>
-  <ol><li>Elige plan (mensual o anual) y haz una transferencia bancaria con estos datos.</li><li>En el concepto pon: <b>TengoBolo + el correo de tu cuenta + plan</b>.</li><li>Escríbenos con el justificante y activaremos tu cuenta.</li></ol>
+  <ol><li>Elige tu plan (Cliente mensual o anual, o Artista Pro) y haz una transferencia bancaria con estos datos.</li><li>En el concepto pon: <b>TengoBolo + el correo de tu cuenta + plan</b>.</li><li>Escríbenos con el justificante y activaremos tu cuenta.</li></ol>
   <div class="card"><p>Titular: <span class="ph">[TITULAR: pendiente]</span></p><p>IBAN: <span class="ph">[IBAN: pendiente]</span></p><p>Contacto para el justificante: <span class="ph">[CORREO DE CONTACTO: pendiente]</span></p></div>
   <p class="sub">Pago por transferencia manual. Datos de pago aún no publicados: esta sección es un marcador de posición.</p>`;
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.go);});
@@ -258,12 +260,12 @@ function boloInfo(x){const t=[];
   if(x.requires_insurance)t.push('<span class="tag">Exige seguro de responsabilidad civil</span>');
   return (t.length?`<div>${t.join('')}</div>`:'')+(x.rider?`<p class="meta"><b>Rider:</b> ${esc(x.rider)}</p>`:'');}
 function projects(v){loading(v,async()=>{const [p,m]=await Promise.all([call('/api/projects',{auth:true}),getMe()]);
-  v.innerHTML='<h2>Proyectos abiertos</h2>'+(m.role==='artist'&&m.plan==='free'?`<p class="meta">Propuestas gratis usadas: ${Math.min(m.proposals_sent,1)} de 1.</p>`:'')+(p.length?p.map((x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p>${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`).join(''):'<p>No hay proyectos abiertos todavía.</p>');
-  v.querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>{const x=p[b.dataset.i],box=$('#pf'+b.dataset.i);if(m.plan==='free'&&m.proposals_sent>=1){box.innerHTML=payBox();return;}
+  v.innerHTML='<h2>Proyectos abiertos</h2>'+(p.length?p.map((x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p>${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`).join(''):'<p>No hay proyectos abiertos todavía.</p>');
+  v.querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>{const x=p[b.dataset.i],box=$('#pf'+b.dataset.i);
     box.innerHTML=`<form><label>Tu propuesta<textarea name="message" required minlength="10" rows="4"></textarea></label><label>Importe en € (opcional)<input name="amount" type="number" min="0"></label>${x.requires_insurance?'<label class="chk"><input type="checkbox" name="ins" required> Confirmo que tengo seguro de responsabilidad civil</label>':''}<div class="e"></div><button class="btn" type="submit">Enviar</button></form>`;b.style.display='none';
     box.querySelector('form').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
-      try{await call('/api/proposals',{method:'POST',auth:true,body:{project_id:x.id,message:f.message,amount_eur:f.amount?Number(f.amount):null,insurance_confirmed:!!f.ins}});me=null;box.innerHTML=msg('ok','Propuesta enviada. La agencia la verá.'+(m.plan==='free'?' Era tu propuesta gratis; para la siguiente necesitarás el plan de pago.':''));b.style.display='none';m.proposals_sent=(m.proposals_sent||0)+1;}
-      catch(err){if(err.status===402){box.innerHTML=payBox();m.proposals_sent=Math.max(m.proposals_sent||0,1);}else e.target.querySelector('.e').innerHTML=msg('err',err.message);}};});});}
+      try{await call('/api/proposals',{method:'POST',auth:true,body:{project_id:x.id,message:f.message,amount_eur:f.amount?Number(f.amount):null,insurance_confirmed:!!f.ins}});me=null;box.innerHTML=msg('ok','Propuesta enviada. El cliente la verá.');b.style.display='none';}
+      catch(err){e.target.querySelector('.e').innerHTML=msg('err',err.message);}};});});}
 function publish(v){loading(v,async()=>{const m=await getMe();
   if(m.role!=='agency'){v.innerHTML='<h2>Publicar un bolo</h2><p>Solo las agencias publican bolos.</p>';return;}
   const today=new Date().toISOString().slice(0,10);
@@ -302,7 +304,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
     const b=$('#ok');b.disabled=true;
     try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:f.description,disciplines:[f.art],location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
       v.innerHTML=msg('ok','Bolo publicado. Ya aparece en Proyectos. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}
-    catch(err){b.disabled=false;$('#e').innerHTML=msg('err',err.message);}};});}
+    catch(err){b.disabled=false;if(err.status===402){$('#e').innerHTML=payBox();}else $('#e').innerHTML=msg('err',err.message);}};});}
 // Reduce la foto en el navegador (máx. 1600 px, JPEG) antes de subirla: así caben muchas en el almacén gratuito.
 async function shrink(file){
   if(!/^image\//.test(file.type))throw new Error('Elige un archivo de imagen (JPG, PNG o WebP).');
@@ -313,7 +315,7 @@ async function shrink(file){
   return await new Promise((ok,ko)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(',')[1]);fr.onerror=()=>ko(new Error('No se pudo leer la foto.'));fr.readAsDataURL(blob);});
 }
 function profile(v){loading(v,async()=>{const m=await getMe();const full=await call('/api/profiles/'+encodeURIComponent(m.id),{auth:true});const md=mediaHtml(full.media,true);
-  v.innerHTML=`<h2>Mi perfil</h2>${m.role==='artist'?`<p class="meta">Plan: ${m.plan==='free'?'gratuito (1 propuesta gratis, usadas: '+Math.min(m.proposals_sent,1)+')':'de pago, propuestas sin límite'}</p>`:''}
+  v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?'Plan: gratuito, propuestas sin límite':(m.plan==='free'?'Plan: gratuito (primer bolo gratis)':'Plan Cliente: bolos ilimitados')}</p>
   <div class="head">${avatar(m)}<div><label>Foto de perfil<input type="file" id="av" accept="image/*"></label></div></div><div id="ae"></div>
   <form id="f"><label>Nombre<input name="name" required minlength="2" value="${esc(m.name)}"></label><label>Sobre mí<textarea name="bio" rows="4">${esc(m.bio)}</textarea></label><label>Disciplinas (separadas por comas)<input name="disciplines" value="${esc((m.disciplines||[]).join(', '))}"></label><label>Ciudad<input name="location" value="${esc(m.location)}"></label><label>Enlace a tu portfolio (https://…)<input name="portfolio_url" value="${esc(m.portfolio_url)}"></label>
   <h3 style="margin:8px 0 0">Redes</h3>${SOCIALS.map(([k,n])=>`<label>${n}${k==='website'?' (https://…)':' (enlace completo, https://…)'}<input name="${k}" type="url" value="${esc(m[k])}" placeholder="https://"></label>`).join('')}
