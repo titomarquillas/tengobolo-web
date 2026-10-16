@@ -178,7 +178,7 @@ function home(v){
   const failed=/error=|error_description=/.test(location.hash);
   if(confirmed||failed)history.replaceState(null,'',location.pathname);
   v.innerHTML=`${confirmed?msg('ok','Correo confirmado. Ya puedes entrar con tu cuenta.'):''}${failed?msg('err','El enlace del correo no es válido o ha caducado. Crea la cuenta otra vez o pide un correo nuevo.'):''}
-  ${freeBanner()}
+  
   <section class="hero8">
     <div>
       <img class="biglogo" src="logo.png" alt="TengoBolo" width="320" height="337">
