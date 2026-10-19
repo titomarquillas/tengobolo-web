@@ -87,7 +87,7 @@ fieldset{border:0;padding:0;margin:0}.steps{color:var(--ink2);font-size:13px;let
 .lnk{background:none;border:0;font:inherit;color:var(--ink);padding:0 4px;min-height:48px;cursor:pointer;border-bottom:1px solid #3a3a3a;border-radius:0}
 .lnk:hover{color:var(--accent);border-color:var(--accent)}
 .arch{position:relative;justify-self:center;width:min(86%,360px)}
-.arch img{position:relative;z-index:1;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:999px 999px 8px 8px;border:1px solid #262626;display:block;filter:grayscale(1) contrast(1.05)}
+.arch img{position:relative;z-index:1;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:0;border:1px solid #262626;display:block;filter:grayscale(1) contrast(1.05)}
 .arch figcaption{position:relative;z-index:2;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);margin-top:10px}
 @media(min-width:820px){.hero8{grid-template-columns:1.25fr 1fr;padding:56px 0 40px;gap:48px}.hero8 p.lead{font-size:21px}}
 .hline{border:0;border-top:1px solid var(--line);margin:34px 0 0}
@@ -235,6 +235,11 @@ function home(v){
     </div>
     <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Mosaico en blanco y negro de pintores y músicos" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
   </section>
+  <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
+  <div class="duo">
+    <div class="du a"><span class="eyebrow">Artistas</span><h3>Muestra tu obra</h3><p>Portfolio y propuestas a proyectos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Crear mi perfil</button></div>
+    <div class="du b"><span class="eyebrow">Agencias y clientes</span><h3>Encuentra talento</h3><p>Alta y primer bolo gratis. Después, suscripción mensual de 15 €, sin comisión.</p><button class="btn" data-go="entrar" data-role="agency">Publicar un bolo</button></div>
+  </div>
   <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
   <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Un punto de encuentro entre el talento y quien lo necesita</h2>
     <p>TengoBolo conecta a artistas (músicos, pintores, escultores, poetas, performers, solos o en grupo) con agencias, locales y particulares que buscan una actuación para su evento: una boda, un cumpleaños, una inauguración o una noche en un bar.</p>
@@ -251,22 +256,18 @@ function home(v){
     <div class="cl"><span class="n">2</span><div><b>Publica o encuentra un bolo</b><span class="d">Las agencias publican con fecha y presupuesto.</span></div></div>
     <div class="cl"><span class="n">3</span><div><b>Propón y contrata</b><span class="d">La agencia elige y os ponéis en contacto.</span></div></div>
   </div>
-  <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
-  <div class="duo">
-    <div class="du a"><span class="eyebrow">Artistas</span><h3>Muestra tu obra</h3><p>Portfolio y propuestas a proyectos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar">Crear mi perfil</button></div>
-    <div class="du b"><span class="eyebrow">Agencias y clientes</span><h3>Encuentra talento</h3><p>Alta y primer bolo gratis. Después, suscripción mensual de 15 €, sin comisión.</p><button class="btn" data-go="entrar">Publicar un bolo</button></div>
-  </div>
   <section class="end"><span class="eyebrow">TengoBolo</span><h2>Hoy puede empezar tu <em>próximo bolo</em></h2><button class="btn" data-go="entrar">Empezar gratis</button></section>`;
   setupInstall();
   $('#a').onclick=()=>setTab(session?'proyectos':'entrar');
-  v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
+  v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
   v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{PRE={discipline:b.dataset.d};setTab(session?'artistas':'entrar');});
 }
 function enter(v,mode='register',note=''){
+  const rp=rolePre;rolePre=null;
   if(session){v.innerHTML='<h2>Sesión iniciada</h2><div class="row"><button class="btn" id="p">Mi perfil</button></div>';$('#p').onclick=()=>setTab('perfil');return;}
   v.innerHTML=`<h2>${mode==='register'?'Crear cuenta':'Entrar'}</h2>
   <div class="row"><button class="btn ${mode==='register'?'':'sec'}" id="m1">Crear cuenta</button><button class="btn ${mode==='login'?'':'sec'}" id="m2">Ya tengo cuenta</button></div>${note}
-  <form id="f">${mode==='register'?`<label>Nombre<input name="name" required minlength="2" autocomplete="name"></label><label>Soy<select name="role"><option value="artist">Artista</option><option value="agency">Agencia, empresa o particular</option></select></label>`:''}
+  <form id="f">${mode==='register'?`<label>Nombre<input name="name" required minlength="2" autocomplete="name"></label><label>Soy<select name="role"><option value="artist"${rp==='agency'?'':' selected'}>Artista</option><option value="agency"${rp==='agency'?' selected':''}>Agencia, empresa o particular</option></select></label>`:''}
   <label>Correo<input name="email" type="email" required autocomplete="email"></label>
   <label>Contraseña${mode==='register'?' (mínimo 12 caracteres)':''}<input name="password" type="password" required minlength="${mode==='register'?12:1}" autocomplete="${mode==='register'?'new-password':'current-password'}"></label>
   <div id="e"></div><button class="btn" type="submit">${mode==='register'?'Crear cuenta':'Entrar'}</button></form>`;
@@ -343,7 +344,7 @@ function mediaHtml(media,editable){
   const videos=vi.map(m=>`<div class="card">${m.embed?`<div class="video"><iframe src="${esc(m.embed)}" title="${esc(m.caption||'Vídeo')}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`:`<a href="${esc(m.url)}" target="_blank" rel="noopener nofollow">${esc(m.caption||m.url)}</a>`}${m.caption&&m.embed?`<div class="meta">${esc(m.caption)}</div>`:''}${editable?`<div class="row"><button class="btn sec" data-del="${esc(m.id)}">Borrar vídeo</button></div>`:''}</div>`).join('');
   return {photos,videos,nPhotos:ph.length,nVideos:vi.length};
 }
-let PRE=null;
+let PRE=null;let rolePre=null;
 const qs=(q,page)=>{const u=new URLSearchParams();['q','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});if(page>1)u.set('page',page);const t=u.toString();return t?'?'+t:'';};
 const filterBar=q=>`<form class="fbar" novalidate><label>Buscar<input name="q" maxlength="60" value="${esc(q.q||'')}" placeholder="Nombre o palabra"></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${x}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row" style="margin:0"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" data-clear>Quitar filtros</button></div></form>`;
 const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim());
