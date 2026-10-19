@@ -258,7 +258,7 @@ function home(v){
   </section>
   ${adSlot('inicio')}
   <div class="sech"><h2>Disciplinas artísticas</h2><span>Más de 80 formas de crear</span></div>
-  <p class="meta" style="margin:0 0 14px">Pulsa una disciplina para ver los artistas que la practican.</p>
+  <p class="meta" style="margin:0 0 14px">Elige una disciplina y publica tu bolo: los artistas que la practican te envían su propuesta.</p>
   ${groupsHtml()}
   <div class="sech"><h2>Cómo funciona</h2><span>Tres pasos</span></div>
   <div class="cols3">
@@ -270,7 +270,7 @@ function home(v){
   setupInstall();
   $('#a').onclick=()=>setTab(session?'proyectos':'entrar');
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
-  v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{PRE={discipline:b.dataset.d};setTab(session?'artistas':'entrar');});
+  v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{artPre=b.dataset.d;rolePre='agency';setTab(session?'publicar':'entrar');});
   v.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>{evPre=b.dataset.ev;rolePre='agency';setTab(session?'publicar':'entrar');});
 }
 function enter(v,mode='register',note=''){
@@ -355,7 +355,7 @@ function mediaHtml(media,editable){
   const videos=vi.map(m=>`<div class="card">${m.embed?`<div class="video"><iframe src="${esc(m.embed)}" title="${esc(m.caption||'Vídeo')}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`:`<a href="${esc(m.url)}" target="_blank" rel="noopener nofollow">${esc(m.caption||m.url)}</a>`}${m.caption&&m.embed?`<div class="meta">${esc(m.caption)}</div>`:''}${editable?`<div class="row"><button class="btn sec" data-del="${esc(m.id)}">Borrar vídeo</button></div>`:''}</div>`).join('');
   return {photos,videos,nPhotos:ph.length,nVideos:vi.length};
 }
-let PRE=null;let rolePre=null;let evPre=null;
+let PRE=null;let rolePre=null;let evPre=null;let artPre=null;
 const qs=(q,page)=>{const u=new URLSearchParams();['q','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});if(page>1)u.set('page',page);const t=u.toString();return t?'?'+t:'';};
 const filterBar=q=>`<form class="fbar" novalidate><label>Buscar<input name="q" maxlength="60" value="${esc(q.q||'')}" placeholder="Nombre o palabra"></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${x}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row" style="margin:0"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" data-clear>Quitar filtros</button></div></form>`;
 const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim());
@@ -428,6 +428,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   $('#nx').onclick=()=>{const bad=[...fs[step].querySelectorAll('input,textarea,select')].find(i=>!i.checkValidity());if(bad){bad.reportValidity();return;}step++;show();};
   show();
   if(evPre){const sel=v.querySelector('select[name=evtype]');if(sel)sel.value=evPre;evPre=null;}
+  if(artPre){const sel=v.querySelector('select[name=art]');if(sel)sel.value=artPre;artPre=null;}
   $('#f').onsubmit=async e=>{e.preventDefault();if(step<fs.length-1){$('#nx').click();return;}const f=Object.fromEntries(new FormData(e.target));
     const dl=f.deadline||null;if(dl&&dl>f.event_date){$('#e').innerHTML=msg('err','La fecha límite no puede ser posterior al bolo.');return;}
     const b=$('#ok');b.disabled=true;
