@@ -207,7 +207,7 @@ async function call(path,{method='GET',body,auth}={}){
 }
 function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){paint();
-  const items=[['inicio','Inicio'],['artistas','Artistas'],['proyectos','Proyectos'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],['quienes','Quiénes somos'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  const items=[['inicio','Inicio'],...(me&&me.role==='artist'?[['artistas','Artistas']]:[]),['proyectos','Proyectos'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],['quienes','Quiénes somos'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
 }
@@ -341,7 +341,7 @@ function proposalsView(v){loading(v,async()=>{
   v.querySelectorAll('button[data-d]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await call('/api/proposals/'+encodeURIComponent(b.dataset.id)+'/status',{method:'PATCH',auth:true,body:{status:b.dataset.d}});proposalsView(v);}catch(e){b.disabled=false;v.insertAdjacentHTML('afterbegin',msg('err',e.message));}});
 });}
 function paint(){const r=session&&me?me.role:'';document.body.dataset.role=r;const z=document.getElementById('zone');if(z)z.textContent=r==='artist'?'Zona artistas':r==='agency'?'Zona agencias y clientes':'La red de artistas a tu alcance';const t=document.querySelector('meta[name=theme-color]');if(t)t.content='#000000';}
-async function getMe(){if(!me){me=await call('/api/me',{auth:true});}paint();return me;}
+async function getMe(){if(!me){me=await call('/api/me',{auth:true});}paint();renderNav();return me;}
 async function loading(v,fn){v.innerHTML='<p role="status">Cargando… (la primera vez puede tardar hasta 1 minuto)</p>';try{await fn();}catch(x){v.innerHTML=msg('err',x.message);}}
 const SOCIALS=[['instagram','Instagram'],['facebook','Facebook'],['tiktok','TikTok'],['youtube','YouTube'],['soundcloud','SoundCloud'],['linkedin','LinkedIn'],['website','Web']];
 const isUrl=u=>/^https:\/\//.test(u||'')||(/^http:\/\//.test(u||'')); 
@@ -361,7 +361,7 @@ const filterBar=q=>`<form class="fbar" novalidate><label>Buscar<input name="q" m
 const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim());
 function wireFilters(v,q,go){const f=v.querySelector('form.fbar');f.onsubmit=e=>{e.preventDefault();go(Object.fromEntries(new FormData(f)));};f.querySelector('[data-clear]').onclick=()=>go({});}
 function artistCard(x){return `<div class="card"><div class="head">${avatar(x)}<div><h3>${esc(x.name)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}</div></div></div>${x.bio?`<p>${esc(x.bio)}</p>`:''}${socialLinks(x)}<div class="row"><button class="btn sec" data-p="${esc(x.id)}">Ver perfil completo</button></div></div>`;}
-function artists(v,q={}){loading(v,async()=>{let page=1;const a=await call('/api/artists'+qs(q,1),{auth:true});
+function artists(v,q={}){loading(v,async()=>{const m=await getMe();if(m.role!=='artist'){v.innerHTML='<h2>Artistas</h2><p>El listado de artistas es la zona donde los artistas se ven y se encuentran entre ellos; solo está disponible para cuentas de artista.</p><p>Si buscas artistas para un evento, publica tu bolo y los artistas interesados te enviarán su propuesta.</p><div class="row"><button class="btn" data-go="publicar">Publicar un bolo</button></div>';v.querySelector('[data-go]').onclick=()=>setTab('publicar');return;}let page=1;const a=await call('/api/artists'+qs(q,1),{auth:true});
   v.innerHTML='<h2>Artistas</h2>'+filterBar(q)+`<div id="res">${a.length?a.map((x,i)=>artistCard(x)+((i+1)%8===0?adSlot('lista'):'')).join(''):(hasQ(q)?'<p>No hay artistas con esos filtros. Prueba con menos filtros.</p>':'<p>Todavía no hay artistas con perfil.</p>')}</div>`+(a.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
   wireFilters(v,q,nq=>artists(v,nq));
   const bind=()=>v.querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>viewProfile(v,b.dataset.p));bind();
