@@ -37,7 +37,7 @@ body{margin:0;font:17px/1.6 var(--font);color:var(--ink);background:var(--bg);mi
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 header{position:sticky;top:0;z-index:5;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);border-bottom:1px solid #1c1c1c}
 .bar{max-width:1040px;margin:0 auto;padding:10px 20px 4px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.brand img{height:38px;width:auto;display:block}.brand .wm{font-weight:700;font-size:20px;letter-spacing:-.03em;color:var(--ink);line-height:1}
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.brand img{height:38px;width:auto;display:block}.brand .wm{font-weight:300;font-size:20px;letter-spacing:-.02em;color:var(--ink);line-height:1}.brand .wm b{font-weight:700}
 .zone{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:8px;text-align:right;line-height:1.5;max-width:340px}
 .zone:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
 nav{max-width:1040px;margin:0 auto;display:flex;gap:2px;overflow-x:auto;padding:0 14px 8px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}
@@ -110,13 +110,14 @@ fieldset{border:0;padding:0;margin:0}.steps{color:var(--ink2);font-size:13px;let
 .cl b{font-family:var(--serif);font-weight:400;font-size:24px;display:block}.cl span.d{color:var(--ink2)}
 @media(min-width:760px){.cols3{grid-template-columns:repeat(3,1fr);gap:28px;border-top:0}.cl{grid-template-columns:1fr;border-top:1px solid #2b2b2b;border-bottom:0;padding-top:18px}}
 .duo{display:grid;gap:14px}
+.du .sub{margin-top:14px}.du .sub>small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px}.du .chips .chip{font-size:13px;padding:5px 11px;min-height:0}
 .du{border:1px solid var(--line);border-radius:10px;padding:28px 24px;display:grid;gap:12px;justify-items:start;background:var(--card)}
 .du h3{margin:0;font-size:32px;line-height:1.05}.du p{margin:0;color:var(--ink2)}
 .du.a{background:#100b08;border-color:#33241b}.du.b{background:#080d11;border-color:#1b2833}
 @media(min-width:760px){.duo{grid-template-columns:1fr 1fr}}
 .end{margin:70px 0 10px;padding:56px 0 8px;border-top:1px solid #2b2b2b;display:grid;gap:18px;justify-items:start}
 .end h2{margin:0;font-size:clamp(34px,8vw,74px);line-height:1;max-width:14em}.end h2 em{color:var(--accent)}
-.brandhero{display:grid;gap:2px;justify-items:start;margin:6px 0 2px}.brandhero .wordmark{font-weight:700;font-size:clamp(40px,8.5vw,76px);letter-spacing:-.045em;line-height:1;color:#fff}.brandhero img.heart{width:min(280px,60vw);height:auto;display:block;margin-left:-10px}
+.brandhero{display:grid;gap:0;justify-items:center;margin:14px 0 8px}.brandhero img.heart{width:min(360px,74vw);height:auto;display:block}.brandhero .wordmark{font-weight:300;font-size:clamp(46px,10vw,88px);letter-spacing:-.02em;line-height:1.05;color:#fff;text-align:center;margin-top:4px}.brandhero .wordmark b{font-weight:700}
 .fbar{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-items:end;max-width:none;box-sizing:border-box;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin:12px 0}
 .fbar select,.fbar input{width:100%;min-width:0;box-sizing:border-box}
 .dg{border:1px solid var(--line,#ddd);border-radius:10px;padding:6px 12px;margin:6px 0;background:#0e0e0e}.dg summary{cursor:pointer;font-weight:600;padding:6px 0}.dg label{display:inline-flex;gap:6px;align-items:center;margin:3px 14px 3px 0;font-weight:400;font-size:15px}.dg input{width:auto;margin:0}
@@ -163,7 +164,7 @@ html.sa footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 </head>
 <body>
 <header>
-  <div class="bar"><a class="brand" href="/" aria-label="TengoBolo, inicio"><img src="logo-heart.png" alt="" width="38" height="38"><span class="wm">tengobolo</span><h1 class="sr">TengoBolo</h1></a><span class="zone" id="zone">La red de artistas a tu alcance</span></div>
+  <div class="bar"><a class="brand" href="/" aria-label="TengoBolo, inicio"><img src="logo-heart.png" alt="" width="38" height="38"><span class="wm">tengo<b>b</b>olo</span><h1 class="sr">TengoBolo</h1></a><span class="zone" id="zone">La red de artistas a tu alcance</span></div>
   <nav aria-label="Secciones" id="nav"></nav>
 </header>
 <main id="view"></main>
@@ -227,7 +228,7 @@ function home(v){
   
   <section class="hero8">
     <div>
-      <div class="brandhero"><span class="wordmark">tengobolo</span><img class="heart" src="logo-heart.png" alt="Corazón negro chorreante, logo de TengoBolo" width="600" height="600"></div>
+      <div class="brandhero"><img class="heart" src="logo-heart.png" alt="Corazón negro chorreante, logo de TengoBolo" width="640" height="640"><span class="wordmark">tengo<b>b</b>olo</span></div>
       <span class="eyebrow">La red de artistas a tu alcance</span>
       <h2 class="mega">Tu próximo bolo <em>empieza aquí</em></h2>
       <p class="lead">Enseña tu trabajo, encuentra proyectos y ponte en contacto. Perfil y propuestas gratis, siempre.</p>
@@ -238,7 +239,11 @@ function home(v){
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
   <div class="duo">
     <div class="du a"><span class="eyebrow">Artistas</span><h3>Muestra tu obra</h3><p>Portfolio y propuestas a proyectos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Crear mi perfil</button></div>
-    <div class="du b"><span class="eyebrow">Agencias, empresas y particulares</span><h3>Encuentra talento</h3><p>Alta y primer bolo gratis. Después, suscripción mensual de 15 €, sin comisión.</p><button class="btn" data-go="entrar" data-role="agency">Publicar un bolo</button></div>
+    <div class="du b"><span class="eyebrow">Agencias, empresas y particulares</span><h3>Encuentra talento</h3><p>Alta y primer bolo gratis. Después, suscripción mensual de 15 €, sin comisión.</p>
+      <div class="sub"><small>Agencias</small><div class="chips"><button type="button" class="chip" data-ev="Activación de marca">Activación de marca</button><button type="button" class="chip" data-ev="Lanzamiento o presentación">Lanzamiento</button><button type="button" class="chip" data-ev="Feria, congreso o convención">Feria o congreso</button><button type="button" class="chip" data-ev="Gala o ceremonia">Gala o premios</button><button type="button" class="chip" data-ev="Concierto o festival">Festival</button></div></div>
+      <div class="sub"><small>Empresas</small><div class="chips"><button type="button" class="chip" data-ev="Evento de empresa">Evento corporativo</button><button type="button" class="chip" data-ev="Cena de empresa">Cena de empresa</button><button type="button" class="chip" data-ev="Inauguración o exposición">Inauguración</button><button type="button" class="chip" data-ev="Evento de empresa">Team building</button><button type="button" class="chip" data-ev="Aniversario">Aniversario de empresa</button></div></div>
+      <div class="sub"><small>Particulares</small><div class="chips"><button type="button" class="chip" data-ev="Boda">Boda</button><button type="button" class="chip" data-ev="Cumpleaños o fiesta privada">Cumpleaños</button><button type="button" class="chip" data-ev="Aniversario">Aniversario</button><button type="button" class="chip" data-ev="Comunión o bautizo">Comunión o bautizo</button><button type="button" class="chip" data-ev="Despedida de soltero/a">Despedida</button><button type="button" class="chip" data-ev="Cumpleaños o fiesta privada">Fiesta privada</button></div></div>
+      <button class="btn" data-go="entrar" data-role="agency">Publicar un bolo</button></div>
   </div>
   <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
   <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Un punto de encuentro entre el talento y quien lo necesita</h2>
@@ -247,7 +252,7 @@ function home(v){
     <p><b>Nuestra política es simple:</b> los artistas usan la plataforma gratis y sin límite; los clientes tienen su primer bolo gratis y después una cuota plana. Nunca cobramos comisión sobre lo que ganas. TengoBolo solo pone en contacto a las partes y no interviene en el contrato entre ellas.</p>
   </section>
   ${adSlot('inicio')}
-  <div class="sech"><h2>Disciplinas</h2><span>Más de 80 formas de crear</span></div>
+  <div class="sech"><h2>Disciplinas artísticas</h2><span>Más de 80 formas de crear</span></div>
   <p class="meta" style="margin:0 0 14px">Pulsa una disciplina para ver los artistas que la practican.</p>
   ${groupsHtml()}
   <div class="sech"><h2>Cómo funciona</h2><span>Tres pasos</span></div>
@@ -261,6 +266,7 @@ function home(v){
   $('#a').onclick=()=>setTab(session?'proyectos':'entrar');
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
   v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{PRE={discipline:b.dataset.d};setTab(session?'artistas':'entrar');});
+  v.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>{evPre=b.dataset.ev;rolePre='agency';setTab(session?'publicar':'entrar');});
 }
 function enter(v,mode='register',note=''){
   const rp=rolePre;rolePre=null;
@@ -344,7 +350,7 @@ function mediaHtml(media,editable){
   const videos=vi.map(m=>`<div class="card">${m.embed?`<div class="video"><iframe src="${esc(m.embed)}" title="${esc(m.caption||'Vídeo')}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`:`<a href="${esc(m.url)}" target="_blank" rel="noopener nofollow">${esc(m.caption||m.url)}</a>`}${m.caption&&m.embed?`<div class="meta">${esc(m.caption)}</div>`:''}${editable?`<div class="row"><button class="btn sec" data-del="${esc(m.id)}">Borrar vídeo</button></div>`:''}</div>`).join('');
   return {photos,videos,nPhotos:ph.length,nVideos:vi.length};
 }
-let PRE=null;let rolePre=null;
+let PRE=null;let rolePre=null;let evPre=null;
 const qs=(q,page)=>{const u=new URLSearchParams();['q','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});if(page>1)u.set('page',page);const t=u.toString();return t?'?'+t:'';};
 const filterBar=q=>`<form class="fbar" novalidate><label>Buscar<input name="q" maxlength="60" value="${esc(q.q||'')}" placeholder="Nombre o palabra"></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${x}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row" style="margin:0"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" data-clear>Quitar filtros</button></div></form>`;
 const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim());
@@ -386,7 +392,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   <fieldset data-s="0"><h3>1. Qué evento es</h3>
     <label>Título del bolo<input name="title" required minlength="3" maxlength="150" placeholder="Ej: Música en directo para una boda"></label>
     <label>Tipo de arte<select name="art">${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(a=>`<option>${a}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Si no está en la lista, escribe cuál (opcional)<input name="art_other" maxlength="60"></label>
-    <div class="ficha"><label>Tipo de evento<select name="evtype"><option value="">Elige uno</option><option>Boda</option><option>Cumpleaños o fiesta privada</option><option>Evento de empresa</option><option>Concierto o festival</option><option>Inauguración o exposición</option><option>Sala, bar o restaurante</option><option>Otro</option></select></label>
+    <div class="ficha"><label>Tipo de evento<select name="evtype"><option value="">Elige uno</option><option>Boda</option><option>Cumpleaños o fiesta privada</option><option>Aniversario</option><option>Comunión o bautizo</option><option>Despedida de soltero/a</option><option>Evento de empresa</option><option>Cena de empresa</option><option>Activación de marca</option><option>Lanzamiento o presentación</option><option>Feria, congreso o convención</option><option>Gala o ceremonia</option><option>Concierto o festival</option><option>Inauguración o exposición</option><option>Sala, bar o restaurante</option><option>Otro</option></select></label>
     <label>Espacio<select name="space"><option value="">Elige uno</option><option>Interior</option><option>Exterior</option><option>Interior y exterior</option></select></label>
     <label>Lugar (ciudad o zona)<input name="location" maxlength="120"></label>
     <label>Asistentes (aprox.)<input name="guests" type="number" min="1" inputmode="numeric"></label></div>
@@ -416,6 +422,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   $('#bk').onclick=()=>{step--;show();};
   $('#nx').onclick=()=>{const bad=[...fs[step].querySelectorAll('input,textarea,select')].find(i=>!i.checkValidity());if(bad){bad.reportValidity();return;}step++;show();};
   show();
+  if(evPre){const sel=v.querySelector('select[name=evtype]');if(sel)sel.value=evPre;evPre=null;}
   $('#f').onsubmit=async e=>{e.preventDefault();if(step<fs.length-1){$('#nx').click();return;}const f=Object.fromEntries(new FormData(e.target));
     const dl=f.deadline||null;if(dl&&dl>f.event_date){$('#e').innerHTML=msg('err','La fecha límite no puede ser posterior al bolo.');return;}
     const b=$('#ok');b.disabled=true;
@@ -435,7 +442,7 @@ async function shrink(file){
 function profile(v){loading(v,async()=>{const m=await getMe();const full=await call('/api/profiles/'+encodeURIComponent(m.id),{auth:true});const md=mediaHtml(full.media,true);
   v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?'Plan: gratuito, propuestas sin límite':(m.plan==='free'?'Plan: gratuito (primer bolo gratis)':'Plan Cliente: bolos ilimitados')}</p>
   <div class="head">${avatar(m)}<div><label>Foto de perfil<input type="file" id="av" accept="image/*"></label></div></div><div id="ae"></div>
-  <form id="f"><label>Nombre<input name="name" required minlength="2" value="${esc(m.name)}"></label><label>Sobre mí<textarea name="bio" rows="4">${esc(m.bio)}</textarea></label><div><b>Disciplinas</b> <span class="meta">(máximo 12)</span>${DISC.map(g=>`<details class="dg"${g[1].some(x=>(m.disciplines||[]).includes(x))?' open':''}><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}"${(m.disciplines||[]).includes(x)?' checked':''}>${x}</label>`).join('')}</details>`).join('')}</div><label>Otras disciplinas (opcional, separadas por comas)<input name="disciplines_other" value="${esc((m.disciplines||[]).filter(x=>!DISC_ALL.includes(x)).join(', '))}"></label><label>Ciudad<input name="location" value="${esc(m.location)}"></label><label>Enlace a tu portfolio (https://…)<input name="portfolio_url" value="${esc(m.portfolio_url)}"></label>
+  <form id="f"><label>Nombre<input name="name" required minlength="2" value="${esc(m.name)}"></label><label>Sobre mí<textarea name="bio" rows="4">${esc(m.bio)}</textarea></label><div><b>Disciplinas artísticas</b> <span class="meta">(máximo 12)</span>${DISC.map(g=>`<details class="dg"${g[1].some(x=>(m.disciplines||[]).includes(x))?' open':''}><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}"${(m.disciplines||[]).includes(x)?' checked':''}>${x}</label>`).join('')}</details>`).join('')}</div><label>Otras disciplinas (opcional, separadas por comas)<input name="disciplines_other" value="${esc((m.disciplines||[]).filter(x=>!DISC_ALL.includes(x)).join(', '))}"></label><label>Ciudad<input name="location" value="${esc(m.location)}"></label><label>Enlace a tu portfolio (https://…)<input name="portfolio_url" value="${esc(m.portfolio_url)}"></label>
   <h3 style="margin:8px 0 0">Redes</h3>${SOCIALS.map(([k,n])=>`<label>${n}${k==='website'?' (https://…)':' (enlace completo, https://…)'}<input name="${k}" type="url" value="${esc(m[k])}" placeholder="https://"></label>`).join('')}
   <div id="e"></div><button class="btn" type="submit">Guardar</button></form>
   <div class="sect"><h2>Fotos (${md.nPhotos}/8)</h2>${md.photos||'<p class="meta">Aún no has subido fotos.</p>'}<label>Añadir foto<input type="file" id="ph" accept="image/*"></label><div id="pe"></div></div>
