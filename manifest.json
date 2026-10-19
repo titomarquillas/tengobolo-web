@@ -1,7 +1,7 @@
 {
-  "name": "TengoBolo · Creativa Network",
+  "name": "TengoBolo · La red de artistas a tu alcance",
   "short_name": "TengoBolo",
-  "description": "Artistas y agencias: encuentra proyectos, envía propuestas y contrata talento.",
+  "description": "La red de artistas a tu alcance: agencias de comunicación, empresas y particulares encuentran el bolo para su evento.",
   "lang": "es",
   "start_url": "/?source=pwa",
   "scope": "/",
