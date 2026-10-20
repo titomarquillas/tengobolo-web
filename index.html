@@ -206,7 +206,7 @@ async function call(path,{method='GET',body,auth}={}){
   if(r.status===401&&auth&&session&&!arguments[1]._r){const old=session;await restore2();if(session&&session!==old)return call(path,{method,body,auth,_r:1});}
   if(r.status===204)return null;
   const d=await r.json().catch(()=>({}));
-  if(!r.ok){const er=new Error(d.error||'Algo ha fallado. Inténtalo de nuevo.');er.status=r.status;throw er;}
+  if(!r.ok){const er=new Error(d.error||'Algo ha fallado. Inténtalo de nuevo.');er.status=r.status;if(d.code)er.code=d.code;throw er;}
   return d;
 }
 function setTab(t){tab=t;render();window.scrollTo(0,0);}
@@ -306,9 +306,21 @@ function enter(v,mode='register',note=''){
   $('#m1').onclick=()=>enter(v,'register');$('#m2').onclick=()=>enter(v,'login');
   $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const b=e.target.querySelector('button[type=submit]');b.disabled=true;b.textContent='Un momento…';$('#e').innerHTML='';
     try{
-      if(mode==='register'){const r=await call('/api/auth/register',{method:'POST',body:{email:f.email,password:f.password,name:f.name,role:f.role}});enter(v,'login',msg('info',((r&&r.message)||'Revisa tu correo para confirmar la cuenta.')+' Después de confirmar, vuelve aquí y entra.'));}
+      if(mode==='register'){await call('/api/auth/register',{method:'POST',body:{email:f.email,password:f.password,name:f.name,role:f.role}});checkEmail(v,f.email);}
       else{const r=await call('/api/auth/login',{method:'POST',body:{email:f.email,password:f.password}});session=r.session;keep();me=null;setTab('perfil');}
-    }catch(x){$('#e').innerHTML=msg('err',x.message);b.disabled=false;b.textContent=mode==='register'?'Crear cuenta':'Entrar';}};
+    }catch(x){if(x.code==='email_not_confirmed')return checkEmail(v,f.email);$('#e').innerHTML=msg('err',x.message);b.disabled=false;b.textContent=mode==='register'?'Crear cuenta':'Entrar';}};
+}
+function checkEmail(v,email){
+  v.innerHTML=`<h2>Revisa tu correo</h2>
+  <p>Te hemos enviado un correo a <b>${esc(email)}</b> para confirmar tu cuenta. Ábrelo y sigue el enlace; después vuelve aquí y entra con tu contraseña.</p>
+  <p class="meta">¿No te llega? Mira en spam o correo no deseado (remitente: TengoBolo). A veces tarda un par de minutos.</p>
+  <div id="e"></div>
+  <div class="row"><button class="btn sec" id="rs">Reenviar correo de confirmación</button><button class="btn" id="go">Ya lo confirmé, entrar</button></div>`;
+  $('#go').onclick=()=>enter(v,'login');
+  $('#rs').onclick=async()=>{const b=$('#rs');b.disabled=true;b.textContent='Enviando…';$('#e').innerHTML='';
+    try{const r=await call('/api/auth/resend',{method:'POST',body:{email}});$('#e').innerHTML=msg('ok',((r&&r.message)||'Correo enviado.')+' Revisa tu bandeja.');}
+    catch(x){$('#e').innerHTML=msg('err',x.message);}
+    b.disabled=false;b.textContent='Reenviar correo de confirmación';};
 }
 function about(v){
   v.innerHTML=`<h2>Quiénes somos</h2>
