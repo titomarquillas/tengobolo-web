@@ -172,6 +172,28 @@ html.sa footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
  .head>.ini{flex:none}
 .ini{display:flex;align-items:center;justify-content:center;font-size:20px;color:#9b9b95;border:1px solid #2b2b2b;background:#161616;border-radius:50%}
 .ficha{margin:8px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--card)}.ficha label{min-width:0}.ficha input,.ficha select{width:100%;min-width:0}@media(max-width:430px){.ficha{grid-template-columns:1fr}}
+
+.twrap{overflow-x:auto}
+.tinv{width:100%;border-collapse:collapse;font-size:15px;margin:8px 0;min-width:640px}
+.tinv th,.tinv td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.tinv td.num,.tinv th.num{text-align:right;white-space:nowrap}
+.tinv tfoot td{font-weight:700;border-top:2px solid var(--line);border-bottom:0}
+.tinv .tag{margin-right:6px}
+.st-issued{color:var(--ink2)}.st-paid{color:#8fae85}.st-void{color:#b07a63;text-decoration:line-through}
+#print{display:none}
+@media print{
+  body.printing>*{display:none!important}
+  body.printing{background:#fff}
+  body.printing #print{display:block!important;position:static;color:#000;background:#fff;font:14px/1.5 Helvetica,Arial,sans-serif;padding:8px}
+  body.printing #print h1{font-size:20px;margin:0 0 2px;color:#000}
+  body.printing #print h2{font-size:15px;margin:14px 0 4px;color:#000}
+  body.printing #print p{margin:4px 0;color:#000}
+  body.printing #print table{width:100%;border-collapse:collapse;margin:10px 0}
+  body.printing #print th,body.printing #print td{border:1px solid #999;padding:5px 8px;text-align:left;color:#000}
+  body.printing #print .num{text-align:right}
+  body.printing #print .tot{font-weight:700}
+  body.printing #print .small{font-size:12px;color:#333}
+}
 </style>
 </head>
 <body>
@@ -187,7 +209,7 @@ const GCOL=['#9b8fc7','#5aa3ab','#c49a82','#b07a63','#c79aad','#8a8a8a','#8fae85
 function groupsHtml(){return '<div class="groups">'+DISC.filter(g=>g[0]!=='Otras').map((g,i)=>`<section class="gc" style="--gc:${GCOL[i%GCOL.length]}"><small>${String(i+1).padStart(2,'0')}</small><h3>${g[0]}</h3><div class="chips">${g[1].map(x=>`<button type="button" class="chip" data-d="${esc(x)}">${esc(x)}</button>`).join('')}</div></section>`).join('')+'</div>';}
 function freeBanner(){return `<div class="promo"><b>Artistas: gratis, siempre.</b> Agencias, empresas y particulares: alta y primer bolo gratis; después, una cuota plana mensual, sin comisión (<a href="#" data-go="precios">ver Precios</a>).</div>`;}
 function payBox(){return `<div class="promo"><b>Tu primer bolo era gratis.</b> Para publicar más bolos necesitas el plan Cliente (cuota plana mensual o anual, sin comisión; <a href="#" data-go="precios">ver Precios</a>). Todavía no se cobra nada: si tienes una invitación de lanzamiento, escríbenos a <a href="mailto:tengobolo@proton.me">tengobolo@proton.me</a> y te activamos tus 15 días de acceso completo gratis.</div>`;}
-let session=null, me=null, tab='inicio';
+let session=null, me=null, tab='inicio', isAdmin=false;
 const RK='tb_rt';
 function keep(){try{if(session&&session.refresh_token)localStorage.setItem(RK,session.refresh_token);else localStorage.removeItem(RK);}catch{}}
 async function restore2(){try{const r=await fetch(API+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:session.refresh_token})});if(r.ok){const d=await r.json();session=d.session;keep();}}catch{}}
@@ -218,7 +240,7 @@ async function call(path,{method='GET',body,auth}={}){
 }
 function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){paint();
-  const items=[['inicio','Inicio'],...(me&&me.role==='artist'?[['artistas','Artistas']]:[]),['proyectos','BOLOS'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],['quienes','Quiénes somos'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  const items=[['inicio','Inicio'],...(me&&me.role==='artist'?[['artistas','Artistas']]:[]),['proyectos','BOLOS'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],['quienes','Quiénes somos'],...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
 }
@@ -226,7 +248,7 @@ function msg(kind,text){return `<div class="msg ${kind}" role="status">${esc(tex
 function needLogin(){return `<h2>Necesitas entrar</h2><p>Para ver esto, crea tu cuenta o entra.</p><div class="row"><button class="btn" id="go">Crear cuenta o entrar</button></div>`;}
 async function render(){
   renderNav();const v=$('#view');
-  if(['artistas','proyectos','publicar','propuestas','perfil'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
+  if(['artistas','proyectos','publicar','propuestas','perfil','gestoria'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
   if(tab==='inicio')return home(v);
   if(tab==='entrar')return enter(v);
   if(tab==='precios')return pricing(v);
@@ -236,6 +258,7 @@ async function render(){
   if(tab==='proyectos')return projects(v);
   if(tab==='publicar')return publish(v);
   if(tab==='perfil')return profile(v);
+  if(tab==='gestoria')return gestoria(v);
 }
 function home(v){
   const confirmed=/type=(signup|email)|access_token=/.test(location.hash);
@@ -408,8 +431,118 @@ function proposalsView(v){loading(v,async()=>{
   v.querySelectorAll('button[data-c]').forEach(b=>b.onclick=async()=>{const box=document.getElementById('c'+b.dataset.p);try{const c=await call('/api/projects/'+encodeURIComponent(b.dataset.c)+'/contact',{auth:true});box.innerHTML=`<div class="msg info"><b>Teléfono:</b> ${esc(c.phone||'no indicado')}<br><b>Dirección:</b> ${esc(c.address||'no indicada')}</div>`;}catch(e){box.innerHTML=msg('err',e.message);}});
   v.querySelectorAll('button[data-d]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await call('/api/proposals/'+encodeURIComponent(b.dataset.id)+'/status',{method:'PATCH',auth:true,body:{status:b.dataset.d}});proposalsView(v);}catch(e){b.disabled=false;v.insertAdjacentHTML('afterbegin',msg('err',e.message));}});
 });}
+/* ---- Gestoría: zona privada del administrador (facturas y cobros) ----
+   Solo la ve quien la base de datos reconoce como administrador (app_admins).
+   Registra facturas/cobros (hasta que se activen los cobros automáticos) y saca
+   el listado mensual en Excel (CSV) o PDF para enviar a la gestoría (modelos 303/130). */
+const eur2=n=>Number(n||0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+const part=(x,p)=>Math.round(Number(x)*Number(p))/100;
+const INV_ST={issued:'Emitida',paid:'Cobrada',void:'Anulada'};
+function printSheet(html){
+  let p=document.getElementById('print');if(!p){p=document.createElement('div');p.id='print';document.body.appendChild(p);}
+  p.innerHTML=html;document.body.classList.add('printing');
+  const done=()=>{document.body.classList.remove('printing');window.removeEventListener('afterprint',done);};
+  window.addEventListener('afterprint',done);window.print();setTimeout(done,1500);
+}
+function gestoria(v){loading(v,async()=>{
+  if(!isAdmin){try{await call('/api/admin/status',{auth:true});isAdmin=true;renderNav();}catch{v.innerHTML='<h2>Zona privada</h2><p>Esta sección es solo para el administrador de TengoBolo.</p>';return;}}
+  const s=await call('/api/admin/settings',{auth:true});
+  const today=new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Madrid'});
+  let mes=today.slice(0,7), list=[];
+  v.innerHTML=`<h2>Gestoría</h2>
+  <p class="meta">Tu zona privada: las facturas y los cobros de TengoBolo. Cuando se activen los cobros automáticos, cada cobro creará aquí su factura; mientras tanto, registra a mano lo que cobres (por ejemplo, una activación por transferencia). Del mes que elijas sacas el Excel o el PDF para la gestoría.</p>
+  <div class="card"><h3>Mis datos fiscales</h3>
+    <p class="meta">Salen en las facturas. El NIF lo escribes aquí cuando la gestoría te confirme el alta.</p>
+    <form id="fs" class="ficha">
+      <label>Nombre fiscal<input name="fiscal_name" maxlength="150" value="${esc(s.fiscal_name)}"></label>
+      <label>NIF<input name="fiscal_id" maxlength="20" value="${esc(s.fiscal_id)}" placeholder="Pendiente del alta"></label>
+      <label style="grid-column:1/-1">Dirección fiscal<input name="fiscal_address" maxlength="300" value="${esc(s.fiscal_address)}"></label>
+      <label>Serie de facturas<input name="invoice_prefix" maxlength="10" pattern="[A-Za-z0-9-]+" value="${esc(s.invoice_prefix)}"></label>
+      <div class="meta" style="align-self:end">Próximo número: ${esc(s.next_number)}</div>
+      <div id="se" style="grid-column:1/-1"></div>
+      <div style="grid-column:1/-1"><button class="btn" type="submit">Guardar datos</button></div>
+    </form></div>
+  <div class="card"><h3>Facturas y cobros</h3>
+    <div class="row" style="align-items:end">
+      <label style="margin:0">Mes <input type="month" id="mes" value="${mes}"></label>
+      <button class="btn sec" id="xls" type="button">Descargar Excel</button>
+      <button class="btn sec" id="pdf" type="button">Imprimir / guardar PDF</button>
+    </div>
+    <div id="inv"></div>
+    <h3 style="margin-top:24px">Registrar una factura</h3>
+    <form id="fi" class="ficha">
+      <label>Cliente<input name="client_name" required minlength="2" maxlength="150" placeholder="Agencia o particular"></label>
+      <label>NIF del cliente<input name="client_nif" maxlength="20" placeholder="Si lo tienes"></label>
+      <label style="grid-column:1/-1">Correo del cliente<input name="client_email" type="email" maxlength="254" placeholder="Opcional"></label>
+      <label style="grid-column:1/-1">Concepto<input name="concept" required minlength="3" maxlength="300" value="Suscripción TengoBolo (plan cliente)"></label>
+      <label>Base (€)<input name="base_eur" type="number" step="0.01" min="0" max="1000000" required placeholder="15.00"></label>
+      <label>IVA %<input name="iva_pct" type="number" step="0.01" min="0" max="100" value="21"></label>
+      <label>IRPF %<input name="irpf_pct" type="number" step="0.01" min="0" max="100" value="0"></label>
+      <label>Fecha<input name="issued_at" type="date" value="${today}"></label>
+      <label>Estado<select name="status"><option value="paid">Cobrada</option><option value="issued">Emitida (pendiente de cobro)</option></select></label>
+      <label>Método de cobro<input name="method" maxlength="40" placeholder="transferencia, tarjeta…"></label>
+      <label style="grid-column:1/-1">Notas<input name="notes" maxlength="500" placeholder="Opcional"></label>
+      <div id="ie" style="grid-column:1/-1"></div>
+      <div style="grid-column:1/-1"><button class="btn" type="submit">Registrar factura</button></div>
+    </form></div>`;
+  const fmtD=d=>String(d||'').slice(0,10).split('-').reverse().join('/');
+  const monthName=m=>{const [y,mm]=m.split('-');return new Date(Number(y),Number(mm)-1,1).toLocaleDateString('es-ES',{month:'long',year:'numeric'});};
+  const amounts=x=>{const iva=part(x.base_eur,x.iva_pct),irpf=part(x.base_eur,x.irpf_pct);return{iva,irpf,total:Math.round((Number(x.base_eur)+iva-irpf)*100)/100};};
+  async function loadMonth(){
+    const box=$('#inv');box.innerHTML='<p role="status">Cargando…</p>';
+    const [y,mm]=mes.split('-').map(Number);
+    const last=new Date(y,mm,0).getDate();
+    list=await call(`/api/admin/invoices?from=${mes}-01&to=${mes}-${String(last).padStart(2,'0')}`,{auth:true});
+    const t=list.filter(x=>x.status!=='void').reduce((a,x)=>{const m=amounts(x);a.base+=Number(x.base_eur);a.iva+=m.iva;a.irpf+=m.irpf;a.total+=m.total;return a;},{base:0,iva:0,irpf:0,total:0});
+    box.innerHTML=list.length?`<div class="twrap"><table class="tinv"><thead><tr><th>Nº</th><th>Fecha</th><th>Cliente</th><th>Concepto</th><th class="num">Base</th><th class="num">IVA</th><th class="num">IRPF</th><th class="num">Total</th><th>Estado</th><th></th></tr></thead><tbody>${
+      list.map(x=>{const m=amounts(x);return `<tr><td>${esc(x.number)}</td><td>${fmtD(x.issued_at)}</td><td>${esc(x.client_name)}</td><td>${esc(x.concept)}</td><td class="num">${eur2(x.base_eur)}</td><td class="num">${eur2(m.iva)}</td><td class="num">${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td><td><span class="tag st-${esc(x.status)}">${INV_ST[x.status]||esc(x.status)}</span></td><td style="white-space:nowrap">${x.status==='issued'?`<button class="lnk" data-paid="${esc(x.id)}">Cobrada</button>`:''}${x.status!=='void'?`<button class="lnk" data-void="${esc(x.id)}">Anular</button>`:''}<button class="lnk" data-pdf1="${esc(x.id)}">PDF</button></td></tr>`;}).join('')
+    }</tbody><tfoot><tr><td colspan="4">Totales del mes (sin anuladas)</td><td class="num">${eur2(t.base)}</td><td class="num">${eur2(t.iva)}</td><td class="num">${eur2(t.irpf)}</td><td class="num">${eur2(t.total)}</td><td colspan="2"></td></tr></tfoot></table></div>
+    <p class="meta">IVA repercutido: ${eur2(t.iva)} (modelo 303) · IRPF retenido: ${eur2(t.irpf)} · Base total: ${eur2(t.base)}</p>`
+    :`<p class="meta">Ninguna factura en ${monthName(mes)}.</p>`;
+    box.querySelectorAll('[data-paid]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await call('/api/admin/invoices/'+encodeURIComponent(b.dataset.paid),{method:'PATCH',auth:true,body:{status:'paid',paid_at:today}});loadMonth();}catch(e){b.disabled=false;alert(e.message);}});
+    box.querySelectorAll('[data-void]').forEach(b=>b.onclick=async()=>{if(!confirm('¿Anular esta factura? Queda registrada como anulada.'))return;b.disabled=true;try{await call('/api/admin/invoices/'+encodeURIComponent(b.dataset.void),{method:'PATCH',auth:true,body:{status:'void'}});loadMonth();}catch(e){b.disabled=false;alert(e.message);}});
+    box.querySelectorAll('[data-pdf1]').forEach(b=>b.onclick=()=>{const x=list.find(i=>i.id===b.dataset.pdf1);if(x)printSheet(invoiceHtml(x));});
+  }
+  const fiscal=()=>{const f=new FormData($('#fs'));return{fiscal_name:(f.get('fiscal_name')||'').trim(),fiscal_id:(f.get('fiscal_id')||'').trim(),fiscal_address:(f.get('fiscal_address')||'').trim(),invoice_prefix:(f.get('invoice_prefix')||'').trim()};};
+  const head=(t)=>`<h1>${t}</h1><p><b>${esc(fiscal().fiscal_name||'TengoBolo')}</b>${fiscal().fiscal_id?' · NIF '+esc(fiscal().fiscal_id):''}${fiscal().fiscal_address?'<br>'+esc(fiscal().fiscal_address):''}</p>`;
+  function invoiceHtml(x){const m=amounts(x);return `${head('Factura '+esc(x.number))}
+    <p><b>Cliente:</b> ${esc(x.client_name)}${x.client_nif?' · NIF '+esc(x.client_nif):''}${x.client_email?'<br>'+esc(x.client_email):''}<br><b>Fecha:</b> ${fmtD(x.issued_at)}${x.status==='paid'?' · <b>Cobrada</b>'+(x.paid_at?' el '+fmtD(x.paid_at):'')+(x.method?' ('+esc(x.method)+')':''):''}</p>
+    <table><thead><tr><th>Concepto</th><th class="num">Base</th><th class="num">IVA ${esc(String(x.iva_pct))}%</th><th class="num">IRPF ${esc(String(x.irpf_pct))}%</th><th class="num">Total</th></tr></thead>
+    <tbody><tr><td>${esc(x.concept)}</td><td class="num">${eur2(x.base_eur)}</td><td class="num">${eur2(m.iva)}</td><td class="num">−${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td></tr></tbody></table>
+    <p class="tot">Total factura: ${eur2(m.total)}</p>${x.notes?`<p class="small">${esc(x.notes)}</p>`:''}<p class="small">TengoBolo · tengobolo-web.onrender.com · tengobolo@proton.me</p>`;}
+  $('#fs').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;$('#se').innerHTML='';
+    try{const r=await call('/api/admin/settings',{method:'PATCH',auth:true,body:fiscal()});Object.assign(s,r);$('#se').innerHTML=msg('ok','Datos guardados.');}catch(x){$('#se').innerHTML=msg('err',x.message);}b.disabled=false;};
+  $('#fi').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const b=e.target.querySelector('button');b.disabled=true;$('#ie').innerHTML='';
+    try{await call('/api/admin/invoices',{method:'POST',auth:true,body:{client_name:f.client_name.trim(),client_nif:(f.client_nif||'').trim(),client_email:(f.client_email||'').trim(),concept:f.concept.trim(),base_eur:Number(f.base_eur),iva_pct:Number(f.iva_pct||0),irpf_pct:Number(f.irpf_pct||0),status:f.status,issued_at:f.issued_at||undefined,method:(f.method||'').trim(),notes:(f.notes||'').trim()}});
+      $('#ie').innerHTML=msg('ok','Factura registrada.');e.target.querySelector('[name=client_name]').value='';e.target.querySelector('[name=client_nif]').value='';e.target.querySelector('[name=client_email]').value='';e.target.querySelector('[name=base_eur]').value='';e.target.querySelector('[name=method]').value='';e.target.querySelector('[name=notes]').value='';loadMonth();
+    }catch(x){$('#ie').innerHTML=msg('err',x.message);}b.disabled=false;};
+  $('#mes').onchange=e=>{mes=e.target.value||mes;loadMonth();};
+  const csvCell=x=>{x=String(x??'');return /[;"'\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;};
+  const num=x=>Number(x).toFixed(2).replace('.',',');
+  $('#xls').onclick=()=>{
+    if(!list.length){alert('No hay facturas en el mes elegido.');return;}
+    const rows=[['Número','Fecha','Cliente','NIF cliente','Correo cliente','Concepto','Base (€)','IVA %','IVA (€)','IRPF %','IRPF (€)','Total (€)','Estado','Fecha de cobro','Método']];
+    const t={base:0,iva:0,irpf:0,total:0};
+    list.forEach(x=>{const m=amounts(x);if(x.status!=='void'){t.base+=Number(x.base_eur);t.iva+=m.iva;t.irpf+=m.irpf;t.total+=m.total;}
+      rows.push([x.number,fmtD(x.issued_at),x.client_name,x.client_nif,x.client_email,x.concept,num(x.base_eur),String(x.iva_pct).replace('.',','),num(m.iva),String(x.irpf_pct).replace('.',','),num(m.irpf),num(m.total),INV_ST[x.status]||x.status,x.paid_at?fmtD(x.paid_at):'',x.method]);});
+    rows.push(['','','','','','TOTALES (sin anuladas)',num(t.base),'',num(t.iva),'',num(t.irpf),num(t.total),'','','']);
+    const csv='﻿'+rows.map(r=>r.map(csvCell).join(';')).join('\r\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='tengobolo-facturas-'+mes+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  };
+  $('#pdf').onclick=()=>{
+    if(!list.length){alert('No hay facturas en el mes elegido.');return;}
+    const t=list.filter(x=>x.status!=='void').reduce((a,x)=>{const m=amounts(x);a.base+=Number(x.base_eur);a.iva+=m.iva;a.irpf+=m.irpf;a.total+=m.total;return a;},{base:0,iva:0,irpf:0,total:0});
+    printSheet(`${head('Facturas y cobros · '+monthName(mes))}
+      <table><thead><tr><th>Nº</th><th>Fecha</th><th>Cliente</th><th>Concepto</th><th class="num">Base</th><th class="num">IVA</th><th class="num">IRPF</th><th class="num">Total</th><th>Estado</th></tr></thead><tbody>${
+      list.map(x=>{const m=amounts(x);return `<tr><td>${esc(x.number)}</td><td>${fmtD(x.issued_at)}</td><td>${esc(x.client_name)}</td><td>${esc(x.concept)}</td><td class="num">${eur2(x.base_eur)}</td><td class="num">${eur2(m.iva)}</td><td class="num">${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td><td>${INV_ST[x.status]||esc(x.status)}</td></tr>`;}).join('')
+      }</tbody></table>
+      <p class="tot">Base total: ${eur2(t.base)} · IVA repercutido: ${eur2(t.iva)} (modelo 303) · IRPF retenido: ${eur2(t.irpf)} · Total: ${eur2(t.total)}</p>
+      <p class="small">Listado sin las facturas anuladas en los totales. Generado en TengoBolo el ${fmtD(today)}.</p>`);
+  };
+  await loadMonth();
+});}
 function paint(){const r=session&&me?me.role:'';document.body.dataset.role=r;const z=document.getElementById('zone');if(z)z.textContent=r==='artist'?'Zona artistas':r==='agency'?'Zona agencias y clientes':'La red de artistas a tu alcance';const t=document.querySelector('meta[name=theme-color]');if(t)t.content='#000000';}
-async function getMe(){if(!me){me=await call('/api/me',{auth:true});}paint();renderNav();return me;}
+async function getMe(){if(!me){me=await call('/api/me',{auth:true});try{await call('/api/admin/status',{auth:true});isAdmin=true;}catch{isAdmin=false;}}paint();renderNav();return me;}
 async function loading(v,fn){v.innerHTML='<p role="status">Cargando… (la primera vez puede tardar hasta 1 minuto)</p>';try{await fn();}catch(x){v.innerHTML=msg('err',x.message);}}
 const SOCIALS=[['instagram','Instagram'],['facebook','Facebook'],['tiktok','TikTok'],['youtube','YouTube'],['soundcloud','SoundCloud'],['linkedin','LinkedIn'],['website','Web']];
 const isUrl=u=>/^https:\/\//.test(u||'')||(/^http:\/\//.test(u||'')); 
