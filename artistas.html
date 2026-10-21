@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TengoBolo para artistas | Crea tu perfil gratis</title>
+<meta name="description" content="TengoBolo para artistas: crea tu perfil gratis, enseña tu trabajo y recibe bolos de agencias, empresas y particulares. Sin limite y sin comision.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="canonical" href="https://tengobolo-web.onrender.com/artistas.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:title" content="TengoBolo para artistas">
+<meta property="og:description" content="Crea tu perfil gratis, enseña tu trabajo y recibe bolos de agencias, empresas y particulares. Sin limite y sin comision.">
+<meta property="og:url" content="https://tengobolo-web.onrender.com/artistas.html">
+<meta property="og:image" content="https://tengobolo-web.onrender.com/og-3.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Mosaico en blanco y negro de artistas con el logo de TengoBolo">
+<meta name="twitter:image" content="https://tengobolo-web.onrender.com/og-3.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#000000">
+<style>
+:root{--ink:#f2f2ef;--ink2:#9b9b95;--bg:#000;--card:#0e0e0e;--line:#232323;--accent:#f2f2ef;--accent2:#d9d9d4;--tint:#161616;--serif:"Helvetica Neue",Helvetica,Arial,sans-serif;--font:"Helvetica Neue",Helvetica,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body[data-role=artist]{--accent:#dfa286;--accent2:#c98a6b}
+body[data-role=agency]{--accent:#86aacd;--accent2:#6d96bb}
+*{box-sizing:border-box}html{scroll-behavior:smooth;overflow-x:clip}
+body{margin:0;font:17px/1.6 var(--font);color:var(--ink);background:var(--bg);min-height:100vh;display:flex;flex-direction:column;overflow-x:clip;-webkit-font-smoothing:antialiased}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+header{position:sticky;top:0;z-index:5;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);border-bottom:1px solid #1c1c1c}
+.bar{max-width:1040px;margin:0 auto;padding:10px 20px 4px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.brand img{height:38px;width:auto;display:block}.brand .wm{font-weight:600;font-size:20px;letter-spacing:-.02em;color:var(--ink);line-height:1}.brand .wm b{font-weight:800}
+.zone{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:8px;text-align:right;line-height:1.5;max-width:340px}
+.zone:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+nav{max-width:1040px;margin:0 auto;display:flex;gap:2px;overflow-x:auto;padding:0 14px 8px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}
+nav button{flex:none;min-height:40px;padding:0 14px;border:0;background:transparent;font:inherit;font-size:15px;color:var(--ink2);cursor:pointer;position:relative;border-radius:0}
+nav button:hover{color:var(--ink)}
+nav button[aria-current=true]{color:var(--ink);font-weight:600}
+nav button[aria-current=true]:after{content:"";position:absolute;left:14px;right:14px;bottom:2px;height:2px;background:var(--accent)}
+main{max-width:1040px;width:100%;margin:0 auto;padding:12px 20px 72px;flex:1}
+h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:-.02em}
+h2{font-size:34px;line-height:1.1;margin:34px 0 12px}
+.hbolos{font-size:clamp(40px,9vw,64px);font-weight:800;letter-spacing:-.01em;text-transform:uppercase;margin:30px 0 14px}
+.card h3{margin:0 0 4px;font-size:22px}
+.sub,.meta{color:var(--ink2)}.meta{font-size:15px}main a{color:#fff}
+.btn{min-height:50px;padding:0 28px;border:1px solid #f2f2ef;border-radius:999px;background:#f2f2ef;color:#000;font:inherit;font-weight:600;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.btn:hover{transform:translateY(-1px);background:#d9d9d4;border-color:#d9d9d4}
+.btn.sec{background:transparent;color:var(--ink);border:1px solid #3a3a3a}
+.btn.sec:hover{background:#f2f2ef;color:#000;border-color:#f2f2ef}
+.btn:disabled{opacity:.55}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;align-items:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:16px 0}
+form{display:grid;gap:16px;margin:16px 0;max-width:560px}
+label{display:grid;gap:6px;color:var(--ink2);font-size:14px;letter-spacing:.02em}
+input,textarea,select{font:inherit;font-size:16px;padding:13px 14px;border:1px solid #2b2b2b;border-radius:8px;background:#111;color:var(--ink)}
+input:focus,textarea:focus,select:focus{outline:2px solid #4a4a4a;outline-offset:1px}
+.msg{padding:13px 16px;border-radius:8px;margin:14px 0;border:1px solid var(--line)}.ok{background:#0e1f13;border-color:#1e3a27;color:#bfe3c9}.err{background:#231011;border-color:#3f1d1a;color:#f0b8ae}.info{background:#141414}
+ol{padding-left:22px}
+.avatar{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#262626;flex:none}
+.head{display:flex;gap:14px;align-items:center}.head>div:not(.avatar){min-width:0;flex:1}input[type=file]{width:100%;max-width:100%;font-size:14px;padding:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:10px 0}
+.grid figure{margin:0;position:relative}.grid img{width:100%;height:150px;object-fit:cover;border-radius:6px;display:block}
+.grid button{position:absolute;top:6px;right:6px;min-height:36px;padding:0 10px;border:1px solid #333;border-radius:4px;background:#1c1c1c;color:#ff9d8a;cursor:pointer}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.links a{padding:6px 14px;border:1px solid #2a2a2a;border-radius:999px;color:#e6e6e2;text-decoration:none;font-size:15px;background:#141414}
+.video{position:relative;padding-top:56.25%;margin:10px 0}.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:6px}
+.sect{border-top:1px solid var(--line);margin-top:24px;padding-top:4px}
+footer{background:#050505;border-top:1px solid #1c1c1c;color:#8f8f89;margin-top:auto}footer .fl a{color:#e8e8e4;margin-left:4px}footer p{max-width:1040px;margin:0 auto;padding:22px 20px;font-size:13px;letter-spacing:.03em}
+.promo{border:1px solid var(--line);background:var(--card);border-left:3px solid #3a3a3a;border-radius:8px;padding:12px 16px;margin:16px 0;font-size:15px}
+.appbox{display:flex;gap:18px;align-items:center;flex-wrap:wrap;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:18px 20px;margin:26px 0}.appbox[hidden],.appbox .how[hidden]{display:none}.appbox img{width:64px;height:64px;border-radius:14px}.appbox h3{margin:0 0 4px;font-weight:400;font-size:22px}.appbox p{margin:0;font-size:15px;color:var(--ink2)}.appbox .how{flex-basis:100%;font-size:14px;color:var(--ink2);margin-top:4px}.appbox .how li{margin:3px 0}
+.promo a{color:#fff;font-weight:600}
+[hidden]{display:none!important}
+.ph{background:#2b240a;border:1px dashed #6e5f22;padding:1px 6px;border-radius:4px;color:#e8d98c}
+fieldset{border:0;padding:0;margin:0}.steps{color:var(--ink2);font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin:6px 0}.chk{display:flex;gap:10px;align-items:center;color:var(--ink)}.chk input{width:22px;height:22px;flex:none}.tag{display:inline-block;background:var(--tint);border-radius:999px;padding:3px 12px;font-size:13px;margin:2px 4px 2px 0}
+/* ===== portada editorial ===== */
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+.hero8{display:grid;gap:44px;padding:36px 0 28px;justify-items:center;text-align:center}
+.hero8 .intro{display:grid;justify-items:center;max-width:780px}
+.hero8 h2.mega{font-size:clamp(44px,10.5vw,88px);line-height:.96;letter-spacing:-.035em;margin:0 0 18px;font-weight:400}
+.hero8 h2.mega em{color:var(--accent);font-style:italic;display:block}
+.hero8 p.lead{font-size:19px;color:var(--ink2);max-width:28em;margin:0 auto 8px}
+.hero8 .row{justify-content:center}
+.leitmotiv{display:block;font-size:clamp(13px,2.6vw,16px);letter-spacing:.26em;text-transform:uppercase;color:var(--ink2);text-align:center;margin-top:20px}
+.lnk{background:none;border:0;font:inherit;color:var(--ink);padding:0 4px;min-height:48px;cursor:pointer;border-bottom:1px solid #3a3a3a;border-radius:0}
+.lnk:hover{color:var(--accent);border-color:var(--accent)}
+.arch{position:relative;width:min(100%,680px);margin:0 auto}
+.arch img{position:relative;z-index:1;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:0;border:1px solid #262626;display:block;filter:grayscale(1) contrast(1.05)}
+.arch figcaption{position:relative;z-index:2;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);margin-top:10px;text-align:center}
+@media(min-width:820px){.hero8{padding:56px 0 44px;gap:56px}.hero8 p.lead{font-size:21px}}
+.hline{border:0;border-top:1px solid var(--line);margin:34px 0 0}
+.sech{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:44px 0 18px}
+.sech h2{margin:0;font-size:clamp(30px,6vw,46px)}.sech span{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2)}
+.groups{display:grid;grid-template-columns:1fr;gap:14px}.gc{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--gc);border-radius:10px;padding:16px 18px 18px}.gc small{font-size:11px;letter-spacing:.16em;color:var(--ink2)}.gc h3{font-family:var(--serif);font-weight:400;font-size:24px;margin:4px 0 12px}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{font:inherit;font-size:14px;padding:6px 12px;border:1px solid #2a2a2a;border-radius:999px;background:#161616;color:#e6e6e2;cursor:pointer}.chip:hover{border-color:var(--gc);background:#1b1b1b}
+@media(min-width:700px){.groups{grid-template-columns:repeat(2,1fr)}}@media(min-width:1000px){.groups{grid-template-columns:repeat(3,1fr)}}
+.wall{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.wk{position:relative;border:0;padding:0;border-radius:6px;overflow:hidden;aspect-ratio:4/5;cursor:pointer;font:inherit;text-align:left;background:#ddd}
+.wk svg{position:absolute;inset:0;width:100%;height:100%;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.wk:hover svg{transform:scale(1.05)}
+.wk .cap{position:absolute;left:0;right:0;bottom:0;padding:34px 14px 14px;color:#fff;display:flex;justify-content:space-between;align-items:flex-end;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.wk.lt .cap{color:#141414;background:linear-gradient(transparent,rgba(255,255,255,.55))}
+.wk b{font-family:var(--serif);font-weight:400;font-size:24px;line-height:1}.wk small{font-size:11px;letter-spacing:.16em;display:block;margin-bottom:6px;opacity:.85}
+.wk i{font-style:normal;font-size:20px}
+@media(min-width:760px){.wall{grid-template-columns:repeat(3,1fr);gap:16px}.wk:nth-child(3n+2){margin-top:34px}}
+.cols3{display:grid;gap:0;border-top:1px solid #2b2b2b}
+.cl{padding:22px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:64px 1fr;gap:12px}
+.cl .n{font-family:var(--serif);font-size:44px;line-height:1;color:var(--accent)}
+.cl b{font-family:var(--serif);font-weight:400;font-size:24px;display:block}.cl span.d{color:var(--ink2)}
+@media(min-width:760px){.cols3{grid-template-columns:repeat(3,1fr);gap:28px;border-top:0}.cl{grid-template-columns:1fr;border-top:1px solid #2b2b2b;border-bottom:0;padding-top:18px}}
+.duo{display:grid;gap:18px}
+.du .sub{margin-top:16px}.du .sub>small{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);margin-bottom:9px}.du .chips .chip{font-size:14px;padding:6px 13px;min-height:0}.du .chips .chip:hover{border-color:var(--duc);color:#fff}
+.du{border:1px solid var(--line);border-top:5px solid var(--duc,#3a3a3a);border-radius:12px;padding:34px 30px;display:grid;gap:15px;justify-items:start;align-content:start;background:var(--card)}
+.du h3{margin:0;font-size:clamp(36px,4.6vw,46px);line-height:1.05}.du p{margin:0;color:var(--ink2);font-size:18px}
+.du .eyebrow{font-size:13px;color:var(--duc)}
+.du .btn{background:var(--duc);border-color:var(--duc);color:#0b0b0b}
+.du .btn:hover{background:var(--duc2);border-color:var(--duc2)}
+.du.a{--duc:#dfa286;--duc2:#c98a6b;background:rgba(223,162,134,.05);border-color:rgba(223,162,134,.3);border-top-color:#dfa286}
+.du.b{--duc:#86aacd;--duc2:#6d96bb;background:rgba(134,170,205,.05);border-color:rgba(134,170,205,.3);border-top-color:#86aacd}
+@media(min-width:760px){.duo{grid-template-columns:1fr 1fr}}
+.end{margin:70px 0 10px;padding:56px 0 8px;border-top:1px solid #2b2b2b;display:grid;gap:18px;justify-items:start}
+.end h2{margin:0;font-size:clamp(34px,8vw,74px);line-height:1;max-width:14em}.end h2 em{color:var(--accent)}
+.brandhero{display:grid;gap:0;justify-items:center;margin:14px 0 8px}.brandhero img.heart{width:min(480px,84vw);height:auto;display:block}.brandhero .wordmark{font-weight:300;font-size:clamp(58px,13vw,116px);letter-spacing:-.02em;line-height:1.05;color:#fff;text-align:center;margin-top:6px}.brandhero .wordmark b{font-weight:700}
+.fbar{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-items:end;max-width:none;box-sizing:border-box;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin:12px 0}
+.fbar select,.fbar input{width:100%;min-width:0;box-sizing:border-box}
+.dg{border:1px solid var(--line,#ddd);border-radius:10px;padding:6px 12px;margin:6px 0;background:#0e0e0e}.dg summary{cursor:pointer;font-weight:600;padding:6px 0}.dg label{display:inline-flex;gap:6px;align-items:center;margin:3px 14px 3px 0;font-weight:400;font-size:15px}.dg input{width:auto;margin:0}
+.concept{margin:34px 0 10px;padding:26px 0;border-top:1px solid #2b2b2b;display:grid;gap:12px;max-width:44em}
+.concept h2{margin:0;font-size:clamp(28px,6vw,44px);line-height:1.05}.concept p{margin:0;color:var(--ink2);font-size:18px}
+
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:rgba(255,255,255,.12)}
+a,button,summary,label,select{touch-action:manipulation}
+.btn,.lnk,nav button,.links a,.dg summary{min-height:44px}
+.links a{display:inline-flex;align-items:center}
+.bar{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+main{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+footer p{padding-bottom:calc(22px + env(safe-area-inset-bottom))}
+@media(pointer:coarse),(max-width:700px){.chip,.grid button{min-height:44px}}
+@media(display-mode:standalone){
+html,body{overscroll-behavior-y:none}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text}
+}
+@media(display-mode:standalone) and (max-width:700px){
+header{position:sticky;top:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+header .bar{padding-bottom:8px}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;overflow:visible;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:rgba(8,8,8,.97);border-top:1px solid #232323;box-shadow:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+nav button{min-height:48px;padding:0 2px;font-size:13.5px;line-height:1.15;white-space:normal;min-width:0}
+nav button[aria-current=true]:after{top:0;bottom:auto;left:10px;right:10px}
+main{padding-bottom:calc(130px + env(safe-area-inset-bottom))}
+footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+}
+html.sa,html.sa body{overscroll-behavior-y:none}
+html.sa body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html.sa input,html.sa textarea,html.sa select,html.sa [contenteditable]{-webkit-user-select:text;user-select:text}
+@media(max-width:700px){
+html.sa header{position:sticky;top:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+html.sa header .bar{padding-bottom:8px}
+html.sa nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;overflow:visible;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:rgba(8,8,8,.97);border-top:1px solid #232323;box-shadow:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+html.sa nav button{min-height:48px;padding:0 2px;font-size:13.5px;line-height:1.15;white-space:normal;min-width:0}
+html.sa nav button[aria-current=true]:after{top:0;bottom:auto;left:10px;right:10px}
+html.sa main{padding-bottom:calc(130px + env(safe-area-inset-bottom))}
+html.sa footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
+}
+.adslot{margin:22px 0;padding:10px 12px;border:1px solid var(--line);background:var(--card);border-radius:6px;text-align:center}.adslot small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}.adslot.free{background:transparent;border:1px dashed var(--line);min-height:64px;display:flex;align-items:center;justify-content:center;padding:8px}.adslot.free small{margin:0;opacity:.75}.adslot a{display:block}.adslot img{max-width:100%;height:auto;max-height:120px;object-fit:contain;border-radius:4px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin:0 0 4px}
+.rc{margin:0;padding:14px 16px}.rc .avatar{width:48px;height:48px}
+ .head>.ini{flex:none}
+.ini{display:flex;align-items:center;justify-content:center;font-size:20px;color:#9b9b95;border:1px solid #2b2b2b;background:#161616;border-radius:50%}
+.ficha{margin:8px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;padding:14px;border:1px solid var(--line);border-radius:6px;background:var(--card)}.ficha label{min-width:0}.ficha input,.ficha select{width:100%;min-width:0}@media(max-width:430px){.ficha{grid-template-columns:1fr}}
+
+nav a{flex:none;min-height:40px;display:inline-flex;align-items:center;padding:0 14px;font-size:15px;color:var(--ink2);text-decoration:none}nav a:hover{color:var(--ink)}
+.chip{cursor:default}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar"><a class="brand" href="/artistas.html" aria-label="TengoBolo para artistas"><img src="logo-heart.png" alt="" width="38" height="38"><span class="wm">tengo<b>b</b>olo</span><h1 class="sr">TengoBolo para artistas</h1></a><span class="zone">Para artistas</span></div>
+  <nav aria-label="Secciones">
+    <a href="#que-es">Qué es</a>
+    <a href="#red">Artistas</a>
+    <a href="#disciplinas">Disciplinas</a>
+    <a href="#como">Cómo funciona</a>
+    <a href="/">Entrar</a>
+  </nav>
+</header>
+<main id="view">
+  <section class="hero8">
+    <div class="brandhero"><img class="heart" src="logo-heart.png" alt="Corazón negro chorreante, logo de TengoBolo" width="640" height="640"><span class="wordmark">tengo<b>b</b>olo</span></div>
+    <div class="intro">
+      <h2 class="mega">Tu próximo bolo <em>empieza aquí</em></h2>
+      <p class="lead">Crea tu perfil de artista, enseña tu trabajo y recibe propuestas de bolos reales. Gratis, sin límite y sin comisión.</p>
+      <div class="row"><a class="btn" href="/?alta=artista">Crear mi perfil gratis</a><a class="lnk" href="/">Ya tengo cuenta</a></div>
+    </div>
+    <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Mosaico en blanco y negro de artistas: pintores, músicos y un escultor" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
+  </section>
+
+  <section class="concept" id="que-es"><span class="eyebrow">Qué es TengoBolo</span><h2>Un punto de encuentro entre tu arte y quien lo busca</h2>
+    <p>TengoBolo conecta a artistas (músicos, pintores, escultores, bailarines, actores, magos, fotógrafos, poetas, performers, solos o en grupo) con agencias, empresas y particulares que buscan una actuación u obra para su evento: una boda, un cumpleaños, una inauguración o una noche en un local.</p>
+    <p>Ellos publican lo que necesitan, con fecha y lugar, y tú respondes con tu propuesta. El acuerdo es directo entre las dos partes: TengoBolo solo os pone en contacto y no interviene en el trato ni en el cobro.</p>
+    <p><b>Para los artistas, TengoBolo es gratis, siempre.</b> Perfil, bolos y propuestas sin límite, y nunca cobramos comisión sobre lo que ganas.</p>
+  </section>
+
+  <section id="red" hidden></section>
+
+  <div class="sech" id="disciplinas"><h2>Disciplinas artísticas</h2><span>Más de 80 formas de crear</span></div>
+  <p class="meta" style="margin:0 0 14px">Música, teatro, danza, circo, artes plásticas, imagen, palabra y más. Si tu disciplina no está, también cabes: elige la más cercana y cuéntanoslo en tu perfil.</p>
+  <div class="groups" id="groups"></div>
+
+  <div class="sech" id="como"><h2>Cómo funciona</h2><span>Tres pasos</span></div>
+  <div class="cols3">
+    <div class="cl"><span class="n">1</span><div><b>Crea tu perfil gratis</b><span class="d">Nombre artístico, disciplinas, ciudad y fotos y vídeos de tu trabajo.</span></div></div>
+    <div class="cl"><span class="n">2</span><div><b>Encuentra bolos</b><span class="d">Agencias, empresas y particulares publican lo que buscan, con fecha y lugar.</span></div></div>
+    <div class="cl"><span class="n">3</span><div><b>Envía tu propuesta</b><span class="d">El cliente elige y os ponéis en contacto directamente. Sin comisión.</span></div></div>
+  </div>
+
+  <section class="end"><span class="eyebrow">TengoBolo</span><h2>Hoy puede empezar tu <em>próximo bolo</em></h2><a class="btn" href="/?alta=artista">Crear mi perfil gratis</a>
+  <p class="sub">¿Dudas o quieres contarnos algo? Escríbenos a <a href="mailto:tengobolo@proton.me">tengobolo@proton.me</a>.<br>El equipo de TengoBolo</p></section>
+</main>
+<footer><p>Versión piloto de TengoBolo. <span class="fl"><a href="/aviso-legal.html">Aviso legal</a> · <a href="/privacidad.html">Privacidad</a> · <a href="/cookies.html">Cookies</a></span></p></footer>
+<script>
+const API='https://bolo-backend-pd6z.onrender.com';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const GCOL=['#9b8fc7','#5aa3ab','#c49a82','#b07a63','#c79aad','#8a8a8a','#8fae85','#c7ac62','#8a8a8a'];
+const DISC=[["Música", ["Cantante", "Cantante de ópera", "Cantautor/a", "Coro", "Banda de versiones", "Orquesta de baile / verbena", "Dúo o trío acústico", "Pianista", "Guitarrista", "Violín y cuerdas", "Cuarteto / orquesta de cámara", "Música clásica", "Jazz", "Flamenco (cante y guitarra)", "Rumba", "Mariachi", "Gospel", "Tributo a un artista", "Rap / hip hop", "Beatbox", "DJ", "Karaoke", "Música de calle"]], ["Teatro e interpretación", ["Interpretación (actor/actriz)", "Teatro", "Teatro infantil", "Monólogo / humor", "Improvisación", "Títeres y marionetas", "Cuentacuentos", "Narrador/a", "Locución y doblaje", "Presentador/a / maestro de ceremonias"]], ["Danza", ["Danza contemporánea", "Ballet clásico", "Flamenco (baile)", "Danza oriental", "Bailes latinos", "Tango", "Swing", "Danza urbana / breakdance", "Sardana y danza tradicional", "Bailarines de espectáculo"]], ["Circo y variedades", ["Magia", "Mentalismo", "Payaso / clown", "Malabares", "Acrobacia", "Zancudos", "Show de fuego", "Aéreos (telas, aro)", "Contorsionismo", "Mimo", "Estatua viva", "Ventriloquia", "Globoflexia", "Cabaret / burlesque", "Transformismo / drag"]], ["Animación y eventos", ["Animador/a infantil", "Animador/a de eventos", "Personajes y disfraces", "Pintacaras", "Espectáculo infantil", "Fiesta temática"]], ["Artes plásticas", ["Pintura", "Escultura", "Muralismo / graffiti", "Ilustración", "Caricaturista en vivo", "Retratista", "Cerámica", "Artesanía", "Arte floral", "Body painting", "Performance artística", "Arte digital"]], ["Imagen y audiovisual", ["Fotografía", "Fotografía de eventos", "Vídeo", "Videoclip", "Cine y cortometraje", "Animación", "VJ / visuales", "Drones", "Diseño gráfico", "Diseño de moda"]], ["Palabra", ["Poesía", "Spoken word", "Escritura"]], ["Otras", ["Otro"]]];
+document.getElementById('groups').innerHTML=DISC.filter(g=>g[0]!=='Otras').map((g,i)=>`<section class="gc" style="--gc:${GCOL[i%GCOL.length]}"><small>${String(i+1).padStart(2,'0')}</small><h3>${g[0]}</h3><div class="chips">${g[1].map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div></section>`).join('');
+// "Artistas en la red": contador real (desde 5) y fichas solo de los artistas que eligen aparecer en portada (opt-in). Si no hay nada que enseñar, la seccion no se muestra.
+(async()=>{
+  const box=document.getElementById('red');if(!box)return;
+  try{
+    const [s,a]=await Promise.all([
+      fetch(API+'/api/public/stats').then(r=>{if(!r.ok)throw 0;return r.json()}),
+      fetch(API+'/api/public/artists').then(r=>{if(!r.ok)throw 0;return r.json()})]);
+    const n=Number(s&&s.artists)||0;
+    const av=x=>x.avatar_url?`<img class="avatar" src="${esc(x.avatar_url)}" alt="" loading="lazy">`:`<div class="avatar ini" aria-hidden="true">${esc((x.name||'?').trim().charAt(0).toUpperCase())}</div>`;
+    const cards=(Array.isArray(a)?a:[]).map(x=>`<div class="card rc"><div class="head">${av(x)}<div><h3>${esc(x.name)}</h3><div class="meta">${esc((x.disciplines||[]).slice(0,3).join(', '))}${x.location?' · '+esc(x.location):''}</div></div></div></div>`).join('');
+    if(!cards&&n<5)return;
+    box.innerHTML=`<div class="sech"><h2>Artistas en la red</h2>${n>=5?`<span>${n} artistas ya dentro</span>`:''}</div>${cards?`<div class="rgrid">${cards}</div>`:''}<p class="meta" style="margin:10px 0 0">${cards?'Estos artistas han elegido mostrarse aquí.':'Los artistas de la red eligen si aparecen en esta página.'} El listado completo es la zona privada de los artistas registrados.</p>`;
+    box.hidden=false;
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

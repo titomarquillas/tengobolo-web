@@ -551,7 +551,7 @@ function setupInstall(){
   };
 }
 if('serviceWorker' in navigator){let had=!!navigator.serviceWorker.controller,rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!rl){rl=true;location.reload();}had=true;});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update().catch(()=>{});document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update().catch(()=>{});});}).catch(()=>{}));}
-restore().then(render);
+restore().then(()=>{try{const p=new URLSearchParams(location.search);if(p.get('alta')==='artista'&&!session){rolePre='artist';tab='entrar';}}catch(e){}render();});
 </script>
 </body>
 </html>
