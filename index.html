@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TengoBolo | La red de artistas a tu alcance</title>
-<meta name="description" content="TengoBolo es la red de artistas a tu alcance: agencias de comunicación, empresas y particulares encuentran el bolo para su evento, y los artistas su próximo proyecto. Crea tu perfil gratis.">
+<meta name="description" content="TengoBolo es la red de artistas a tu alcance: agencias de comunicación, empresas y particulares encuentran el bolo para su evento, y los artistas su próximo bolo. Crea tu perfil gratis.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_ES">
 <meta property="og:title" content="TengoBolo · La red de artistas a tu alcance">
-<meta property="og:description" content="La red de artistas a tu alcance: agencias de comunicación, empresas y particulares encuentran el bolo para su evento. Crea tu perfil y encuentra proyectos.">
+<meta property="og:description" content="La red de artistas a tu alcance: agencias de comunicación, empresas y particulares encuentran el bolo para su evento. Crea tu perfil y encuentra bolos.">
 <meta property="og:url" content="https://tengobolo-web.onrender.com/">
 <meta property="og:image" content="https://tengobolo-web.onrender.com/og-3.jpg">
 <meta property="og:image:width" content="1200">
@@ -37,7 +37,7 @@ body{margin:0;font:17px/1.6 var(--font);color:var(--ink);background:var(--bg);mi
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 header{position:sticky;top:0;z-index:5;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);border-bottom:1px solid #1c1c1c}
 .bar{max-width:1040px;margin:0 auto;padding:10px 20px 4px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.brand img{height:38px;width:auto;display:block}.brand .wm{font-weight:300;font-size:20px;letter-spacing:-.02em;color:var(--ink);line-height:1}.brand .wm b{font-weight:700}
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}.brand img{height:38px;width:auto;display:block}.brand .wm{font-weight:600;font-size:20px;letter-spacing:-.02em;color:var(--ink);line-height:1}.brand .wm b{font-weight:800}
 .zone{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);display:flex;align-items:center;gap:8px;text-align:right;line-height:1.5;max-width:340px}
 .zone:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
 nav{max-width:1040px;margin:0 auto;display:flex;gap:2px;overflow-x:auto;padding:0 14px 8px;scrollbar-width:none}nav::-webkit-scrollbar{display:none}
@@ -48,6 +48,7 @@ nav button[aria-current=true]:after{content:"";position:absolute;left:14px;right
 main{max-width:1040px;width:100%;margin:0 auto;padding:12px 20px 72px;flex:1}
 h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:-.02em}
 h2{font-size:34px;line-height:1.1;margin:34px 0 12px}
+.hbolos{font-size:clamp(40px,9vw,64px);font-weight:800;letter-spacing:-.01em;text-transform:uppercase;margin:30px 0 14px}
 .card h3{margin:0 0 4px;font-size:22px}
 .sub,.meta{color:var(--ink2)}.meta{font-size:15px}main a{color:#fff}
 .btn{min-height:50px;padding:0 28px;border:1px solid #f2f2ef;border-radius:999px;background:#f2f2ef;color:#000;font:inherit;font-weight:600;cursor:pointer;transition:background .2s,color .2s,transform .2s}
@@ -211,7 +212,7 @@ async function call(path,{method='GET',body,auth}={}){
 }
 function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){paint();
-  const items=[['inicio','Inicio'],...(me&&me.role==='artist'?[['artistas','Artistas']]:[]),['proyectos','Proyectos'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],['quienes','Quiénes somos'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  const items=[['inicio','Inicio'],...(me&&me.role==='artist'?[['artistas','Artistas']]:[]),['proyectos','BOLOS'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],['quienes','Quiénes somos'],[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
 }
@@ -240,14 +241,14 @@ function home(v){
     <div class="brandhero"><img class="heart" src="logo-heart.png" alt="Corazón negro chorreante, logo de TengoBolo" width="640" height="640"><span class="wordmark">tengo<b>b</b>olo</span><span class="leitmotiv">La red de artistas a tu alcance</span></div>
     <div class="intro">
       <h2 class="mega">Tu próximo bolo <em>empieza aquí</em></h2>
-      <p class="lead">Enseña tu trabajo, encuentra proyectos y ponte en contacto.</p>
-      <div class="row"><button class="btn" id="a">${session?'Ver proyectos':'Crear cuenta gratis'}</button><button class="lnk" data-go="precios">Ver precios →</button></div>
+      <p class="lead">Enseña tu trabajo, encuentra bolos y ponte en contacto.</p>
+      <div class="row"><button class="btn" id="a">${session?'Ver bolos':'Crear cuenta gratis'}</button><button class="lnk" data-go="precios">Ver precios →</button></div>
     </div>
     <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Mosaico en blanco y negro de artistas: pintores, músicos y un escultor" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
   </section>
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
   <div class="duo">
-    <div class="du a"><span class="eyebrow">Artistas</span><h3>Muestra tu obra</h3><p>Portfolio y propuestas a proyectos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Crear mi perfil</button></div>
+    <div class="du a"><span class="eyebrow">Artistas</span><h3>Muestra tu obra</h3><p>Portfolio y propuestas a bolos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Crear mi perfil</button></div>
     <div class="du b"><span class="eyebrow">Agencias, empresas y particulares</span><h3>Encuentra talento</h3><p>Alta y primer bolo gratis. Después, suscripción mensual de 15 €, sin comisión.</p>
       <div class="sub"><small>Agencias</small><div class="chips"><button type="button" class="chip" data-ev="Activación de marca">Activación de marca</button><button type="button" class="chip" data-ev="Lanzamiento o presentación">Lanzamiento</button><button type="button" class="chip" data-ev="Feria, congreso o convención">Feria o congreso</button><button type="button" class="chip" data-ev="Gala o ceremonia">Gala o premios</button><button type="button" class="chip" data-ev="Concierto o festival">Festival</button></div></div>
       <div class="sub"><small>Empresas</small><div class="chips"><button type="button" class="chip" data-ev="Evento de empresa">Evento corporativo</button><button type="button" class="chip" data-ev="Cena de empresa">Cena de empresa</button><button type="button" class="chip" data-ev="Inauguración o exposición">Inauguración</button><button type="button" class="chip" data-ev="Evento de empresa">Team building</button><button type="button" class="chip" data-ev="Aniversario">Aniversario de empresa</button></div></div>
@@ -341,7 +342,7 @@ function about(v){
 function pricing(v){
   v.innerHTML=`<h2>Precios</h2><div class="promo"><b>Promoción de lanzamiento:</b> las cuentas invitadas tienen <b>15 días de acceso completo gratis</b>. La fecha de fin de la promoción se publicará en esta página antes de que empiece.</div>${freeBanner()}
   <p><b>Artistas:</b> gratis, con propuestas sin límite. <b>Agencias, particulares y empresas:</b> alta y primer bolo gratis; después, una cuota plana. Nunca cobramos comisión.</p>
-  <div class="card"><h3>Artista</h3><p><b>0 €</b>. Perfil, proyectos y propuestas sin límite.</p></div>
+  <div class="card"><h3>Artista</h3><p><b>0 €</b>. Perfil, bolos y propuestas sin límite.</p></div>
   <div class="card"><h3>Cliente: primer bolo</h3><p><b>0 €</b>. Alta gratis y tu primer bolo publicado gratis.</p></div>
   <div class="card"><h3>Cliente · Plan 1, mensual</h3><p><b>15 € al mes</b>, suscripción mensual. Bolos ilimitados, sin comisión. Cancelas cuando quieras.</p></div>
   <div class="card"><h3>Cliente · Plan 2, anual</h3><p><b>150 € al año</b> (equivale a 12,50 € al mes: 2 meses gratis). Bolos ilimitados, sin comisión.</p></div>
@@ -369,7 +370,7 @@ function proposalsView(v){loading(v,async()=>{
   const agency=m.role==='agency';
   const names={};
   if(agency)await Promise.all([...new Set(ps.map(x=>x.artist_id))].map(async id=>{try{names[id]=(await call('/api/profiles/'+encodeURIComponent(id),{auth:true})).name;}catch{names[id]='Artista';}}));
-  v.innerHTML=`<h2>${agency?'Propuestas recibidas':'Mis propuestas'}</h2>`+(ps.length?ps.map(x=>`<div class="card"><h3>${esc(proj[x.project_id]?.title||'Proyecto')}</h3><div class="meta">${agency?'De '+esc(names[x.artist_id])+' · ':''}${esc(STAT[x.status]||x.status)}${x.amount_eur!=null?' · '+esc(x.amount_eur)+' €':''} · ${esc(String(x.created_at).slice(0,10))}</div><p>${esc(x.message)}</p>${x.status==='accepted'?`<button class="btn sec" data-c="${esc(x.project_id)}" data-p="${esc(x.id)}">Ver teléfono y dirección del bolo</button><div id="c${esc(x.id)}"></div>`:''}${agency&&x.status==='pending'?`<div class="row"><button class="btn" data-d="accepted" data-id="${esc(x.id)}">Aceptar</button><button class="btn sec" data-d="rejected" data-id="${esc(x.id)}">Rechazar</button></div>`:''}</div>`).join(''):`<p>${agency?'Todavía no has recibido propuestas.':'Todavía no has enviado propuestas.'}</p>`);
+  v.innerHTML=`<h2>${agency?'Propuestas recibidas':'Mis propuestas'}</h2>`+(ps.length?ps.map(x=>`<div class="card"><h3>${esc(proj[x.project_id]?.title||'Bolo')}</h3><div class="meta">${agency?'De '+esc(names[x.artist_id])+' · ':''}${esc(STAT[x.status]||x.status)}${x.amount_eur!=null?' · '+esc(x.amount_eur)+' €':''} · ${esc(String(x.created_at).slice(0,10))}</div><p>${esc(x.message)}</p>${x.status==='accepted'?`<button class="btn sec" data-c="${esc(x.project_id)}" data-p="${esc(x.id)}">Ver teléfono y dirección del bolo</button><div id="c${esc(x.id)}"></div>`:''}${agency&&x.status==='pending'?`<div class="row"><button class="btn" data-d="accepted" data-id="${esc(x.id)}">Aceptar</button><button class="btn sec" data-d="rejected" data-id="${esc(x.id)}">Rechazar</button></div>`:''}</div>`).join(''):`<p>${agency?'Todavía no has recibido propuestas.':'Todavía no has enviado propuestas.'}</p>`);
   v.querySelectorAll('button[data-c]').forEach(b=>b.onclick=async()=>{const box=document.getElementById('c'+b.dataset.p);try{const c=await call('/api/projects/'+encodeURIComponent(b.dataset.c)+'/contact',{auth:true});box.innerHTML=`<div class="msg info"><b>Teléfono:</b> ${esc(c.phone||'no indicado')}<br><b>Dirección:</b> ${esc(c.address||'no indicada')}</div>`;}catch(e){box.innerHTML=msg('err',e.message);}});
   v.querySelectorAll('button[data-d]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await call('/api/proposals/'+encodeURIComponent(b.dataset.id)+'/status',{method:'PATCH',auth:true,body:{status:b.dataset.d}});proposalsView(v);}catch(e){b.disabled=false;v.insertAdjacentHTML('afterbegin',msg('err',e.message));}});
 });}
@@ -413,7 +414,7 @@ function boloInfo(x){const t=[];
 function projects(v,q={}){loading(v,async()=>{let page=1;const [p,m]=await Promise.all([call('/api/projects'+qs(q,1),{auth:true}),getMe()]);
   const all=[...p];
   const card=(x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p style="white-space:pre-line">${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`;
-  v.innerHTML='<h2>Proyectos abiertos</h2>'+filterBar(q)+`<div id="res">${p.length?p.map(card).join(''):(hasQ(q)?'<p>No hay proyectos con esos filtros. Prueba con menos filtros.</p>':'<p>No hay proyectos abiertos todavía.</p>')}</div>`+(p.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
+  v.innerHTML='<h2 class="hbolos">BOLOS</h2>'+filterBar(q)+`<div id="res">${p.length?p.map(card).join(''):(hasQ(q)?'<p>No hay bolos con esos filtros. Prueba con menos filtros.</p>':'<p>No hay bolos abiertos todavía.</p>')}</div>`+(p.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
   wireFilters(v,q,nq=>projects(v,nq));
   const bind=()=>v.querySelectorAll('button[data-i]:not([data-b])').forEach(b=>{b.dataset.b='1';b.onclick=()=>{const x=all[b.dataset.i],box=$('#pf'+b.dataset.i);
     box.innerHTML=`<form><label>Tu propuesta<textarea name="message" required minlength="10" rows="4"></textarea></label><label>Importe en € (opcional)<input name="amount" type="number" min="0"></label>${x.requires_insurance?'<label class="chk"><input type="checkbox" name="ins" required> Confirmo que tengo seguro de responsabilidad civil</label>':''}<div class="e"></div><button class="btn" type="submit">Enviar</button></form>`;b.style.display='none';
@@ -466,7 +467,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
     const dl=f.deadline||null;if(dl&&dl>f.event_date){$('#e').innerHTML=msg('err','La fecha límite no puede ser posterior al bolo.');return;}
     const b=$('#ok');b.disabled=true;
     try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:fichaText(f)+f.description,disciplines:[((f.art_other||'').trim()||f.art)],location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
-      v.innerHTML=msg('ok','Bolo publicado. Ya aparece en Proyectos. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}
+      v.innerHTML=msg('ok','Bolo publicado. Ya aparece en Bolos. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}
     catch(err){b.disabled=false;if(err.status===402){$('#e').innerHTML=payBox();}else $('#e').innerHTML=msg('err',err.message);}};});}
 // Reduce la foto en el navegador (máx. 1600 px, JPEG) antes de subirla: así caben muchas en el almacén gratuito.
 function fichaText(f){const r=[['Tipo de evento',f.evtype],['Espacio',f.space],['Asistentes',f.guests],['Horario',f.t_from?(f.t_from+(f.t_to?' a '+f.t_to:'')):''],['Actuación',f.dur]].filter(x=>x[1]);return r.length?r.map(x=>x[0]+': '+x[1]).join('\n')+'\n\n':'';}
