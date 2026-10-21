@@ -240,7 +240,7 @@ async function call(path,{method='GET',body,auth}={}){
 }
 function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){paint();
-  const items=[['inicio','Inicio'],...(me&&me.role==='artist'?[['artistas','Artistas']]:[]),['proyectos','BOLOS'],['publicar','Publicar'],['propuestas','Propuestas'],['precios','Precios'],['quienes','Quiénes somos'],...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  const items=[['inicio','Inicio'],['artistas','Artistas'],['proyectos','BOLOS'],['publicar','Publicar'],['propuestas','Propuestas'],...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),['precios','Precios'],['quienes','Quiénes somos'],...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
 }
@@ -248,7 +248,7 @@ function msg(kind,text){return `<div class="msg ${kind}" role="status">${esc(tex
 function needLogin(){return `<h2>Necesitas entrar</h2><p>Para ver esto, crea tu cuenta o entra.</p><div class="row"><button class="btn" id="go">Crear cuenta o entrar</button></div>`;}
 async function render(){
   renderNav();const v=$('#view');
-  if(['artistas','proyectos','publicar','propuestas','perfil','gestoria'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
+  if(['artistas','proyectos','publicar','propuestas','perfil','gestoria','mensajes'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
   if(tab==='inicio')return home(v);
   if(tab==='entrar')return enter(v);
   if(tab==='precios')return pricing(v);
@@ -259,6 +259,7 @@ async function render(){
   if(tab==='publicar')return publish(v);
   if(tab==='perfil')return profile(v);
   if(tab==='gestoria')return gestoria(v);
+  if(tab==='mensajes')return inbox(v);
 }
 function home(v){
   const confirmed=/type=(signup|email)|access_token=/.test(location.hash);
@@ -542,7 +543,9 @@ function gestoria(v){loading(v,async()=>{
   await loadMonth();
 });}
 function paint(){const r=session&&me?me.role:'';document.body.dataset.role=r;const z=document.getElementById('zone');if(z)z.textContent=r==='artist'?'Zona artistas':r==='agency'?'Zona agencias y clientes':'La red de artistas a tu alcance';const t=document.querySelector('meta[name=theme-color]');if(t)t.content='#000000';}
-async function getMe(){if(!me){me=await call('/api/me',{auth:true});try{await call('/api/admin/status',{auth:true});isAdmin=true;}catch{isAdmin=false;}}paint();renderNav();return me;}
+let UNREAD=0;
+async function refreshUnread(){if(!session)return;try{const r=await call('/api/messages/unread',{auth:true});if(r.unread!==UNREAD){UNREAD=r.unread;renderNav();}}catch{}}
+async function getMe(){if(!me){me=await call('/api/me',{auth:true});refreshUnread();try{await call('/api/admin/status',{auth:true});isAdmin=true;}catch{isAdmin=false;}}paint();renderNav();return me;}
 async function loading(v,fn){v.innerHTML='<p role="status">Cargando… (la primera vez puede tardar hasta 1 minuto)</p>';try{await fn();}catch(x){v.innerHTML=msg('err',x.message);}}
 const SOCIALS=[['instagram','Instagram'],['facebook','Facebook'],['tiktok','TikTok'],['youtube','YouTube'],['soundcloud','SoundCloud'],['linkedin','LinkedIn'],['website','Web']];
 const isUrl=u=>/^https:\/\//.test(u||'')||(/^http:\/\//.test(u||'')); 
@@ -561,15 +564,28 @@ const qs=(q,page)=>{const u=new URLSearchParams();['q','discipline','city'].forE
 const filterBar=q=>`<form class="fbar" novalidate><label>Buscar<input name="q" maxlength="60" value="${esc(q.q||'')}" placeholder="Nombre o palabra"></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${x}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row" style="margin:0"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" data-clear>Quitar filtros</button></div></form>`;
 const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim());
 function wireFilters(v,q,go){const f=v.querySelector('form.fbar');f.onsubmit=e=>{e.preventDefault();go(Object.fromEntries(new FormData(f)));};f.querySelector('[data-clear]').onclick=()=>go({});}
-function artistCard(x){return `<div class="card"><div class="head">${avatar(x)}<div><h3>${esc(x.name)} ${dstTag(x)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}</div></div></div>${x.bio?`<p>${esc(x.bio)}</p>`:''}${socialLinks(x)}<div class="row"><button class="btn sec" data-p="${esc(x.id)}">Ver perfil completo</button></div></div>`;}
-function artists(v,q={}){loading(v,async()=>{const m=await getMe();if(m.role!=='artist'){v.innerHTML='<h2>Artistas</h2><p>El listado de artistas es la zona donde los artistas se ven y se encuentran entre ellos; solo está disponible para cuentas de artista.</p><p>Si buscas artistas para un evento, publica tu bolo y los artistas interesados te enviarán su propuesta.</p><div class="row"><button class="btn" data-go="publicar">Publicar un bolo</button></div>';v.querySelector('[data-go]').onclick=()=>setTab('publicar');return;}let page=1;const a=await call('/api/artists'+qs(q,1),{auth:true});
-  v.innerHTML='<h2>Artistas</h2>'+filterBar(q)+`<div id="res">${a.length?featFirst(a).map((x,i)=>artistCard(x)+((i+1)%8===0?adSlot('lista'):'')).join(''):(hasQ(q)?'<p>No hay artistas con esos filtros. Prueba con menos filtros.</p>':'<p>Todavía no hay artistas con perfil.</p>')}</div>`+(a.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
+function artistCard(x,m){const un=x.unlocked;const isArt=m.role==='artist';
+  const btn=(isArt||un)?`<button class="btn" data-m="${esc(x.id)}" data-n="${esc(x.name)}">Contactar</button>`:`<button class="btn sec" disabled title="Publica tu bolo para desbloquear el contacto">Contactar (bloqueado)</button>`;
+  return `<div class="card"><div class="head">${un?avatar(x):''}<div><h3>${esc(x.name)} ${dstTag(x)}</h3><div class="meta">${un&&(x.disciplines||[]).length?esc(x.disciplines.join(', '))+(x.location?' · ':''):''}${esc(x.location||'')}</div></div></div><div class="row">${un?`<button class="btn sec" data-p="${esc(x.id)}">Ver ficha</button>`:''}${btn}</div></div>`;}
+function artists(v,q={}){loading(v,async()=>{const m=await getMe();let page=1;const a=await call('/api/artists'+qs(q,1),{auth:true});
+  const lockNote=(m.role!=='artist'&&!m.unlocked)?`<div class="promo"><b>Estás viendo solo nombre y ciudad.</b> Publica tu bolo y se desbloquean la ficha completa y el botón Contactar de los artistas. Mientras tanto, los artistas verán tu bolo y podrán enviarte propuestas. <div class="row" style="margin-top:10px"><button class="btn" data-go="publicar">Publicar un bolo</button></div></div>`:'';
+  v.innerHTML='<h2>Artistas</h2>'+lockNote+filterBar(q)+`<div id="res">${a.length?a.map((x,i)=>artistCard(x,m)+((i+1)%8===0?adSlot('lista'):'')).join(''):(hasQ(q)?'<p>No hay artistas con esos filtros. Prueba con menos filtros.</p>':'<p>Todavía no hay artistas en la red.</p>')}</div>`+(a.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
   wireFilters(v,q,nq=>artists(v,nq));
-  const bind=()=>v.querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>viewProfile(v,b.dataset.p));bind();
-  const more=$('#more');if(more)more.onclick=async()=>{more.disabled=true;try{page++;const n=await call('/api/artists'+qs(q,page),{auth:true});$('#res').insertAdjacentHTML('beforeend',featFirst(n).map(artistCard).join(''));bind();if(n.length<20)more.remove();else more.disabled=false;}catch(err){more.disabled=false;}};});}
+  const g=v.querySelector('[data-go]');if(g)g.onclick=()=>setTab('publicar');
+  const bind=()=>{v.querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>viewProfile(v,b.dataset.p));v.querySelectorAll('button[data-m]').forEach(b=>b.onclick=()=>thread(v,b.dataset.m,b.dataset.n));};bind();
+  const more=$('#more');if(more)more.onclick=async()=>{more.disabled=true;try{page++;const n=await call('/api/artists'+qs(q,page),{auth:true});$('#res').insertAdjacentHTML('beforeend',n.map(x=>artistCard(x,m)).join(''));bind();if(n.length<20)more.remove();else more.disabled=false;}catch(err){more.disabled=false;}};});}
+const fdt=d=>{try{return new Date(d).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}catch{return '';}};
+function inbox(v){loading(v,async()=>{await getMe();const r=await call('/api/messages',{auth:true});UNREAD=r.reduce((n,x)=>n+Number(x.unread||0),0);renderNav();
+  v.innerHTML='<h2>Mensajes</h2><p class="meta">Aquí te escriben y escribes sin dar tu correo ni tu teléfono.</p>'+(r.length?r.map(x=>`<div class="card"><h3>${esc(x.other_name)} ${Number(x.unread)>0?`<span class="tag dst">${Number(x.unread)} nuevo${Number(x.unread)>1?'s':''}</span>`:''}</h3><p class="meta">${x.last_from_me?'Tú: ':''}${esc(x.last_body)} · ${esc(fdt(x.last_at))}</p><button class="btn sec" data-o="${esc(x.other_id)}" data-n="${esc(x.other_name)}">Abrir</button></div>`).join(''):'<p>Todavía no tienes mensajes. Entra en <b>Artistas</b> y pulsa Contactar.</p>');
+  v.querySelectorAll('button[data-o]').forEach(b=>b.onclick=()=>thread(v,b.dataset.o,b.dataset.n));});}
+function thread(v,id,name){loading(v,async()=>{await getMe();const r=await call('/api/messages/'+encodeURIComponent(id),{auth:true});refreshUnread();const nm=(r[0]&&r[0].other_name)||name||'Usuario';const can=r.length?r[0].can_reply:true;
+  v.innerHTML=`<p><button class="btn sec" id="back">← Volver</button></p><h2>${esc(nm)}</h2>`+(r.length?r.map(x=>`<div class="card" style="${x.from_me?'margin-left:36px':'margin-right:36px'}"><div class="meta">${x.from_me?'Tú':esc(nm)} · ${esc(fdt(x.created_at))}</div><p style="white-space:pre-line;margin:6px 0 0">${esc(x.body)}</p></div>`).join(''):'<p class="meta">Aún no habéis hablado. Preséntate y cuéntale qué buscas.</p>')+
+   (can?`<form id="mf"><label>Tu mensaje<textarea name="body" rows="4" required maxlength="2000"></textarea></label><div id="me"></div><button class="btn" type="submit">Enviar</button></form>`:'<div class="msg info">Para escribir a este usuario necesitas tener el contacto desbloqueado.</div>');
+  $('#back').onclick=()=>inbox(v);
+  const f=$('#mf');if(f)f.onsubmit=async e=>{e.preventDefault();const body=new FormData(f).get('body').trim();if(!body)return;f.querySelector('button').disabled=true;try{await call('/api/messages',{method:'POST',auth:true,body:{to:id,body}});thread(v,id,nm);}catch(err){f.querySelector('button').disabled=false;$('#me').innerHTML=msg('err',err.message);}};});}
 function viewProfile(v,id){loading(v,async()=>{const p=await call('/api/profiles/'+encodeURIComponent(id),{auth:true});const m=mediaHtml(p.media,false);
-  v.innerHTML=`<p><button class="btn sec" id="back">← Volver</button></p><div class="head">${avatar(p)}<div><h2 style="margin:0">${esc(p.name)} ${dstTag(p)}</h2><div class="meta">${esc((p.disciplines||[]).join(', '))}${p.location?' · '+esc(p.location):''}</div></div></div>${p.bio?`<p>${esc(p.bio)}</p>`:''}${socialLinks(p)}${m.photos?'<h2>Fotos</h2>'+m.photos:''}${m.videos?'<h2>Vídeos</h2>'+m.videos:''}${!m.photos&&!m.videos?'<p class="meta">Este perfil todavía no tiene fotos ni vídeos.</p>':''}`;
-  $('#back').onclick=()=>artists(v);});}
+  v.innerHTML=`<p><button class="btn sec" id="back">← Volver</button></p><div class="head">${avatar(p)}<div><h2 style="margin:0">${esc(p.name)} ${dstTag(p)}</h2><div class="meta">${esc((p.disciplines||[]).join(', '))}${p.location?' · '+esc(p.location):''}</div></div></div>${p.bio?`<p>${esc(p.bio)}</p>`:''}${socialLinks(p)}<div class="row"><button class="btn" id="ct">Contactar</button></div>${m.photos?'<h2>Fotos</h2>'+m.photos:''}${m.videos?'<h2>Vídeos</h2>'+m.videos:''}${!m.photos&&!m.videos?'<p class="meta">Este perfil todavía no tiene fotos ni vídeos.</p>':''}`;
+  $('#back').onclick=()=>artists(v);$('#ct').onclick=()=>thread(v,p.id,p.name);});}
 const EXTRA={equipo:'Equipo de sonido/luz incluido',transporte:'Transporte incluido',alojamiento:'Alojamiento incluido'};
 const fdate=d=>d?String(d).split('-').reverse().join('/'):'';
 function boloInfo(x){const t=[];
@@ -580,7 +596,7 @@ function boloInfo(x){const t=[];
   return (t.length?`<div>${t.join('')}</div>`:'')+(x.rider?`<p class="meta"><b>Rider:</b> ${esc(x.rider)}</p>`:'');}
 function projects(v,q={}){loading(v,async()=>{let page=1;const [p,m]=await Promise.all([call('/api/projects'+qs(q,1),{auth:true}),getMe()]);
   const all=[...p];
-  const card=(x,i)=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p style="white-space:pre-line">${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`;
+  const card=(x,i)=>`<div class="card"><h3>${esc(x.title)}</h3>${x.owner_name?`<div class="meta">Publicado por <b>${esc(x.owner_name)}</b>${x.owner_location?' · '+esc(x.owner_location):''}</div>`:''}<div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p style="white-space:pre-line">${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`;
   v.innerHTML='<h2 class="hbolos">BOLOS</h2>'+filterBar(q)+`<div id="res">${p.length?p.map(card).join(''):(hasQ(q)?'<p>No hay bolos con esos filtros. Prueba con menos filtros.</p>':'<p>No hay bolos abiertos todavía.</p>')}</div>`+(p.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
   wireFilters(v,q,nq=>projects(v,nq));
   const bind=()=>v.querySelectorAll('button[data-i]:not([data-b])').forEach(b=>{b.dataset.b='1';b.onclick=()=>{const x=all[b.dataset.i],box=$('#pf'+b.dataset.i);
@@ -650,7 +666,7 @@ function profile(v){loading(v,async()=>{const m=await getMe();const full=await c
   v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?'Plan: gratuito, propuestas sin límite':(m.plan==='free'?'Plan: gratuito (primer bolo gratis)':'Plan Cliente: bolos ilimitados')}</p>
   <div class="head">${avatar(m)}<div><label>Foto de perfil<input type="file" id="av" accept="image/*"></label></div></div><div id="ae"></div>
   ${DESTACADO&&m.role==='artist'?`<div class="promo"><b>Destacado (opcional):</b> tu perfil, el primero en las listas y con la marca "Destacado", por una cuota mensual pequeña (precio orientativo, aún sin cobrar). Tu plan gratuito no cambia, siempre. <a href="#" data-go="precios">Ver Precios</a></div>`:''}
-  ${m.role==='artist'?`<div class="card" style="margin:8px 0"><label class="chk" style="align-items:flex-start"><input type="checkbox" name="showcase"${m.showcase?' checked':''} style="margin-top:4px"> <span><b>Aparecer en la portada</b><br><span class="meta">Los visitantes verán tu nombre, tu foto, tus disciplinas y tu ciudad en la sección "Artistas en la red". Nunca tu correo ni tu contacto. Puedes quitarlo cuando quieras.</span></span></label></div>`:''}
+  ${m.role==='artist'?`<div class="card" style="margin:8px 0"><label class="chk" style="align-items:flex-start"><input type="checkbox" name="listed"${m.listed!==false?' checked':''} style="margin-top:4px"> <span><b>Aparecer en el listado de artistas</b><br><span class="meta">Los usuarios registrados verán solo tu nombre y tu ciudad. Tu ficha completa y el contacto solo se desbloquean para clientes que publican un bolo. Nunca se muestra tu correo ni tu teléfono: te escriben por mensajes internos. Puedes quitarlo cuando quieras.</span></span></label><label class="chk" style="align-items:flex-start;margin-top:12px"><input type="checkbox" name="showcase"${m.showcase?' checked':''} style="margin-top:4px"> <span><b>Aparecer en la portada</b><br><span class="meta">Los visitantes verán tu nombre, tu foto, tus disciplinas y tu ciudad en la sección "Artistas en la red". Nunca tu correo ni tu contacto. Puedes quitarlo cuando quieras.</span></span></label></div>`:''}
   <form id="f"><label>Nombre<input name="name" required minlength="2" value="${esc(m.name)}"></label><label>Sobre mí<textarea name="bio" rows="4">${esc(m.bio)}</textarea></label><div><b>Disciplinas artísticas</b> <span class="meta">(máximo 12)</span>${DISC.map(g=>`<details class="dg"${g[1].some(x=>(m.disciplines||[]).includes(x))?' open':''}><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}"${(m.disciplines||[]).includes(x)?' checked':''}>${x}</label>`).join('')}</details>`).join('')}</div><label>Otras disciplinas (opcional, separadas por comas)<input name="disciplines_other" value="${esc((m.disciplines||[]).filter(x=>!DISC_ALL.includes(x)).join(', '))}"></label><label>Ciudad<input name="location" value="${esc(m.location)}"></label><label>Enlace a tu portfolio (https://…)<input name="portfolio_url" value="${esc(m.portfolio_url)}"></label>
   <h3 style="margin:8px 0 0">Redes</h3>${SOCIALS.map(([k,n])=>`<label>${n}${k==='website'?' (https://…)':' (enlace completo, https://…)'}<input name="${k}" type="url" value="${esc(m[k])}" placeholder="https://"></label>`).join('')}
   <div id="e"></div><button class="btn" type="submit">Guardar</button></form>
@@ -658,7 +674,7 @@ function profile(v){loading(v,async()=>{const m=await getMe();const full=await c
   <div class="sect"><h2>Vídeos (${md.nVideos}/5)</h2>${md.videos||'<p class="meta">Aún no has añadido vídeos.</p>'}<form id="vf"><label>Enlace de YouTube, Vimeo, Instagram, Facebook o TikTok<input name="url" type="url" required placeholder="https://"></label><button class="btn" type="submit">Añadir vídeo</button><div id="ve"></div></form></div>
   <div class="row"><button class="btn sec" id="out">Salir</button></div>`;
   $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const body={name:f.name,bio:f.bio,disciplines:[...new Set([...[...e.target.querySelectorAll('input[name=d]:checked')].map(x=>x.value),...list(f.disciplines_other||'')])],location:f.location,portfolio_url:f.portfolio_url};SOCIALS.forEach(([k])=>body[k]=(f[k]||'').trim());
-    if(m.role==='artist')body.showcase=!!f.showcase;
+    if(m.role==='artist'){body.showcase=!!f.showcase;body.listed=!!f.listed;}
     if(body.disciplines.length>12){$('#e').innerHTML=msg('err','Máximo 12 disciplinas. Quita alguna.');return;}
     if(body.disciplines.some(x=>x.length>60)){$('#e').innerHTML=msg('err','Cada disciplina puede tener como máximo 60 letras.');return;}
     try{me=await call('/api/me',{method:'PATCH',auth:true,body});$('#e').innerHTML=msg('ok','Guardado.');}catch(err){$('#e').innerHTML=msg('err',err.message);}};
