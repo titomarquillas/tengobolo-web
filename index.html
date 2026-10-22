@@ -281,12 +281,9 @@ function home(v){
   </section>
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
   <div class="duo">
-    <div class="du a"><span class="eyebrow">Artistas</span><h3>Soy artista</h3><p>Portfolio y propuestas a bolos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Crear mi perfil</button></div>
+    <div class="du a"><span class="eyebrow">Artistas</span><h3>Soy artista</h3><p>Portfolio y propuestas a bolos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Regístrate</button></div>
     <div class="du b"><span class="eyebrow">Agencias, empresas y particulares</span><h3>Soy agencia</h3><p>Desde 25 € por bolo o un plan mensual, sin comisión. Todavía no se cobra nada.</p>
-      <div class="sub"><small>Agencias</small><div class="chips"><button type="button" class="chip" data-ev="Activación de marca">Activación de marca</button><button type="button" class="chip" data-ev="Lanzamiento o presentación">Lanzamiento</button><button type="button" class="chip" data-ev="Feria, congreso o convención">Feria o congreso</button><button type="button" class="chip" data-ev="Gala o ceremonia">Gala o premios</button><button type="button" class="chip" data-ev="Concierto o festival">Festival</button></div></div>
-      <div class="sub"><small>Empresas</small><div class="chips"><button type="button" class="chip" data-ev="Evento de empresa">Evento corporativo</button><button type="button" class="chip" data-ev="Cena de empresa">Cena de empresa</button><button type="button" class="chip" data-ev="Inauguración o exposición">Inauguración</button><button type="button" class="chip" data-ev="Evento de empresa">Team building</button><button type="button" class="chip" data-ev="Aniversario">Aniversario de empresa</button></div></div>
-      <div class="sub"><small>Particulares</small><div class="chips"><button type="button" class="chip" data-ev="Boda">Boda</button><button type="button" class="chip" data-ev="Cumpleaños o fiesta privada">Cumpleaños</button><button type="button" class="chip" data-ev="Aniversario">Aniversario</button><button type="button" class="chip" data-ev="Comunión o bautizo">Comunión o bautizo</button><button type="button" class="chip" data-ev="Despedida de soltero/a">Despedida</button><button type="button" class="chip" data-ev="Cumpleaños o fiesta privada">Fiesta privada</button></div></div>
-      <button class="btn" data-go="entrar" data-role="agency">Publicar un bolo</button></div>
+      <button class="btn" data-go="entrar" data-role="agency">Regístrate</button></div>
   </div>
   <section id="red" hidden></section>
   <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
@@ -723,7 +720,7 @@ function setupInstall(){
   };
 }
 if('serviceWorker' in navigator){let had=!!navigator.serviceWorker.controller,rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!rl){rl=true;location.reload();}had=true;});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update().catch(()=>{});document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update().catch(()=>{});});}).catch(()=>{}));}
-restore().then(()=>{try{const p=new URLSearchParams(location.search);if(p.get('alta')==='artista'&&!session){rolePre='artist';tab='entrar';}}catch(e){}render();});
+restore().then(()=>{try{const p=new URLSearchParams(location.search);if(p.get('alta')==='artista'&&!session){rolePre='artist';tab='entrar';}else if(p.get('alta')==='agencia'&&!session){rolePre='agency';tab='entrar';}}catch(e){}render();});
 </script>
 </body>
 </html>
