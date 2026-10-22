@@ -303,8 +303,7 @@ function home(v){
     <div class="cl"><span class="n">1</span><div><b>Crea tu perfil</b><span class="d">Disciplina, ciudad, fotos y vídeos de tu trabajo.</span></div></div>
     <div class="cl"><span class="n">2</span><div><b>Publica o encuentra un bolo</b><span class="d">Las agencias publican con fecha y presupuesto.</span></div></div>
     <div class="cl"><span class="n">3</span><div><b>Propón y contrata</b><span class="d">La agencia elige y os ponéis en contacto.</span></div></div>
-  </div>
-  <section class="end"><span class="eyebrow">TengoBolo</span><h2>Hoy puede empezar tu <em>próximo bolo</em></h2><button class="btn" data-go="entrar">Empezar gratis</button></section>`;
+  </div>`;
   setupInstall();
   $('#a').onclick=()=>setTab(session?'proyectos':'entrar');
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
