@@ -343,7 +343,6 @@ function home(v){
       <button class="btn" data-go="entrar" data-role="agency">Regístrate</button></div>
   </div>
   <section class="bw"><span class="eyebrow">Para artistas</span><h2>Bolowers</h2><p class="lead">La red de artistas de todas las disciplinas</p><p>Donde los artistas se comunican entre sí, se anuncian y buscan propuestas: busco grupo, busco compañía, busco componente.</p>${session&&me&&me.role!=='artist'?'':`<button class="btn" id="bwb">${session?'Entrar en Bolowers':'Regístrate'}</button>`}</section>
-  <section id="red" hidden></section>
   ${adSlot('inicio')}
   <div class="sech"><h2>Disciplinas artísticas</h2><span>Más de 80 formas de crear</span></div>
   <p class="meta" style="margin:0 0 14px">Elige una disciplina y publica tu bolo: los artistas que la practican te envían su propuesta.</p>
@@ -356,7 +355,6 @@ function home(v){
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
   v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{artPre=b.dataset.d;rolePre='agency';setTab(session?'publicar':'entrar');});
   v.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>{evPre=b.dataset.ev;rolePre='agency';setTab(session?'publicar':'entrar');});
-  loadRed();
 }
 // Portada "Artistas en la red": contador real (desde 5) y fichas de artistas que eligen aparecer. Si no hay nada que ensenyar, la seccion no se muestra.
 async function loadRed(){
