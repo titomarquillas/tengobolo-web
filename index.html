@@ -632,6 +632,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   <form id="f" novalidate>
   <fieldset data-s="0"><h3>1. Qué evento es</h3>
     <label>Título del bolo<input name="title" required minlength="3" maxlength="150" placeholder="Ej: Música en directo para una boda"></label>
+    <p class="meta" style="margin:-6px 0 0">El título se muestra públicamente: no pongas nombres ni datos privados.</p>
     <div class="ficha"><label>Tipo de evento<select name="evtype"><option value="">Elige uno</option><optgroup label="Particulares"><option>Boda</option><option>Cumpleaños o fiesta privada</option><option>Aniversario</option><option>Comunión o bautizo</option><option>Despedida de soltero/a</option></optgroup><optgroup label="Empresas"><option>Evento de empresa</option><option>Cena de empresa</option><option>Inauguración o exposición</option><option>Sala, bar o restaurante</option></optgroup><optgroup label="Agencias"><option>Activación de marca</option><option>Lanzamiento o presentación</option><option>Feria, congreso o convención</option><option>Gala o ceremonia</option><option>Concierto o festival</option></optgroup><option>Otro</option></select></label>
     <label>Espacio<select name="space"><option value="">Elige uno</option><option>Interior</option><option>Exterior</option><option>Interior y exterior</option></select></label>
     <label>Lugar (ciudad o zona)<input name="location" maxlength="120"></label>
