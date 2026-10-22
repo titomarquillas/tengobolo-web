@@ -328,20 +328,21 @@ async function loadRed(){
     box.hidden=false;
   }catch(e){}
 }
-function enter(v,mode='register',note=''){
-  const rp=rolePre;rolePre=null;
+function enter(v,mode='register',note='',rsel=null){
+  const rp=rolePre;rolePre=null;const role=rsel||rp||null;
   if(session){v.innerHTML='<h2>Sesión iniciada</h2><div class="row"><button class="btn" id="p">Mi perfil</button></div>';$('#p').onclick=()=>setTab('perfil');return;}
   v.innerHTML=`<h2>${mode==='register'?'Crear cuenta':'Entrar'}</h2>
   <div class="row"><button class="btn ${mode==='register'?'':'sec'}" id="m1">Crear cuenta</button><button class="btn ${mode==='login'?'':'sec'}" id="m2">Ya tengo cuenta</button></div>${note}
-  <form id="f">${mode==='register'?`<label>Nombre<input name="name" required minlength="2" autocomplete="name"></label><label>Soy<select name="role"><option value="artist"${rp==='agency'?'':' selected'}>Artista</option><option value="agency"${rp==='agency'?' selected':''}>Agencia, empresa o particular</option></select></label><div id="rd" ${rp==='agency'?'hidden':''}><b>Tus disciplinas</b> <span class="meta">(marca una o varias, hasta 12; luego podrás cambiarlas en Mi perfil)</span>${DISC.map(g=>`<details class="dg"><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}">${x}</label>`).join('')}</details>`).join('')}</div>`:''}
+  <form id="f">${mode==='register'?(role?`<p class="meta" style="margin:0">Te registras como: <b>${role==='artist'?'Artista':'Agencia, empresa o particular'}</b> · <a href="#" id="chg">${role==='artist'?'¿No eres artista? Cambiar':'¿No eres agencia o empresa? Cambiar'}</a></p><input type="hidden" name="role" value="${role}"><label>Nombre<input name="name" required minlength="2" autocomplete="name"></label>${role==='artist'?`<div id="rd"><b>Tus disciplinas</b> <span class="meta">(marca una o varias, hasta 12; luego podrás cambiarlas en Mi perfil)</span>${DISC.map(g=>`<details class="dg"><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}">${x}</label>`).join('')}</details>`).join('')}</div>`:''}`:`<b>¿Cómo te registras?</b><div class="row" style="margin:8px 0"><button type="button" class="btn sec" id="r1">Artista</button><button type="button" class="btn sec" id="r2">Agencia, empresa o particular</button></div>`):''}
   <label>Correo<input name="email" type="email" required autocomplete="email"></label>
   <label>Contraseña${mode==='register'?' (mínimo 12 caracteres)':''}<input name="password" type="password" required minlength="${mode==='register'?12:1}" autocomplete="${mode==='register'?'new-password':'current-password'}"></label>
   ${mode==='register'?`<label class="chk"><input type="checkbox" name="legal" required><span>Soy mayor de 14 años y he leído y acepto el <a href="/aviso-legal.html" target="_blank" rel="noopener">Aviso legal</a> y la <a href="/privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.</span></label>`:''}
   <div id="e"></div><button class="btn" type="submit">${mode==='register'?'Crear cuenta':'Entrar'}</button></form>`;
-  $('#m1').onclick=()=>enter(v,'register');$('#m2').onclick=()=>enter(v,'login');
-  if(mode==='register'){const sel=v.querySelector('select[name=role]');sel.onchange=()=>{$('#rd').hidden=sel.value!=='artist';};}
+  $('#m1').onclick=()=>enter(v,'register','',role||'');$('#m2').onclick=()=>enter(v,'login');
+  if(mode==='register'){if($('#chg'))$('#chg').onclick=e=>{e.preventDefault();enter(v,'register',note,'');};if($('#r1')){$('#r1').onclick=()=>enter(v,'register',note,'artist');$('#r2').onclick=()=>enter(v,'register',note,'agency');}}
   $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const b=e.target.querySelector('button[type=submit]');b.disabled=true;b.textContent='Un momento…';$('#e').innerHTML='';
     try{
+      if(mode==='register'&&!f.role)throw new Error('Elige primero si eres artista o agencia.');
       if(mode==='register'&&f.role==='artist'&&e.target.querySelectorAll('input[name=d]:checked').length>12)throw new Error('Máximo 12 disciplinas. Quita alguna.');
       if(mode==='register'){await call('/api/auth/register',{method:'POST',body:{email:f.email,password:f.password,name:f.name,role:f.role,...(f.role==='artist'?{disciplines:[...e.target.querySelectorAll('input[name=d]:checked')].map(x=>x.value)}:{})}});checkEmail(v,f.email);}
       else{const r=await call('/api/auth/login',{method:'POST',body:{email:f.email,password:f.password}});session=r.session;keep();me=null;setTab('perfil');}
