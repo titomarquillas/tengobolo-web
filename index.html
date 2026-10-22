@@ -611,7 +611,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   <form id="f" novalidate>
   <fieldset data-s="0"><h3>1. Qué evento es</h3>
     <label>Título del bolo<input name="title" required minlength="3" maxlength="150" placeholder="Ej: Música en directo para una boda"></label>
-    <label>Tipo de arte<select name="art">${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(a=>`<option>${a}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Si no está en la lista, escribe cuál (opcional)<input name="art_other" maxlength="60"></label>
+    <div><b>Tipo de arte que buscas</b> <span class="meta">(marca una o varias; solo lo verán artistas de esas disciplinas)</span>${DISC.map(g=>`<details class="dg"><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="art" value="${esc(x)}">${x}</label>`).join('')}</details>`).join('')}</div><label>Si no está en la lista, escribe cuál (opcional, varias separadas por comas)<input name="art_other" maxlength="120"></label>
     <div class="ficha"><label>Tipo de evento<select name="evtype"><option value="">Elige uno</option><option>Boda</option><option>Cumpleaños o fiesta privada</option><option>Aniversario</option><option>Comunión o bautizo</option><option>Despedida de soltero/a</option><option>Evento de empresa</option><option>Cena de empresa</option><option>Activación de marca</option><option>Lanzamiento o presentación</option><option>Feria, congreso o convención</option><option>Gala o ceremonia</option><option>Concierto o festival</option><option>Inauguración o exposición</option><option>Sala, bar o restaurante</option><option>Otro</option></select></label>
     <label>Espacio<select name="space"><option value="">Elige uno</option><option>Interior</option><option>Exterior</option><option>Interior y exterior</option></select></label>
     <label>Lugar (ciudad o zona)<input name="location" maxlength="120"></label>
@@ -643,11 +643,14 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   $('#nx').onclick=()=>{const bad=[...fs[step].querySelectorAll('input,textarea,select')].find(i=>!i.checkValidity());if(bad){bad.reportValidity();return;}step++;show();};
   show();
   if(evPre){const sel=v.querySelector('select[name=evtype]');if(sel)sel.value=evPre;evPre=null;}
-  if(artPre){const sel=v.querySelector('select[name=art]');if(sel)sel.value=artPre;artPre=null;}
+  if(artPre){const cb=[...v.querySelectorAll('input[name=art]')].find(i=>i.value===artPre);if(cb){cb.checked=true;const d=cb.closest('details');if(d)d.open=true;}artPre=null;}
   $('#f').onsubmit=async e=>{e.preventDefault();if(step<fs.length-1){$('#nx').click();return;}const f=Object.fromEntries(new FormData(e.target));
     const dl=f.deadline||null;if(dl&&dl>f.event_date){$('#e').innerHTML=msg('err','La fecha límite no puede ser posterior al bolo.');return;}
+    const discs=[...new Set([...[...e.target.querySelectorAll('input[name=art]:checked')].map(i=>i.value),...(f.art_other||'').split(',').map(x=>x.trim()).filter(Boolean)])];
+    if(!discs.length){$('#e').innerHTML=msg('err','Marca al menos un tipo de arte.');return;}
+    if(discs.length>12||discs.some(x=>x.length>60)){$('#e').innerHTML=msg('err','Máximo 12 tipos de arte, de hasta 60 letras cada uno.');return;}
     const b=$('#ok');b.disabled=true;
-    try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:fichaText(f)+f.description,disciplines:[((f.art_other||'').trim()||f.art)],location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
+    try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:fichaText(f)+f.description,disciplines:discs,location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
       v.innerHTML=msg('ok','Bolo guardado. Todavía no se cobra nada, así que ya aparece en Bolos. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}
     catch(err){b.disabled=false;if(err.status===402){$('#e').innerHTML=payBox();}else $('#e').innerHTML=msg('err',err.message);}};});}
 // Reduce la foto en el navegador (máx. 1600 px, JPEG) antes de subirla: así caben muchas en el almacén gratuito.
