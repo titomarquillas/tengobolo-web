@@ -247,7 +247,7 @@ function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){paint();
   if(session&&!me&&!meBusy){meBusy=true;getMe().catch(()=>{}).finally(()=>{meBusy=false;});}
   const rl=session&&me?me.role:null;
-  const items=[['inicio','Inicio'],['artistas','Artistas'],...(rl!=='agency'?[['proyectos','Ver bolos']]:[]),...(rl!=='artist'?[['publicar','Publicar un bolo']]:[]),['propuestas','Mis propuestas'],...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),...(session?[]:[['precios','Precios'],['quienes','Quiénes somos']]),...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  const items=[['inicio','Inicio'],['artistas','Artistas'],...(rl!=='agency'?[['proyectos','Ver bolos']]:[]),...(rl==='artist'?[['redartistas','Red de artistas']]:[]),...(rl!=='artist'?[['publicar','Publicar un bolo']]:[]),['propuestas','Mis propuestas'],...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),...(session?[]:[['precios','Precios'],['quienes','Quiénes somos']]),...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
   const fn=$('#fnav');if(fn){fn.innerHTML=session?'<a href="#" data-t="precios">Precios</a> · <a href="#" data-t="quienes">Quiénes somos</a> · ':'';fn.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.t);});}
@@ -261,16 +261,39 @@ async function teaser(v){
   v.innerHTML=`<h2 class="hbolos">Bolos disponibles</h2><p class="meta">Estos son los últimos bolos publicados. Regístrate para ver el detalle y enviar tu propuesta.</p>${r.length?r.map(card).join(''):'<p>Aún no hay bolos abiertos. Sé el primero en verlos: regístrate.</p>'}<div class="promo"><b>Regístrate para ver más.</b> Es gratis para artistas.</div><div class="row"><button class="btn" id="rg" data-role="artist">Regístrate</button><button class="btn sec" id="lg">Ya tengo cuenta</button></div>`;
   $('#rg').onclick=()=>{rolePre='artist';setTab('entrar');};$('#lg').onclick=()=>setTab('entrar');
 }
+
+const NK={busco_grupo:'Busco grupo',busco_compania:'Busco compañía',busco_artista:'Busco artista para mi grupo',otro:'Otro'};
+function redView(v,q={}){loading(v,async()=>{const m=await getMe();
+  if(m.role!=='artist'){v.innerHTML='<h2>Red de artistas</h2><p>Este espacio es solo para artistas.</p>';return;}
+  const u=new URLSearchParams();['kind','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});
+  const r=await call('/api/notices'+(u.toString()?'?'+u:''),{auth:true});
+  const card=x=>`<div class="card"><span class="tag dst">${esc(NK[x.kind]||x.kind)}</span><h3>${esc(x.author_name)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''} · ${esc(fdate(String(x.created_at).slice(0,10)))}</div><p style="white-space:pre-line">${esc(x.body)}</p><div class="row" style="margin:8px 0 0">${x.mine?`<button class="btn sec" data-c="${esc(x.id)}">Cerrar anuncio</button><button class="btn sec" data-x="${esc(x.id)}">Borrar</button>`:`<button class="btn" data-w="${esc(x.author_id)}" data-n="${esc(x.author_name)}">Escribir</button><button class="lnk" data-r="${esc(x.id)}">Reportar</button>`}</div></div>`;
+  v.innerHTML=`<h2>Red de artistas</h2><p class="meta">Un espacio para que los artistas se encuentren: busco grupo, busco compañía, busco componente. Solo lo ves tú y otros artistas con sesión. Se habla por mensajes internos, sin dar correo ni teléfono.</p>
+  <div class="row"><button class="btn" id="np">Publicar un anuncio</button></div><div id="nf"></div>
+  <form class="fbar" id="rf" novalidate><label>Tipo<select name="kind"><option value="">Todos</option>${Object.entries(NK).map(([k,l])=>`<option value="${k}"${q.kind===k?' selected':''}>${l}</option>`).join('')}</select></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${esc(x)}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" id="rc">Quitar filtros</button></div></form>
+  <div id="rl">${r.length?r.map(card).join(''):'<p>Aún no hay anuncios con esos filtros. Publica el primero.</p>'}</div><div id="re"></div>`;
+  $('#rf').onsubmit=e=>{e.preventDefault();redView(v,Object.fromEntries(new FormData(e.target)));};$('#rc').onclick=()=>redView(v,{});
+  $('#np').onclick=()=>{const nf=$('#nf');if(nf.innerHTML){nf.innerHTML='';return;}
+    nf.innerHTML=`<div class="card"><h3>Nuevo anuncio</h3><form id="nff"><label>Qué buscas<select name="kind" required>${Object.entries(NK).map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select></label><div><b>Disciplinas</b> <span class="meta">(una o varias, hasta 12)</span>${DISC.map(g=>`<details class="dg"><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}">${x}</label>`).join('')}</details>`).join('')}</div><label>Ciudad o zona<input name="location" maxlength="120"></label><label>Tu anuncio (10 a 600 letras)<textarea name="body" rows="4" required minlength="10" maxlength="600" placeholder="Ej: Busco guitarrista para grupo de versiones en Girona"></textarea></label><p class="meta">No pongas teléfono, correo ni datos personales: escríbete con otros artistas por los mensajes de TengoBolo. El anuncio caduca a los 60 días. Puedes cerrarlo o borrarlo cuando quieras.</p><div id="ne"></div><button class="btn" type="submit">Publicar anuncio</button></form></div>`;
+    $('#nff').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const ds=[...e.target.querySelectorAll('input[name=d]:checked')].map(x=>x.value);const b=e.target.querySelector('button[type=submit]');
+      if(ds.length>12){$('#ne').innerHTML=msg('err','Máximo 12 disciplinas.');return;}
+      b.disabled=true;try{await call('/api/notices',{method:'POST',auth:true,body:{kind:f.kind,disciplines:ds,location:(f.location||'').trim(),body:(f.body||'').trim()}});redView(v,{});}catch(err){b.disabled=false;$('#ne').innerHTML=msg('err',err.message);}};};
+  v.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>thread(v,b.dataset.w,b.dataset.n));
+  v.querySelectorAll('[data-c]').forEach(b=>b.onclick=async()=>{try{await call('/api/notices/'+b.dataset.c+'/close',{method:'POST',auth:true,body:{}});redView(v,q);}catch(err){$('#re').innerHTML=msg('err',err.message);}});
+  v.querySelectorAll('[data-x]').forEach(b=>b.onclick=async()=>{if(!confirm('¿Borrar este anuncio?'))return;try{await call('/api/notices/'+b.dataset.x,{method:'DELETE',auth:true});redView(v,q);}catch(err){$('#re').innerHTML=msg('err',err.message);}});
+  v.querySelectorAll('[data-r]').forEach(b=>b.onclick=async()=>{if(!confirm('¿Reportar este anuncio? Se oculta para ti y lo revisaremos.'))return;try{await call('/api/notices/'+b.dataset.r+'/report',{method:'POST',auth:true,body:{}});redView(v,q);}catch(err){$('#re').innerHTML=msg('err',err.message);}});
+});}
 function needLogin(){return `<h2>Necesitas entrar</h2><p>Para ver esto, crea tu cuenta o entra.</p><div class="row"><button class="btn" id="go">Crear cuenta o entrar</button></div>`;}
 async function render(){
   renderNav();const v=$('#view');
   if(tab==='proyectos'&&!session)return teaser(v);
-  if(['artistas','proyectos','publicar','propuestas','perfil','gestoria','mensajes'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
+  if(['artistas','proyectos','publicar','propuestas','perfil','gestoria','mensajes','redartistas'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
   if(tab==='inicio')return home(v);
   if(tab==='entrar')return enter(v);
   if(tab==='precios')return pricing(v);
   if(tab==='quienes')return about(v);
   if(tab==='propuestas')return proposalsView(v);
+  if(tab==='redartistas')return redView(v);
   if(tab==='artistas'){const q=PRE||{};PRE=null;return artists(v,q);}
   if(tab==='proyectos')return projects(v);
   if(tab==='publicar')return publish(v);
@@ -299,6 +322,7 @@ function home(v){
     <ul class="diff">
       <li><b>Todas las disciplinas en un solo sitio.</b> Música, teatro, danza, circo, artes plásticas, imagen y más.</li>
       <li><b>Bolos en equipo.</b> Varios artistas pueden unirse en un mismo bolo.</li>
+      <li><b>Red de artistas.</b> Un espacio para que los artistas se encuentren: busco grupo, busco compañía, busco componente.</li>
       <li><b>Contacto protegido.</b> Los datos del artista solo se desbloquean para clientes que publican un bolo.</li>
       <li><b>Un precio claro para clientes.</b> 25 € por bolo o plan mensual, sin sorpresas.</li>
       <li><b>Para artistas, gratis y sin comisión</b> sobre lo que ganan.</li>
