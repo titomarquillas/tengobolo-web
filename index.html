@@ -252,9 +252,18 @@ function renderNav(){paint();
   const fn=$('#fnav');if(fn){fn.innerHTML=session?'<a href="#" data-t="precios">Precios</a> · <a href="#" data-t="quienes">Quiénes somos</a> · ':'';fn.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.t);});}
 }
 function msg(kind,text){return `<div class="msg ${kind}" role="status">${esc(text)}</div>`;}
+async function teaser(v){
+  v.innerHTML='<h2 class="hbolos">Bolos disponibles</h2><p class="meta">Cargando…</p>';
+  let r=[];try{const x=await fetch(API+'/api/public/bolos');if(x.ok)r=await x.json();}catch{}
+  if(tab!=='proyectos'||session)return;
+  const card=x=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.event_date?' · '+esc(fdate(x.event_date)):''}</div></div>`;
+  v.innerHTML=`<h2 class="hbolos">Bolos disponibles</h2><p class="meta">Estos son los últimos bolos publicados. Regístrate para ver el detalle y enviar tu propuesta.</p>${r.length?r.map(card).join(''):'<p>Aún no hay bolos abiertos. Sé el primero en verlos: regístrate.</p>'}<div class="promo"><b>Regístrate para ver más.</b> Es gratis para artistas.</div><div class="row"><button class="btn" id="rg" data-role="artist">Regístrate</button><button class="btn sec" id="lg">Ya tengo cuenta</button></div>`;
+  $('#rg').onclick=()=>{rolePre='artist';setTab('entrar');};$('#lg').onclick=()=>setTab('entrar');
+}
 function needLogin(){return `<h2>Necesitas entrar</h2><p>Para ver esto, crea tu cuenta o entra.</p><div class="row"><button class="btn" id="go">Crear cuenta o entrar</button></div>`;}
 async function render(){
   renderNav();const v=$('#view');
+  if(tab==='proyectos'&&!session)return teaser(v);
   if(['artistas','proyectos','publicar','propuestas','perfil','gestoria','mensajes'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
   if(tab==='inicio')return home(v);
   if(tab==='entrar')return enter(v);
