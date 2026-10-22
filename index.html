@@ -335,11 +335,6 @@ function home(v){
   
   <section class="hero8">
     <div class="brandhero"><img class="heart" src="logo-heart-b.png" alt="Corazón negro brillante con una B, logo de TengoBolo" width="640" height="640"><span class="wordmark">tengo<b>b</b>olo</span><span class="leitmotiv">La red de artistas a tu alcance</span></div>
-    <div class="intro">
-      <h2 class="mega">Tu próximo bolo <em>empieza aquí</em></h2>
-      <p class="lead">Enseña tu trabajo, encuentra bolos y ponte en contacto.</p>
-      <div class="row"><button class="btn" id="a">${session?'Ver bolos':'Crear cuenta gratis'}</button><button class="lnk" data-go="precios">Ver precios →</button></div>
-    </div>
     <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Mosaico en blanco y negro de artistas: pintores, músicos y un escultor" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
   </section>
   <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Artistas para tu evento, a tu alcance</h2>
@@ -375,7 +370,7 @@ function home(v){
   <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
   `;
   setupInstall();
-  $('#a').onclick=()=>setTab(session?'proyectos':'entrar');
+  {const ab=$('#a');if(ab)ab.onclick=()=>setTab(session?'proyectos':'entrar');}
   {const bb=$('#bwb');if(bb)bb.onclick=()=>{if(session){setTab('redartistas');}else{rolePre='artist';setTab('entrar');}};}
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
   v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{artPre=b.dataset.d;rolePre='agency';setTab(session?'publicar':'entrar');});
