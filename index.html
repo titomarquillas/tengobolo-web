@@ -207,8 +207,8 @@ html.sa footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 const API='https://bolo-backend-pd6z.onrender.com';
 const GCOL=['#9b8fc7','#5aa3ab','#c49a82','#b07a63','#c79aad','#8a8a8a','#8fae85','#c7ac62','#8a8a8a'];
 function groupsHtml(){return '<div class="groups">'+DISC.filter(g=>g[0]!=='Otras').map((g,i)=>`<section class="gc" style="--gc:${GCOL[i%GCOL.length]}"><small>${String(i+1).padStart(2,'0')}</small><h3>${g[0]}</h3><div class="chips">${g[1].map(x=>`<button type="button" class="chip" data-d="${esc(x)}">${esc(x)}</button>`).join('')}</div></section>`).join('')+'</div>';}
-function freeBanner(){return `<div class="promo"><b>Artistas: gratis, siempre.</b> Agencias, empresas y particulares: alta y primer bolo gratis; después, una cuota plana mensual, sin comisión (<a href="#" data-go="precios">ver Precios</a>).</div>`;}
-function payBox(){return `<div class="promo"><b>Tu primer bolo era gratis.</b> Para publicar más bolos necesitas el plan Cliente (cuota plana mensual o anual, sin comisión; <a href="#" data-go="precios">ver Precios</a>). Todavía no se cobra nada: si tienes una invitación de lanzamiento, escríbenos a <a href="mailto:tengobolo@proton.me">tengobolo@proton.me</a> y te activamos tus 15 días de acceso completo gratis.</div>`;}
+function freeBanner(){return `<div class="promo"><b>Artistas: perfil gratis, siempre.</b> Clientes: desde 25 € por bolo, sin comisión (<a href="#" data-go="precios">ver Precios</a>). Todavía no se cobra nada.</div>`;}
+function payBox(){return `<div class="promo"><b>Para publicar más bolos necesitas un plan.</b> Bolo suelto 25 €, plan mensual 49 € o anual 490 € (sin IVA, sin comisión; <a href="#" data-go="precios">ver Precios</a>). Todavía no se cobra nada.</div>`;}
 let session=null, me=null, tab='inicio', isAdmin=false;
 const RK='tb_rt';
 function keep(){try{if(session&&session.refresh_token)localStorage.setItem(RK,session.refresh_token);else localStorage.removeItem(RK);}catch{}}
@@ -279,7 +279,7 @@ function home(v){
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
   <div class="duo">
     <div class="du a"><span class="eyebrow">Artistas</span><h3>Muestra tu obra</h3><p>Portfolio y propuestas a bolos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Crear mi perfil</button></div>
-    <div class="du b"><span class="eyebrow">Agencias, empresas y particulares</span><h3>Encuentra talento</h3><p>Alta y primer bolo gratis. Después, una cuota plana mensual, sin comisión.</p>
+    <div class="du b"><span class="eyebrow">Agencias, empresas y particulares</span><h3>Encuentra talento</h3><p>Desde 25 € por bolo o un plan mensual, sin comisión. Todavía no se cobra nada.</p>
       <div class="sub"><small>Agencias</small><div class="chips"><button type="button" class="chip" data-ev="Activación de marca">Activación de marca</button><button type="button" class="chip" data-ev="Lanzamiento o presentación">Lanzamiento</button><button type="button" class="chip" data-ev="Feria, congreso o convención">Feria o congreso</button><button type="button" class="chip" data-ev="Gala o ceremonia">Gala o premios</button><button type="button" class="chip" data-ev="Concierto o festival">Festival</button></div></div>
       <div class="sub"><small>Empresas</small><div class="chips"><button type="button" class="chip" data-ev="Evento de empresa">Evento corporativo</button><button type="button" class="chip" data-ev="Cena de empresa">Cena de empresa</button><button type="button" class="chip" data-ev="Inauguración o exposición">Inauguración</button><button type="button" class="chip" data-ev="Evento de empresa">Team building</button><button type="button" class="chip" data-ev="Aniversario">Aniversario de empresa</button></div></div>
       <div class="sub"><small>Particulares</small><div class="chips"><button type="button" class="chip" data-ev="Boda">Boda</button><button type="button" class="chip" data-ev="Cumpleaños o fiesta privada">Cumpleaños</button><button type="button" class="chip" data-ev="Aniversario">Aniversario</button><button type="button" class="chip" data-ev="Comunión o bautizo">Comunión o bautizo</button><button type="button" class="chip" data-ev="Despedida de soltero/a">Despedida</button><button type="button" class="chip" data-ev="Cumpleaños o fiesta privada">Fiesta privada</button></div></div>
@@ -290,7 +290,7 @@ function home(v){
   <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Un punto de encuentro entre el talento y quien lo necesita</h2>
     <p>TengoBolo conecta a artistas (músicos, pintores, escultores, poetas, performers, solos o en grupo) con agencias, locales y particulares que buscan una actuación para su evento: una boda, un cumpleaños, una inauguración o una noche en un bar.</p>
     <p>Los clientes publican lo que necesitan, con fecha y presupuesto, y los artistas responden con su propuesta. Tú te pones de acuerdo directamente con la otra parte.</p>
-    <p><b>Nuestra política es simple:</b> los artistas usan la plataforma gratis y sin límite; los clientes tienen su primer bolo gratis y después una cuota plana. Nunca cobramos comisión sobre lo que ganas. TengoBolo solo pone en contacto a las partes y no interviene en el contrato entre ellas.</p>
+    <p><b>Nuestra política es simple:</b> los artistas usan la plataforma gratis y sin límite; los clientes pagan por publicar bolos (desde 25 €) o con un plan. Nunca cobramos comisión sobre lo que ganas. TengoBolo solo pone en contacto a las partes y no interviene en el contrato entre ellas.</p>
   </section>
   ${adSlot('inicio')}
   <div class="sech"><h2>Disciplinas artísticas</h2><span>Más de 80 formas de crear</span></div>
@@ -371,26 +371,24 @@ function about(v){
   <p class="sub">Estos datos se completarán cuando el titular formalice su alta de actividad.</p>`;
 }
 function pricing(v){
-  v.innerHTML=`<h2>Precios</h2><div class="promo"><b>Promoción de lanzamiento:</b> las cuentas invitadas tienen <b>15 días de acceso completo gratis</b>. La fecha de fin de la promoción se publicará en esta página antes de que empiece.</div>${freeBanner()}
-  <p><b>Artistas:</b> gratis, con propuestas sin límite. <b>Agencias, particulares y empresas:</b> alta y primer bolo gratis; después, una cuota plana. Nunca cobramos comisión.</p>
-  <div class="card"><h3>Artista</h3><p><b>0 €</b>. Perfil, bolos y propuestas sin límite.</p></div>${DESTACADO?`<div class="card"><h3>Artista · Destacado <span class="tag dst">Opcional</span></h3><p><b><span id="pr-f">5</span> € al mes</b> (precio orientativo, pendiente de confirmar con el gestor). Tu perfil sale el primero en las listas de artistas y lleva la marca "Destacado". Lo demás no cambia: el plan gratuito sigue siendo gratis y sin límite, siempre. De momento no se cobra nada; se activará con el lanzamiento.</p><div id="pay-f"></div></div>`:''}
-  <div class="card"><h3>Cliente: primer bolo</h3><p><b>0 €</b>. Alta gratis y tu primer bolo publicado gratis.</p></div>
-  <div class="card"><h3>Cliente · Plan 1, mensual</h3><p><b><span id="pr-m">15</span> € al mes</b>, suscripción mensual. Bolos ilimitados, sin comisión. Cancelas cuando quieras.</p><div id="pay-m"></div></div>
-  <div class="card"><h3>Cliente · Plan 2, anual</h3><p><b><span id="pr-a">150</span> € al año</b> (equivale a <span id="pr-am">12,50</span> € al mes: 2 meses gratis). Bolos ilimitados, sin comisión.</p><div id="pay-a"></div></div>
-  <p class="meta">Precios sin IVA, orientativos mientras el gestor confirma cifras e IVA.</p>
+  v.innerHTML=`<h2>Precios</h2><div class="promo"><b>Todavía no se cobra nada.</b> Estos son los precios previstos para el lanzamiento. Todos sin IVA y sin comisión sobre lo que ganas o cobras.</div>
+  <h3>Clientes: agencias, empresas y particulares</h3>
+  <div class="card"><h3>Bolo suelto</h3><p><b><span id="pr-s">25</span> €</b> por bolo. Tu bolo publicado y 30 días para ver y contactar artistas. Pago único.</p><div id="pay-s"></div></div>
+  <div class="card"><h3>Plan mensual</h3><p><b><span id="pr-m">49</span> € al mes</b>. Bolos y contactos ilimitados. Cancelas cuando quieras.</p><div id="pay-m"></div></div>
+  <div class="card"><h3>Plan anual</h3><p><b><span id="pr-a">490</span> € al año</b> (2 meses gratis frente al mensual). Bolos y contactos ilimitados.</p><div id="pay-a"></div></div>
+  <h3>Artistas</h3>
+  <div class="card"><h3>Basic <span class="tag dst">Gratis</span></h3><p><b>0 €</b>. Perfil, bolos y propuestas sin límite, siempre. Tu perfil aparece en el listado cuando está completo (ciudad, disciplina, bio y foto).</p></div>
+  <div class="card"><h3>Pro <span class="tag dst">Opcional</span></h3><p><b><span id="pr-p">6</span> € al mes</b> o <b><span id="pr-pa">60</span> € al año</b>. Tu perfil sale el primero en las listas y con la marca "Destacado". El plan Basic no pierde nada.</p><div id="pay-p"></div></div>
+  <p class="meta">Pago con tarjeta, a través de Stripe: el precio con tarjeta es el precio de la lista, sin recargo. Los planes anuales también se pueden pagar por transferencia con 10 € de descuento en el plan de cliente (480 €) y 2 € en el Pro (58 €); escríbenos a <a href="mailto:tengobolo@proton.me">tengobolo@proton.me</a>. IVA según corresponda al lanzamiento.</p>
 <h2>Preguntas frecuentes</h2>
   <details class="card"><summary><b>¿Cobráis comisión?</b></summary><p>No. Nunca cobramos comisión por los bolos. El trato y el pago entre artista y cliente son directos.</p></details>
-  <details class="card"><summary><b>¿Es gratis para los artistas?</b></summary><p>Sí. Crear el perfil y enviar propuestas es gratis y sin límite.</p></details>${DESTACADO?`
-  <details class="card"><summary><b>¿Qué es Destacado?</b></summary><p>Una opción de visibilidad para artistas: por una cuota mensual pequeña tu perfil sale el primero en las listas y con la marca "Destacado". Es totalmente opcional: quien no lo quiera sigue con el plan gratuito, gratis y sin límite, sin perder nada. Precio orientativo pendiente de confirmar; de momento no se cobra nada.</p></details>`:''}
-  <details class="card"><summary><b>¿Qué es la promoción de lanzamiento?</b></summary><p>Las cuentas invitadas al lanzamiento tienen 15 días de acceso completo gratis, y la fecha de fin se publicará en esta página. Después siguen las condiciones normales: los artistas gratis siempre; los clientes con su primer bolo gratis y después el plan.</p></details>
-  <details class="card"><summary><b>¿Qué pasa con mi primer bolo como cliente?</b></summary><p>Es gratis. Para publicar más bolos necesitas el plan Cliente (15 € al mes o 150 € al año).</p></details>
-  <details class="card"><summary><b>¿Cómo se paga el plan?</b></summary><p id="payfaq">De momento no se cobra nada. Cuando se activen los pagos se podrá pagar con tarjeta o domiciliación bancaria (SEPA) a través de una pasarela segura; nunca guardamos tu tarjeta en TengoBolo.</p></details>
-  <details class="card"><summary><b>¿Puedo cancelar cuando quiera?</b></summary><p>Sí, el plan mensual se puede cancelar en cualquier momento.</p></details>
-  <details class="card"><summary><b>¿Los precios llevan IVA?</b></summary><p>Los precios se muestran sin IVA. Estamos confirmando el tratamiento del IVA.</p></details>
-  <details class="card"><summary><b>¿Cuándo se ven los datos de contacto?</b></summary><p>Cuando el cliente acepta una propuesta.</p></details>
-  <div id="payhow"><h2>Cómo se pagará cuando se activen los pagos</h2>
-  <ol><li>Elige tu plan (Cliente mensual o anual) y pulsa su botón de pago.</li><li>Pagarás en la página segura de la pasarela (Stripe), con tarjeta o domiciliación bancaria SEPA.</li><li>Tu plan se activa solo al completarse el pago. Nunca guardamos tu tarjeta en TengoBolo.</li></ol>
-  <p class="sub">Todavía no se cobra nada: el pago se activará con el lanzamiento. Esta sección es un marcador de posición.</p></div>`;
+  <details class="card"><summary><b>¿Es gratis para los artistas?</b></summary><p>Sí. Crear el perfil y enviar propuestas es gratis y sin límite. Pro es opcional.</p></details>
+  <details class="card"><summary><b>¿Qué incluye Pro?</b></summary><p>Visibilidad: tu perfil sale el primero en las listas y con la marca "Destacado".</p></details>
+  <details class="card"><summary><b>¿Por qué mi perfil no aparece en el listado?</b></summary><p>Para aparecer necesitas ciudad, al menos una disciplina, una bio de 30 letras o más y foto de perfil. Lo ves en Mi perfil.</p></details>
+  <details class="card"><summary><b>¿Cuándo se ven los datos de contacto?</b></summary><p>Los clientes con plan o bolo suelto activo pueden ver los perfiles completos y escribir a los artistas por mensajes internos. El teléfono del artista solo se muestra si él lo añade.</p></details>
+  <details class="card"><summary><b>¿Cómo se paga?</b></summary><p id="payfaq">De momento no se cobra nada. Cuando se activen los pagos: tarjeta en la página segura de Stripe (nunca guardamos tu tarjeta), o transferencia en los planes anuales.</p></details>
+  <details class="card"><summary><b>¿Puedo cancelar cuando quieras?</b></summary><p>Sí, los planes mensuales se cancelan en cualquier momento.</p></details>
+  <details class="card"><summary><b>¿Los precios llevan IVA?</b></summary><p>Los precios se muestran sin IVA. El IVA se detallará en la factura.</p></details>`;
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.go);});
   loadPayCfg();
 }
@@ -399,27 +397,25 @@ function pricing(v){
 async function loadPayCfg(){
   try{
     const r=await fetch(API+'/api/payments/config');if(!r.ok)return;const c=await r.json();
-    if(!c||!c.enabled)return;
     if(session&&!me){try{await getMe();}catch{}}
-    const eur=n=>String(n).replace('.',',');
-    if(c.prices&&c.prices.monthly){$('#pr-m').textContent=eur(c.prices.monthly);}
-    if(c.prices&&c.prices.annual){$('#pr-a').textContent=eur(c.prices.annual);$('#pr-am').textContent=eur(Math.round(c.prices.annual/12*100)/100);}
-    if(c.prices&&c.prices.featured){const pf=$('#pr-f');if(pf)pf.textContent=eur(c.prices.featured);}
-    const pfBox=$('#pay-f');if(pfBox)pfBox.innerHTML=session&&me&&me.role==='artist'?'<button class="btn" data-plan="featured">Hacerme Destacado</button>':'<button class="btn" data-goentrar="1">Entra o crea tu cuenta de artista</button>';
-    const btn=(plan,label)=>session&&me&&me.role!=='artist'
-      ?`<button class="btn" data-plan="${plan}">${label}</button>`
-      :`<button class="btn" data-goentrar="1">Entra o crea tu cuenta para pagar</button>`;
-    const m=$('#pay-m'),a=$('#pay-a');if(!m||!a)return;
-    m.innerHTML=btn('monthly','Pagar plan mensual');a.innerHTML=btn('annual','Pagar plan anual');
-    const pf=$('#payfaq');if(pf)pf.textContent='Con tarjeta o domiciliación bancaria (SEPA), a través de Stripe. Pagas en la página segura de Stripe; tu plan se activa solo y nunca guardamos tu tarjeta.';
-    const ph=$('#payhow');if(ph)ph.innerHTML=`<h2>Cómo se paga</h2><ol><li>Elige tu plan y pulsa su botón de pago.</li><li>Paga con tarjeta o domiciliación SEPA en la página segura de Stripe.</li><li>Tu plan se activa al completarse el pago y se renueva solo; puedes cancelarlo cuando quieras escribiéndonos.</li></ol>`;
+    const eur=n=>String(n).replace('.',',');const P=c.prices||{};
+    [['pr-s','single'],['pr-m','monthly'],['pr-a','annual'],['pr-p','pro_monthly'],['pr-pa','pro_annual']].forEach(([id,k])=>{const e=$('#'+id);if(e&&P[k])e.textContent=eur(P[k]);});
+    const off=(t)=>`<button class="btn" disabled>${t}</button><p class="sub">Pagos todavía desactivados.</p>`;
+    const isA=session&&me&&me.role==='artist',isC=session&&me&&me.role!=='artist';
+    const ent='<button class="btn" data-goentrar="1">Entra o crea tu cuenta</button>';
+    const btn=(plan,label,ok)=>!session?ent:!ok?'<p class="sub">Este plan es para '+(plan.startsWith('pro')?'artistas':'clientes')+'.</p>':c.enabled?`<button class="btn" data-plan="${plan}">${label}</button>`:off(label);
+    const set=(id,h)=>{const e=$('#'+id);if(e)e.innerHTML=h;};
+    set('pay-m',btn('monthly','Elegir plan mensual',isC));set('pay-a',btn('annual','Elegir plan anual',isC));
+    set('pay-s',!session?ent:isC?'<p class="sub">Se paga al publicar un bolo.</p>':'<p class="sub">Este plan es para clientes.</p>');
+    set('pay-p',!session?ent:!isA?'<p class="sub">Este plan es para artistas.</p>':c.enabled?'<button class="btn" data-plan="pro_monthly">Pro mensual</button> <button class="btn sec" data-plan="pro_annual">Pro anual</button>':off('Hacerme Pro'));
     document.querySelectorAll('[data-plan]').forEach(b=>b.onclick=async()=>{
       b.disabled=true;try{const d=await call('/api/payments/checkout',{method:'POST',auth:true,body:{plan:b.dataset.plan}});location.href=d.url;}
       catch(e){b.disabled=false;alert(e.message||'No se pudo preparar el pago.');}
     });
     document.querySelectorAll('[data-goentrar]').forEach(b=>b.onclick=()=>setTab('entrar'));
-  }catch(e){}
+  }catch{}
 }
+
 const STAT={pending:'Pendiente',accepted:'Aceptada',rejected:'Rechazada'};
 function proposalsView(v){loading(v,async()=>{
   const m=await getMe();
@@ -650,7 +646,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
     const dl=f.deadline||null;if(dl&&dl>f.event_date){$('#e').innerHTML=msg('err','La fecha límite no puede ser posterior al bolo.');return;}
     const b=$('#ok');b.disabled=true;
     try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:fichaText(f)+f.description,disciplines:[((f.art_other||'').trim()||f.art)],location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
-      v.innerHTML=msg('ok','Bolo publicado. Ya aparece en Bolos. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}
+      v.innerHTML=msg('ok','Bolo guardado. Todavía no se cobra nada, así que ya aparece en Bolos. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}
     catch(err){b.disabled=false;if(err.status===402){$('#e').innerHTML=payBox();}else $('#e').innerHTML=msg('err',err.message);}};});}
 // Reduce la foto en el navegador (máx. 1600 px, JPEG) antes de subirla: así caben muchas en el almacén gratuito.
 function fichaText(f){const r=[['Tipo de evento',f.evtype],['Espacio',f.space],['Asistentes',f.guests],['Horario',f.t_from?(f.t_from+(f.t_to?' a '+f.t_to:'')):''],['Actuación',f.dur]].filter(x=>x[1]);return r.length?r.map(x=>x[0]+': '+x[1]).join('\n')+'\n\n':'';}
@@ -663,9 +659,10 @@ async function shrink(file){
   return await new Promise((ok,ko)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(',')[1]);fr.onerror=()=>ko(new Error('No se pudo leer la foto.'));fr.readAsDataURL(blob);});
 }
 function profile(v){loading(v,async()=>{const m=await getMe();const full=await call('/api/profiles/'+encodeURIComponent(m.id),{auth:true});const md=mediaHtml(full.media,true);
-  v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?'Plan: gratuito, propuestas sin límite':(m.plan==='free'?'Plan: gratuito (primer bolo gratis)':'Plan Cliente: bolos ilimitados')}</p>
+  v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?(m.pro_active?'Plan: Pro':'Plan: Basic (gratis), propuestas sin límite'):(m.plan==='free'?'Plan: sin plan contratado (todavía no se cobra)':'Plan Cliente: bolos ilimitados')}</p>
   <div class="head">${avatar(m)}<div><label>Foto de perfil<input type="file" id="av" accept="image/*"></label></div></div><div id="ae"></div>
-  ${DESTACADO&&m.role==='artist'?`<div class="promo"><b>Destacado (opcional):</b> tu perfil, el primero en las listas y con la marca "Destacado", por una cuota mensual pequeña (precio orientativo, aún sin cobrar). Tu plan gratuito no cambia, siempre. <a href="#" data-go="precios">Ver Precios</a></div>`:''}
+  ${m.role==='artist'?(m.complete?`<div class="msg ok">Tu perfil está completo y aparece en el listado de artistas.</div>`:`<div class="promo"><b>Completa tu perfil para aparecer en el listado.</b> Te falta: ${m.missing.map(esc).join(', ')}.</div>`):''}
+  ${DESTACADO&&m.role==='artist'?`<div class="promo"><b>Pro (opcional):</b> tu perfil, el primero en las listas y con la marca "Destacado", por 6 € al mes o 60 € al año (sin IVA). Basic sigue siendo gratis, siempre. <a href="#" data-go="precios">Ver Precios</a></div>`:''}
   ${m.role==='artist'?`<div class="card" style="margin:8px 0"><label class="chk" style="align-items:flex-start"><input type="checkbox" name="listed"${m.listed!==false?' checked':''} style="margin-top:4px"> <span><b>Aparecer en el listado de artistas</b><br><span class="meta">Los usuarios registrados verán solo tu nombre y tu ciudad. Tu ficha completa y el contacto solo se desbloquean para clientes que publican un bolo. Nunca se muestra tu correo ni tu teléfono: te escriben por mensajes internos. Puedes quitarlo cuando quieras.</span></span></label><label class="chk" style="align-items:flex-start;margin-top:12px"><input type="checkbox" name="showcase"${m.showcase?' checked':''} style="margin-top:4px"> <span><b>Aparecer en la portada</b><br><span class="meta">Los visitantes verán tu nombre, tu foto, tus disciplinas y tu ciudad en la sección "Artistas en la red". Nunca tu correo ni tu contacto. Puedes quitarlo cuando quieras.</span></span></label></div>`:''}
   <form id="f"><label>Nombre<input name="name" required minlength="2" value="${esc(m.name)}"></label><label>Sobre mí<textarea name="bio" rows="4">${esc(m.bio)}</textarea></label><div><b>Disciplinas artísticas</b> <span class="meta">(máximo 12)</span>${DISC.map(g=>`<details class="dg"${g[1].some(x=>(m.disciplines||[]).includes(x))?' open':''}><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}"${(m.disciplines||[]).includes(x)?' checked':''}>${x}</label>`).join('')}</details>`).join('')}</div><label>Otras disciplinas (opcional, separadas por comas)<input name="disciplines_other" value="${esc((m.disciplines||[]).filter(x=>!DISC_ALL.includes(x)).join(', '))}"></label><label>Ciudad<input name="location" value="${esc(m.location)}"></label>${m.role==='artist'?`<label>Teléfono de contacto (opcional)<input name="phone" type="tel" inputmode="tel" maxlength="25" value="${esc(m.phone||'')}" placeholder="+34 600 000 000"></label><p class="meta" style="margin-top:-6px">Aviso: si lo escribes, solo lo verán los clientes que han desbloqueado el contacto (publican un bolo) y los clientes a los que envíes una propuesta. Nunca aparece en el listado ni en la portada. Es voluntario y puedes borrarlo cuando quieras.</p>`:''}<label>Enlace a tu portfolio (https://…)<input name="portfolio_url" value="${esc(m.portfolio_url)}"></label>
   <h3 style="margin:8px 0 0">Redes</h3>${SOCIALS.map(([k,n])=>`<label>${n}${k==='website'?' (https://…)':' (enlace completo, https://…)'}<input name="${k}" type="url" value="${esc(m[k])}" placeholder="https://"></label>`).join('')}
