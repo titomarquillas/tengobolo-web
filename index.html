@@ -556,7 +556,7 @@ function mediaHtml(media,editable){
   return {photos,videos,nPhotos:ph.length,nVideos:vi.length};
 }
 let PRE=null;let rolePre=null;let evPre=null;let artPre=null;
-const qs=(q,page)=>{const u=new URLSearchParams();['q','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});if(page>1)u.set('page',page);const t=u.toString();return t?'?'+t:'';};
+const qs=(q,page)=>{const u=new URLSearchParams();['q','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});if(q.all)u.set('all','1');if(page>1)u.set('page',page);const t=u.toString();return t?'?'+t:'';};
 const filterBar=q=>`<form class="fbar" novalidate><label>Buscar<input name="q" maxlength="60" value="${esc(q.q||'')}" placeholder="Nombre o palabra"></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${x}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row" style="margin:0"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" data-clear>Quitar filtros</button></div></form>`;
 const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim());
 function wireFilters(v,q,go){const f=v.querySelector('form.fbar');f.onsubmit=e=>{e.preventDefault();go(Object.fromEntries(new FormData(f)));};f.querySelector('[data-clear]').onclick=()=>go({});}
@@ -593,8 +593,10 @@ function boloInfo(x){const t=[];
 function projects(v,q={}){loading(v,async()=>{let page=1;const [p,m]=await Promise.all([call('/api/projects'+qs(q,1),{auth:true}),getMe()]);
   const all=[...p];
   const card=(x,i)=>`<div class="card"><h3>${esc(x.title)}</h3>${x.owner_name?`<div class="meta">Publicado por <b>${esc(x.owner_name)}</b>${x.owner_location?' · '+esc(x.owner_location):''}</div>`:''}<div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p style="white-space:pre-line">${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''}</div>`;
-  v.innerHTML='<h2 class="hbolos">BOLOS</h2>'+filterBar(q)+`<div id="res">${p.length?p.map(card).join(''):(hasQ(q)?'<p>No hay bolos con esos filtros. Prueba con menos filtros.</p>':'<p>No hay bolos abiertos todavía.</p>')}</div>`+(p.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
-  wireFilters(v,q,nq=>projects(v,nq));
+  const mineBar=m.role==='artist'?`<p class="meta">${q.all?'Ves todos los bolos.':'Ves los bolos de tus disciplinas.'} <a href="#" id="allt">${q.all?'Ver solo los míos':'Ver todos'}</a></p>`:'';
+  v.innerHTML='<h2 class="hbolos">BOLOS</h2>'+mineBar+filterBar(q)+`<div id="res">${p.length?p.map(card).join(''):(hasQ(q)?'<p>No hay bolos con esos filtros. Prueba con menos filtros.</p>':'<p>No hay bolos abiertos todavía.</p>')}</div>`+(p.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
+  wireFilters(v,q,nq=>projects(v,{...nq,all:q.all}));
+  const al=$('#allt');if(al)al.onclick=e=>{e.preventDefault();projects(v,{...q,all:q.all?'':'1'});};
   const bind=()=>v.querySelectorAll('button[data-i]:not([data-b])').forEach(b=>{b.dataset.b='1';b.onclick=()=>{const x=all[b.dataset.i],box=$('#pf'+b.dataset.i);
     box.innerHTML=`<form><label>Tu propuesta<textarea name="message" required minlength="10" rows="4"></textarea></label><label>Importe en € (opcional)<input name="amount" type="number" min="0"></label>${x.requires_insurance?'<label class="chk"><input type="checkbox" name="ins" required> Confirmo que tengo seguro de responsabilidad civil</label>':''}<div class="e"></div><button class="btn" type="submit">Enviar</button></form>`;b.style.display='none';
     box.querySelector('form').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
