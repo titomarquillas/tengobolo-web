@@ -281,6 +281,17 @@ function home(v){
     </div>
     <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Mosaico en blanco y negro de artistas: pintores, músicos y un escultor" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
   </section>
+  <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Artistas para tu evento, a tu alcance</h2>
+    <p>TengoBolo conecta artistas (músicos, pintores, bailarines, actores, magos, poetas y más, solos o en grupo) con agencias, empresas y particulares que buscan una actuación para su evento: una boda, un cumpleaños, una inauguración o una noche en un bar.</p>
+    <p>Publicas lo que necesitas, con fecha y presupuesto, y los artistas te envían su propuesta. El acuerdo es directo entre las dos partes.</p>
+    <p><b>Para artistas es gratis, siempre.</b> Para clientes, desde 25 € por bolo o con un plan. Sin comisión sobre lo que gana el artista. TengoBolo solo pone en contacto a las partes y no interviene en el contrato.</p>
+  </section>
+  <div class="sech"><h2>Cómo funciona</h2><span>Tres pasos</span></div>
+  <div class="cols3">
+    <div class="cl"><span class="n">1</span><div><b>Crea tu perfil</b><span class="d">Disciplina, ciudad, fotos y vídeos de tu trabajo.</span></div></div>
+    <div class="cl"><span class="n">2</span><div><b>Publica o encuentra un bolo</b><span class="d">Las agencias publican con fecha y presupuesto.</span></div></div>
+    <div class="cl"><span class="n">3</span><div><b>Propón y contrata</b><span class="d">La agencia elige y os ponéis en contacto.</span></div></div>
+  </div>
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
   <div class="duo">
     <div class="du a"><span class="eyebrow">Artistas</span><h3>Soy artista</h3><p>Portfolio y propuestas a bolos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Regístrate</button></div>
@@ -288,22 +299,12 @@ function home(v){
       <button class="btn" data-go="entrar" data-role="agency">Regístrate</button></div>
   </div>
   <section id="red" hidden></section>
-  <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
-  <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Artistas para tu evento, a tu alcance</h2>
-    <p>TengoBolo conecta artistas (músicos, pintores, bailarines, actores, magos, poetas y más, solos o en grupo) con agencias, empresas y particulares que buscan una actuación para su evento: una boda, un cumpleaños, una inauguración o una noche en un bar.</p>
-    <p>Publicas lo que necesitas, con fecha y presupuesto, y los artistas te envían su propuesta. El acuerdo es directo entre las dos partes.</p>
-    <p><b>Para artistas es gratis, siempre.</b> Para clientes, desde 25 € por bolo o con un plan. Sin comisión sobre lo que gana el artista. TengoBolo solo pone en contacto a las partes y no interviene en el contrato.</p>
-  </section>
   ${adSlot('inicio')}
   <div class="sech"><h2>Disciplinas artísticas</h2><span>Más de 80 formas de crear</span></div>
   <p class="meta" style="margin:0 0 14px">Elige una disciplina y publica tu bolo: los artistas que la practican te envían su propuesta.</p>
   ${groupsHtml()}
-  <div class="sech"><h2>Cómo funciona</h2><span>Tres pasos</span></div>
-  <div class="cols3">
-    <div class="cl"><span class="n">1</span><div><b>Crea tu perfil</b><span class="d">Disciplina, ciudad, fotos y vídeos de tu trabajo.</span></div></div>
-    <div class="cl"><span class="n">2</span><div><b>Publica o encuentra un bolo</b><span class="d">Las agencias publican con fecha y presupuesto.</span></div></div>
-    <div class="cl"><span class="n">3</span><div><b>Propón y contrata</b><span class="d">La agencia elige y os ponéis en contacto.</span></div></div>
-  </div>`;
+  <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
+  `;
   setupInstall();
   $('#a').onclick=()=>setTab(session?'proyectos':'entrar');
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
