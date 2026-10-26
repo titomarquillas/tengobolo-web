@@ -479,11 +479,37 @@ async function loadPayCfg(){
     set('pay-s',!session?ent:isC?'<p class="sub">Se paga al publicar un bolo.</p>':'<p class="sub">Este plan es para clientes.</p>');
     set('pay-p',!session?ent:!isA?'<p class="sub">Este plan es para artistas.</p>':c.enabled?'<button class="btn" data-plan="pro_monthly">Pro mensual</button> <button class="btn sec" data-plan="pro_annual">Pro anual</button>':off('Hacerme Pro'));
     document.querySelectorAll('[data-plan]').forEach(b=>b.onclick=async()=>{
-      b.disabled=true;try{const d=await call('/api/payments/checkout',{method:'POST',auth:true,body:{plan:b.dataset.plan}});location.href=d.url;}
+      b.disabled=true;try{const d=await call('/api/payments/checkout',{method:'POST',auth:true,body:{plan:b.dataset.plan,method:document.getElementById('pay-method')?.value||'card'}});location.href=d.url;}
       catch(e){b.disabled=false;alert(e.message||'No se pudo preparar el pago.');}
     });
+    if(c.enabled&&c.methods?.sepa_debit){const e=document.querySelector('#view h3');if(e)e.insertAdjacentHTML('beforebegin','<label>Método de pago<select id="pay-method"><option value="card">Tarjeta</option><option value="sepa_debit">Domiciliación SEPA</option></select></label><p class="meta">La domiciliación requiere un mandato y tarda en confirmarse. El acceso se activa cuando se confirme el pago.</p>');}
+    if(c.enabled&&c.methods?.manual_transfer&&session){const e=document.getElementById(isA?'pay-p':'pay-a');if(e){const b=document.createElement('button');b.className='btn sec';b.textContent='Pedir transferencia anual';b.onclick=async()=>{b.disabled=true;try{const d=await call('/api/payments/manual-transfer',{method:'POST',auth:true,body:{plan:isA?'pro_annual':'annual'}});const box=document.createElement('div');box.className='card';box.textContent='Pedido '+d.reference+' · '+new Intl.NumberFormat('es-ES',{style:'currency',currency:d.currency}).format(d.amount_total/100)+'. '+d.instructions+' El plan se activará solo cuando el titular compruebe el ingreso.';e.appendChild(box);}catch(x){alert(x.message);}finally{b.disabled=false;}};b.style.marginTop='10px';e.appendChild(b);}}
     document.querySelectorAll('[data-goentrar]').forEach(b=>b.onclick=()=>setTab('entrar'));
   }catch{}
+}
+
+async function loadManualTransfersAdmin(){
+ const box=document.getElementById('manual-transfers-admin');if(!box||!session||!isAdmin)return;
+ try{const config=await (await fetch(API+'/api/payments/config')).json();if(!config.enabled||!config.methods?.manual_transfer)return;const rows=await call('/api/admin/transfers',{auth:true});if(!rows.length)return;
+ const h=document.createElement('h3');h.textContent='Transferencias pendientes de comprobar';box.appendChild(h);
+ const warning=document.createElement('p');warning.className='meta';warning.textContent='Comprueba tú el ingreso en Revolut Pro. Un justificante del cliente no basta. No compartas acceso al banco.';box.appendChild(warning);
+ rows.forEach(o=>{const card=document.createElement('form');card.className='card';const title=document.createElement('p');title.textContent=o.reference+' · '+o.plan+' · '+new Intl.NumberFormat('es-ES',{style:'currency',currency:o.currency}).format(o.amount_total/100);card.appendChild(title);
+ const label=document.createElement('label');label.textContent='Fecha del ingreso (día/mes/año)';const date=document.createElement('input');date.type='text';date.placeholder='25/10/2026';date.inputMode='numeric';date.pattern='[0-9]{2}/[0-9]{2}/[0-9]{4}';date.required=true;label.appendChild(date);card.appendChild(label);const timeLabel=document.createElement('label');timeLabel.textContent='Hora del ingreso en España (24 horas)';const time=document.createElement('input');time.type='text';time.placeholder='22:00';time.inputMode='numeric';time.pattern='([01][0-9]|2[0-3]):[0-5][0-9]';time.required=true;timeLabel.appendChild(time);card.appendChild(timeLabel);
+ const checkLabel=document.createElement('label');checkLabel.className='chk';const check=document.createElement('input');check.type='checkbox';check.required=true;checkLabel.append(check,document.createTextNode('He comprobado en mi banco el ingreso completo con esta referencia.'));card.appendChild(checkLabel);
+ const b=document.createElement('button');b.className='btn';b.type='submit';b.textContent='Confirmar ingreso y activar plan';card.appendChild(b);const status=document.createElement('p');status.setAttribute('role','status');card.appendChild(status);
+ card.onsubmit=async e=>{e.preventDefault();if(!check.checked||!date.value||!time.value)return;if(Intl.DateTimeFormat().resolvedOptions().timeZone!=='Europe/Madrid'){status.textContent='Para registrar la hora, configura este dispositivo en la zona horaria de Madrid.';return;}const parts=date.value.split('/').map(Number);const stamp=new Date(parts[2],parts[1]-1,parts[0],...time.value.split(':').map(Number));if(stamp.getFullYear()!==parts[2]||stamp.getMonth()!==parts[1]-1||stamp.getDate()!==parts[0]){status.textContent='Revisa la fecha: usa día/mes/año.';return;}b.disabled=true;try{await call('/api/admin/transfers/'+encodeURIComponent(o.id)+'/confirm',{method:'POST',auth:true,body:{ownerConfirmedReceipt:true,reference:o.reference,amountCents:o.amount_total,receivedAt:stamp.toISOString()}});status.textContent='Ingreso registrado y plan activado. Emite y revisa la factura en el formulario inferior. ID del pedido: '+o.id;check.disabled=true;date.disabled=true;time.disabled=true;}catch(x){status.textContent=x.message||'No se pudo registrar el ingreso.';b.disabled=false;}};box.appendChild(card);});
+ }catch{box.textContent='No se pudieron consultar las transferencias pendientes.';}
+}
+
+async function loadBillingManagement(){
+ const box=document.getElementById('billing-management');if(!box||!session)return;
+ try{const c=await (await fetch(API+'/api/payments/config')).json();if(!c.enabled)return;
+ const orders=await call('/api/payments/orders',{auth:true});const names={pending:'Pendiente de pago',processing:'Pago en proceso: aún no confirmado',paid:'Pago confirmado',failed:'Pago fallido: revisa el método de pago',canceled:'Cancelado',expired:'Pedido caducado',review:'En revisión: contacta con soporte'};
+ const section=document.createElement('section');section.className='card';const h=document.createElement('h3');h.textContent='Pagos y suscripción';section.appendChild(h);
+ const b=document.createElement('button');b.type='button';b.className='btn sec';b.textContent='Gestionar o cancelar suscripción';b.onclick=async()=>{b.disabled=true;try{const d=await call('/api/payments/portal',{method:'POST',auth:true,body:{}});location.href=d.url;}catch(e){alert(e.message||'No hay suscripción asociada.');b.disabled=false;}};section.appendChild(b);
+ const explanation=document.createElement('p');explanation.className='meta';explanation.textContent='Cancelar la renovación no elimina el periodo ya pagado. La fecha efectiva se muestra antes de confirmar en Stripe.';section.appendChild(explanation);
+ orders.forEach(o=>{const p=document.createElement('p');p.textContent=(names[o.status]||'Estado pendiente de revisión')+' · '+o.reference+' · Pedido '+o.id+(o.amount_total?' · '+new Intl.NumberFormat('es-ES',{style:'currency',currency:o.currency}).format(o.amount_total/100):'')+(o.paid_until?' · Acceso hasta '+new Date(o.paid_until).toLocaleDateString('es-ES'):'');section.appendChild(p);if(['pending','failed','expired'].includes(o.status)){const retry=document.createElement('button');retry.className='btn sec';retry.textContent='Cerrar pedido pendiente para volver a intentarlo';retry.onclick=async()=>{retry.disabled=true;try{await call('/api/payments/orders/'+encodeURIComponent(o.id)+'/release',{method:'POST',auth:true,body:{}});await loadBillingManagement();}catch(e){alert(e.message);retry.disabled=false;}};section.appendChild(retry);}});box.replaceChildren(section);
+ }catch{box.textContent='No se pudo consultar el estado de los pagos. Vuelve a intentarlo.';}
 }
 
 const STAT={pending:'Pendiente',accepted:'Aceptada',rejected:'Rechazada'};
@@ -517,10 +543,11 @@ function printSheet(html){
 function gestoria(v){loading(v,async()=>{
   if(!isAdmin){try{await call('/api/admin/status',{auth:true});isAdmin=true;renderNav();}catch{v.innerHTML='<h2>Zona privada</h2><p>Esta sección es solo para el administrador de TengoBolo.</p>';return;}}
   const s=await call('/api/admin/settings',{auth:true});
+  let paymentOrdersVisible=false;try{const c=await (await fetch(API+'/api/payments/config')).json();paymentOrdersVisible=Boolean(c.enabled&&c.methods);}catch{}
   const today=new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Madrid'});
   let mes=today.slice(0,7), list=[];
   v.innerHTML=`<h2>Gestoría</h2>
-  <p class="meta">Tu zona privada: las facturas y los cobros de TengoBolo. Cuando se activen los cobros automáticos, cada cobro creará aquí su factura; mientras tanto, registra a mano lo que cobres (por ejemplo, una activación por transferencia). Del mes que elijas sacas el Excel o el PDF para la gestoría.</p>
+  <div id="manual-transfers-admin"></div><p class="meta">Tu zona privada: las facturas y los cobros de TengoBolo. La creación automática de facturas todavía no está disponible. Registra cada cobro y revisa sus datos antes de emitir la factura, también las activaciones por transferencia. Del mes que elijas sacas el Excel o el PDF para la gestoría.</p>
   <div class="card"><h3>Mis datos fiscales</h3>
     <p class="meta">Salen en las facturas. El NIF lo escribes aquí cuando la gestoría te confirme el alta.</p>
     <form id="fs" class="ficha">
@@ -539,22 +566,27 @@ function gestoria(v){loading(v,async()=>{
       <button class="btn sec" id="pdf" type="button">Imprimir / guardar PDF</button>
     </div>
     <div id="inv"></div>
+    ${paymentOrdersVisible?'<details><summary>Cobros verificados para enlazar a factura</summary><div id="payment-receipts-list"></div></details>':''}
     <h3 style="margin-top:24px">Registrar una factura</h3>
     <form id="fi" class="ficha">
+      ${paymentOrdersVisible?`<label style="grid-column:1/-1">ID del pedido pagado (opcional)<input name="payment_order_id" placeholder="Copia el ID del pedido confirmado"><span class="meta">Al enlazarlo, se comprueban importes. Cada cobro admite una sola factura; una renovación es otro cobro.</span></label>
+      <label style="grid-column:1/-1">ID del cobro (si el pedido tiene renovaciones)<input name="payment_receipt_id" placeholder="Copia el ID del listado de cobros"></label>`:''}
       <label>Cliente<input name="client_name" required minlength="2" maxlength="150" placeholder="Agencia o particular"></label>
       <label>NIF del cliente<input name="client_nif" maxlength="20" placeholder="Si lo tienes"></label>
       <label style="grid-column:1/-1">Correo del cliente<input name="client_email" type="email" maxlength="254" placeholder="Opcional"></label>
+      <label style="grid-column:1/-1">Domicilio fiscal del cliente<input name="client_address" maxlength="300" placeholder="Calle, número, código postal, población y país"></label>
       <label style="grid-column:1/-1">Concepto<input name="concept" required minlength="3" maxlength="300" value="Suscripción TengoBolo (plan cliente)"></label>
       <label>Base (€)<input name="base_eur" type="number" step="0.01" min="0" max="1000000" required placeholder="15.00"></label>
       <label>IVA %<input name="iva_pct" type="number" step="0.01" min="0" max="100" value="21"></label>
       <label>IRPF %<input name="irpf_pct" type="number" step="0.01" min="0" max="100" value="0"></label>
-      <label>Fecha<input name="issued_at" type="date" value="${today}"></label>
+      <label>Fecha (día/mes/año)<input name="issued_at" type="text" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}" value="${today.split('-').reverse().join('/')}" placeholder="DD/MM/AAAA" required></label>
       <label>Estado<select name="status"><option value="paid">Cobrada</option><option value="issued">Emitida (pendiente de cobro)</option></select></label>
       <label>Método de cobro<input name="method" maxlength="40" placeholder="transferencia, tarjeta…"></label>
       <label style="grid-column:1/-1">Notas<input name="notes" maxlength="500" placeholder="Opcional"></label>
       <div id="ie" style="grid-column:1/-1"></div>
       <div style="grid-column:1/-1"><button class="btn" type="submit">Registrar factura</button></div>
     </form></div>`;
+  loadManualTransfersAdmin();
   const fmtD=d=>String(d||'').slice(0,10).split('-').reverse().join('/');
   const monthName=m=>{const [y,mm]=m.split('-');return new Date(Number(y),Number(mm)-1,1).toLocaleDateString('es-ES',{month:'long',year:'numeric'});};
   const amounts=x=>{const iva=part(x.base_eur,x.iva_pct),irpf=part(x.base_eur,x.irpf_pct);return{iva,irpf,total:Math.round((Number(x.base_eur)+iva-irpf)*100)/100};};
@@ -576,15 +608,15 @@ function gestoria(v){loading(v,async()=>{
   const fiscal=()=>{const f=new FormData($('#fs'));return{fiscal_name:(f.get('fiscal_name')||'').trim(),fiscal_id:(f.get('fiscal_id')||'').trim(),fiscal_address:(f.get('fiscal_address')||'').trim(),invoice_prefix:(f.get('invoice_prefix')||'').trim()};};
   const head=(t)=>`<h1>${t}</h1><p><b>${esc(fiscal().fiscal_name||'TengoBolo')}</b>${fiscal().fiscal_id?' · NIF '+esc(fiscal().fiscal_id):''}${fiscal().fiscal_address?'<br>'+esc(fiscal().fiscal_address):''}</p>`;
   function invoiceHtml(x){const m=amounts(x);return `${head('Factura '+esc(x.number))}
-    <p><b>Cliente:</b> ${esc(x.client_name)}${x.client_nif?' · NIF '+esc(x.client_nif):''}${x.client_email?'<br>'+esc(x.client_email):''}<br><b>Fecha:</b> ${fmtD(x.issued_at)}${x.status==='paid'?' · <b>Cobrada</b>'+(x.paid_at?' el '+fmtD(x.paid_at):'')+(x.method?' ('+esc(x.method)+')':''):''}</p>
+    <p><b>Cliente:</b> ${esc(x.client_name)}${x.client_nif?' · NIF '+esc(x.client_nif):''}${x.client_email?'<br>'+esc(x.client_email):''}${x.client_address?'<br>'+esc(x.client_address):''}<br><b>Fecha:</b> ${fmtD(x.issued_at)}${x.status==='paid'?' · <b>Cobrada</b>'+(x.paid_at?' el '+fmtD(x.paid_at):'')+(x.method?' ('+esc(({manual_transfer:'transferencia bancaria',card:'tarjeta',sepa_debit:'domiciliación SEPA'})[x.method]||x.method)+')':''):''}</p>
     <table><thead><tr><th>Concepto</th><th class="num">Base</th><th class="num">IVA ${esc(String(x.iva_pct))}%</th><th class="num">IRPF ${esc(String(x.irpf_pct))}%</th><th class="num">Total</th></tr></thead>
     <tbody><tr><td>${esc(x.concept)}</td><td class="num">${eur2(x.base_eur)}</td><td class="num">${eur2(m.iva)}</td><td class="num">−${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td></tr></tbody></table>
-    <p class="tot">Total factura: ${eur2(m.total)}</p>${x.notes?`<p class="small">${esc(x.notes)}</p>`:''}<p class="small">TengoBolo · tengobolo-web.onrender.com · tengobolo@proton.me</p>`;}
+    <p class="tot">Total factura: ${eur2(m.total)}</p>${x.notes?`<p class="small">${esc(x.notes)}</p>`:''}<p class="small">TengoBolo · tengobolo.es · tengobolo@proton.me</p>`;}
   $('#fs').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;$('#se').innerHTML='';
     try{const r=await call('/api/admin/settings',{method:'PATCH',auth:true,body:fiscal()});Object.assign(s,r);$('#se').innerHTML=msg('ok','Datos guardados.');}catch(x){$('#se').innerHTML=msg('err',x.message);}b.disabled=false;};
   $('#fi').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const b=e.target.querySelector('button');b.disabled=true;$('#ie').innerHTML='';
-    try{await call('/api/admin/invoices',{method:'POST',auth:true,body:{client_name:f.client_name.trim(),client_nif:(f.client_nif||'').trim(),client_email:(f.client_email||'').trim(),concept:f.concept.trim(),base_eur:Number(f.base_eur),iva_pct:Number(f.iva_pct||0),irpf_pct:Number(f.irpf_pct||0),status:f.status,issued_at:f.issued_at||undefined,method:(f.method||'').trim(),notes:(f.notes||'').trim()}});
-      $('#ie').innerHTML=msg('ok','Factura registrada.');e.target.querySelector('[name=client_name]').value='';e.target.querySelector('[name=client_nif]').value='';e.target.querySelector('[name=client_email]').value='';e.target.querySelector('[name=base_eur]').value='';e.target.querySelector('[name=method]').value='';e.target.querySelector('[name=notes]').value='';loadMonth();
+    try{const parts=f.issued_at.split('/').map(Number),checked=new Date(Date.UTC(parts[2],parts[1]-1,parts[0]));if(checked.getUTCFullYear()!==parts[2]||checked.getUTCMonth()!==parts[1]-1||checked.getUTCDate()!==parts[0])throw Error('Revisa la fecha: usa día/mes/año.');const issuedDate=checked.toISOString().slice(0,10);await call('/api/admin/invoices',{method:'POST',auth:true,body:{...(f.payment_order_id?.trim()?{payment_order_id:f.payment_order_id.trim()}:{}),...(f.payment_receipt_id?.trim()?{payment_receipt_id:f.payment_receipt_id.trim()}:{}),client_name:f.client_name.trim(),client_nif:(f.client_nif||'').trim(),client_email:(f.client_email||'').trim(),client_address:(f.client_address||'').trim(),concept:f.concept.trim(),base_eur:Number(f.base_eur),iva_pct:Number(f.iva_pct||0),irpf_pct:Number(f.irpf_pct||0),status:f.status,issued_at:issuedDate,method:(f.method||'').trim(),notes:(f.notes||'').trim()}});
+      $('#ie').innerHTML=msg('ok','Factura registrada.');e.target.querySelector('[name=client_name]').value='';e.target.querySelector('[name=client_nif]').value='';e.target.querySelector('[name=client_email]').value='';e.target.querySelector('[name=client_address]').value='';e.target.querySelector('[name=base_eur]').value='';e.target.querySelector('[name=method]').value='';e.target.querySelector('[name=notes]').value='';loadMonth();
     }catch(x){$('#ie').innerHTML=msg('err',x.message);}b.disabled=false;};
   $('#mes').onchange=e=>{mes=e.target.value||mes;loadMonth();};
   const csvCell=x=>{x=String(x??'');return /[;"'\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;};
@@ -610,6 +642,7 @@ function gestoria(v){loading(v,async()=>{
       <p class="small">Listado sin las facturas anuladas en los totales. Generado en TengoBolo el ${fmtD(today)}.</p>`);
   };
   await loadMonth();
+  if(paymentOrdersVisible)try{const receipts=await call('/api/admin/payment-receipts',{auth:true});$('#payment-receipts-list').innerHTML=receipts.length?receipts.map(r=>'<p style="overflow-wrap:anywhere">Pedido '+esc(r.order_id)+'<br>Cobro '+esc(r.id)+'<br>'+eur2(r.amount_total/100)+' € · '+fmtD(r.received_at)+'</p>').join(''):'<p class="meta">Todavía no hay cobros verificados.</p>';}catch(e){$('#payment-receipts-list').textContent=e.message;}
 });}
 function paint(){const r=session&&me?me.role:'';document.body.dataset.role=r;const z=document.getElementById('zone');if(z)z.textContent=r==='artist'?'Zona artistas':r==='agency'?'Zona agencias y clientes':'La red de artistas a tu alcance';const t=document.querySelector('meta[name=theme-color]');if(t)t.content='#000000';}
 let UNREAD=0;let meBusy=false;
@@ -741,6 +774,7 @@ async function shrink(file){
 }
 function profile(v){loading(v,async()=>{const m=await getMe();const full=await call('/api/profiles/'+encodeURIComponent(m.id),{auth:true});const md=mediaHtml(full.media,true);
   v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?(m.pro_active?'Plan: Pro':'Plan: Basic (gratis), propuestas sin límite'):(m.plan==='free'?'Plan: sin plan contratado (todavía no se cobra)':'Plan Cliente: bolos ilimitados')}</p>
+  <div id="billing-management"></div>
   <div class="head">${avatar(m)}<div><label>Foto de perfil<input type="file" id="av" accept="image/*"></label></div></div><div id="ae"></div>
   ${m.role==='artist'&&!m.complete?`<div class="pbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round((4-m.missing.length)/4*100)}"><div style="width:${Math.round((4-m.missing.length)/4*100)}%"></div></div><p class="meta" style="margin:4px 0 0">Perfil al ${Math.round((4-m.missing.length)/4*100)} %</p>`:''}
   ${m.role==='artist'?(m.complete?`<div class="msg ok">Tu perfil está completo y aparece en el listado de artistas.</div>`:`<div class="promo"><b>Completa tu perfil para aparecer en el listado.</b> Te falta: ${m.missing.map(esc).join(', ')}.</div>`):''}
@@ -753,6 +787,7 @@ function profile(v){loading(v,async()=>{const m=await getMe();const full=await c
   <div class="sect"><h2>Fotos (${md.nPhotos}/8)</h2>${md.photos||'<p class="meta">Aún no has subido fotos.</p>'}<label>Añadir foto<input type="file" id="ph" accept="image/*"></label><div id="pe"></div></div>
   <div class="sect"><h2>Vídeos (${md.nVideos}/5)</h2>${md.videos||'<p class="meta">Aún no has añadido vídeos.</p>'}<form id="vf"><label>Enlace de YouTube, Vimeo, Instagram, Facebook o TikTok<input name="url" type="url" required placeholder="https://"></label><button class="btn" type="submit">Añadir vídeo</button><div id="ve"></div></form></div>
   <div class="row"><button class="btn sec" id="out">Salir</button></div>`;
+  loadBillingManagement();
   $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const body={name:f.name,bio:f.bio,disciplines:[...new Set([...[...e.target.querySelectorAll('input[name=d]:checked')].map(x=>x.value),...list(f.disciplines_other||'')])],location:f.location,portfolio_url:f.portfolio_url};SOCIALS.forEach(([k])=>body[k]=(f[k]||'').trim());
     if(m.role==='artist'){body.listed=!!f.listed;body.avail_for=[...e.target.querySelectorAll('input[name=av]:checked')].map(x=>x.value);body.phone=(f.phone||'').trim();}
     if(body.disciplines.length>12){$('#e').innerHTML=msg('err','Máximo 12 disciplinas. Quita alguna.');return;}
