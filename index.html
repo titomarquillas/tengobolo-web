@@ -254,12 +254,13 @@ function adSlot(id){const a=ADS[id];if(!a||!/^https:\/\//.test(a.url||'')||!/^ht
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const DISC=[["Música", ["Cantante", "Cantante de ópera", "Cantautor/a", "Coro", "Banda de versiones", "Orquesta de baile / verbena", "Dúo o trío acústico", "Pianista", "Guitarrista", "Contrabajo", "Violín y cuerdas", "Cuarteto / orquesta de cámara", "Música clásica", "Jazz", "Flamenco (cante y guitarra)", "Rumba", "Mariachi", "Gospel", "Tributo a un artista", "Rap / hip hop", "Beatbox", "DJ", "Karaoke", "Música de calle"]], ["Teatro e interpretación", ["Interpretación (actor/actriz)", "Teatro", "Teatro infantil", "Monólogo / humor", "Improvisación", "Títeres y marionetas", "Cuentacuentos", "Narrador/a", "Locución y doblaje", "Presentador/a / maestro de ceremonias"]], ["Danza", ["Danza contemporánea", "Ballet clásico", "Flamenco (baile)", "Danza oriental", "Bailes latinos", "Tango", "Swing", "Danza urbana / breakdance", "Sardana y danza tradicional", "Bailarines de espectáculo"]], ["Circo y variedades", ["Magia", "Mentalismo", "Payaso / clown", "Malabares", "Acrobacia", "Zancudos", "Show de fuego", "Aéreos (telas, aro)", "Contorsionismo", "Mimo", "Estatua viva", "Ventriloquia", "Globoflexia", "Cabaret / burlesque", "Transformismo / drag"]], ["Animación y eventos", ["Animador/a infantil", "Animador/a de eventos", "Personajes y disfraces", "Pintacaras", "Espectáculo infantil", "Fiesta temática"]], ["Artes plásticas", ["Pintura", "Escultura", "Muralismo / graffiti", "Ilustración", "Caricaturista en vivo", "Retratista", "Cerámica", "Artesanía", "Arte floral", "Body painting", "Performance artística", "Arte digital"]], ["Imagen y audiovisual", ["Fotografía", "Fotografía de eventos", "Vídeo", "Videoclip", "Cine y cortometraje", "Animación", "VJ / visuales", "Drones", "Diseño gráfico", "Diseño de moda"]], ["Palabra", ["Poesía", "Spoken word", "Escritura"]], ["Otras", ["Otro"]]];const DISC_ALL=DISC.flatMap(g=>g[1]);
 const list=s=>s.split(',').map(x=>x.trim()).filter(Boolean);
-async function call(path,{method='GET',body,auth}={}){
+async function call(path,{method='GET',body,auth,responseType}={}){
   let r;
   try{r=await fetch(API+path,{method,headers:{'Content-Type':'application/json',...(auth&&session?{Authorization:'Bearer '+session.access_token}:{})},body:body===undefined?undefined:JSON.stringify(body)});}
   catch{throw new Error('No se pudo conectar con el servidor. Si estaba dormido, espera 1 minuto y vuelve a intentarlo.');}
-  if(r.status===401&&auth&&session&&!arguments[1]._r){const old=session;await restore2();if(session&&session!==old)return call(path,{method,body,auth,_r:1});}
+  if(r.status===401&&auth&&session&&!arguments[1]._r){const old=session;await restore2();if(session&&session!==old)return call(path,{method,body,auth,responseType,_r:1});}
   if(r.status===204)return null;
+  if(responseType==='text'&&r.ok)return r.text();
   const d=await r.json().catch(()=>({}));
   if(!r.ok){const er=new Error(d.error||'Algo ha fallado. Inténtalo de nuevo.');er.status=r.status;if(d.code)er.code=d.code;throw er;}
   return d;
@@ -479,8 +480,8 @@ async function loadPayCfg(){
     set('pay-s',!session?ent:isC?'<p class="sub">Se paga al publicar un bolo.</p>':'<p class="sub">Este plan es para clientes.</p>');
     set('pay-p',!session?ent:!isA?'<p class="sub">Este plan es para artistas.</p>':c.enabled?'<button class="btn" data-plan="pro_monthly">Pro mensual</button> <button class="btn sec" data-plan="pro_annual">Pro anual</button>':off('Hacerme Pro'));
     document.querySelectorAll('[data-plan]').forEach(b=>b.onclick=async()=>{
-      b.disabled=true;try{const d=await call('/api/payments/checkout',{method:'POST',auth:true,body:{plan:b.dataset.plan,method:document.getElementById('pay-method')?.value||'card'}});location.href=d.url;}
-      catch(e){b.disabled=false;alert(e.message||'No se pudo preparar el pago.');}
+      b.disabled=true;try{const {contractThenCheckout}=await import('./payment-document-checkout.js');const d=await contractThenCheckout(b.dataset.plan,null,document.getElementById('pay-method')?.value||'card',call);if(d)location.href=d.url;}
+      catch(e){alert(e.message||'No se pudo preparar el pago.');}finally{b.disabled=false;}
     });
     if(c.enabled&&c.methods?.sepa_debit){const e=document.querySelector('#view h3');if(e)e.insertAdjacentHTML('beforebegin','<label>Método de pago<select id="pay-method"><option value="card">Tarjeta</option><option value="sepa_debit">Domiciliación SEPA</option></select></label><p class="meta">La domiciliación requiere un mandato y tarda en confirmarse. El acceso se activa cuando se confirme el pago.</p>');}
     if(c.enabled&&c.methods?.manual_transfer&&session){const e=document.getElementById(isA?'pay-p':'pay-a');if(e){const b=document.createElement('button');b.className='btn sec';b.textContent='Pedir transferencia anual';b.onclick=async()=>{b.disabled=true;try{const d=await call('/api/payments/manual-transfer',{method:'POST',auth:true,body:{plan:isA?'pro_annual':'annual'}});const box=document.createElement('div');box.className='card';box.textContent='Pedido '+d.reference+' · '+new Intl.NumberFormat('es-ES',{style:'currency',currency:d.currency}).format(d.amount_total/100)+'. '+d.instructions+' El plan se activará solo cuando el titular compruebe el ingreso.';e.appendChild(box);}catch(x){alert(x.message);}finally{b.disabled=false;}};b.style.marginTop='10px';e.appendChild(b);}}
@@ -503,12 +504,14 @@ async function loadManualTransfersAdmin(){
 
 async function loadBillingManagement(){
  const box=document.getElementById('billing-management');if(!box||!session)return;
- try{const c=await (await fetch(API+'/api/payments/config')).json();if(!c.enabled)return;
+ try{const c=await (await fetch(API+'/api/payments/config')).json();if(!c.enabled){const {renderPaymentDocuments}=await import('./payment-document-checkout.js');await renderPaymentDocuments(box,call);return;}
  const orders=await call('/api/payments/orders',{auth:true});const names={pending:'Pendiente de pago',processing:'Pago en proceso: aún no confirmado',paid:'Pago confirmado',failed:'Pago fallido: revisa el método de pago',canceled:'Cancelado',expired:'Pedido caducado',review:'En revisión: contacta con soporte'};
  const section=document.createElement('section');section.className='card';const h=document.createElement('h3');h.textContent='Pagos y suscripción';section.appendChild(h);
  const b=document.createElement('button');b.type='button';b.className='btn sec';b.textContent='Gestionar o cancelar suscripción';b.onclick=async()=>{b.disabled=true;try{const d=await call('/api/payments/portal',{method:'POST',auth:true,body:{}});location.href=d.url;}catch(e){alert(e.message||'No hay suscripción asociada.');b.disabled=false;}};section.appendChild(b);
  const explanation=document.createElement('p');explanation.className='meta';explanation.textContent='Cancelar la renovación no elimina el periodo ya pagado. La fecha efectiva se muestra antes de confirmar en Stripe.';section.appendChild(explanation);
  orders.forEach(o=>{const p=document.createElement('p');p.textContent=(names[o.status]||'Estado pendiente de revisión')+' · '+o.reference+' · Pedido '+o.id+(o.amount_total?' · '+new Intl.NumberFormat('es-ES',{style:'currency',currency:o.currency}).format(o.amount_total/100):'')+(o.paid_until?' · Acceso hasta '+new Date(o.paid_until).toLocaleDateString('es-ES'):'');section.appendChild(p);if(['pending','failed','expired'].includes(o.status)){const retry=document.createElement('button');retry.className='btn sec';retry.textContent='Cerrar pedido pendiente para volver a intentarlo';retry.onclick=async()=>{retry.disabled=true;try{await call('/api/payments/orders/'+encodeURIComponent(o.id)+'/release',{method:'POST',auth:true,body:{}});await loadBillingManagement();}catch(e){alert(e.message);retry.disabled=false;}};section.appendChild(retry);}});box.replaceChildren(section);
+ const {renderPaymentDocuments}=await import('./payment-document-checkout.js');await renderPaymentDocuments(section,call);
+ const pending=await call('/api/projects?status=pending',{auth:true});const {renderPendingProjectPayment}=await import('./payment-document-checkout.js');for(const project of pending)await renderPendingProjectPayment(section,project,call);
  }catch{box.textContent='No se pudo consultar el estado de los pagos. Vuelve a intentarlo.';}
 }
 
@@ -759,8 +762,8 @@ function publish(v){loading(v,async()=>{const m=await getMe();
     if(!discs.length){$('#e').innerHTML=msg('err','Marca al menos un tipo de arte.');return;}
     if(discs.length>12||discs.some(x=>x.length>60)){$('#e').innerHTML=msg('err','Máximo 12 tipos de arte, de hasta 60 letras cada uno.');return;}
     const b=$('#ok');b.disabled=true;
-    try{await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:fichaText(f)+f.description,disciplines:discs,location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
-      v.innerHTML=msg('ok','Bolo guardado. Todavía no se cobra nada, así que ya aparece en Bolos. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}
+    try{const created=await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:fichaText(f)+f.description,disciplines:discs,location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
+      if(created.status==='pending'){v.innerHTML='<h2>Bolo guardado</h2>';const {renderPendingProjectPayment}=await import('./payment-document-checkout.js');await renderPendingProjectPayment(v,created,call);}else{v.innerHTML=msg('ok','Bolo publicado. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}}
     catch(err){b.disabled=false;if(err.status===402){$('#e').innerHTML=payBox();}else $('#e').innerHTML=msg('err',err.message);}};});}
 // Reduce la foto en el navegador (máx. 1600 px, JPEG) antes de subirla: así caben muchas en el almacén gratuito.
 function fichaText(f){const r=[['Tipo de evento',f.evtype],['Espacio',f.space],['Asistentes',f.guests],['Horario',f.t_from?(f.t_from+(f.t_to?' a '+f.t_to:'')):''],['Actuación',f.dur]].filter(x=>x[1]);return r.length?r.map(x=>x[0]+': '+x[1]).join('\n')+'\n\n':'';}
