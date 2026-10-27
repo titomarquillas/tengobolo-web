@@ -798,7 +798,7 @@ async function shrink(file){
   const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',0.82));if(!blob)throw new Error('No se pudo preparar la foto.');
   return await new Promise((ok,ko)=>{const fr=new FileReader();fr.onload=()=>ok(String(fr.result).split(',')[1]);fr.onerror=()=>ko(new Error('No se pudo leer la foto.'));fr.readAsDataURL(blob);});
 }
-function profile(v){loading(v,async()=>{const m=await getMe();const full=await call('/api/profiles/'+encodeURIComponent(m.id),{auth:true});const md=mediaHtml(full.media,true);
+function profile(v){return loading(v,async()=>{const m=await getMe();const full=await call('/api/profiles/'+encodeURIComponent(m.id),{auth:true});const md=mediaHtml(full.media,true);
   v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?(m.pro_active?'Plan: Pro':'Plan: Basic (gratis), propuestas sin límite'):(m.plan==='free'?'Plan: sin plan contratado (todavía no se cobra)':'Plan Cliente: bolos ilimitados')}</p>
   <div id="billing-management"></div>
   <div class="head">${avatar(m)}<div><label>Foto de perfil<input type="file" id="av" accept="image/*"></label></div></div><div id="ae"></div>
