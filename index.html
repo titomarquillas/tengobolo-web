@@ -573,7 +573,7 @@ function gestoria(v){loading(v,async()=>{
   const today=new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Madrid'});
   let mes=today.slice(0,7), list=[];
   v.innerHTML=`<h2>Gestoría</h2>
-  <div id="manual-transfers-admin"></div><p class="meta">Tu zona privada: las facturas y los cobros de TengoBolo. Los pedidos documentados conservan su factura al confirmar el cobro. Revísala antes de exportar y no emitas otra para el mismo recibo. El formulario manual es solo para cobros independientes sin pedido documentado. Del mes que elijas sacas el Excel o el PDF para la gestoría.</p>
+  <div id="bank-destination-admin"></div><div id="manual-transfers-admin"></div><p class="meta">Tu zona privada: las facturas y los cobros de TengoBolo. Los pedidos documentados conservan su factura al confirmar el cobro. Revísala antes de exportar y no emitas otra para el mismo recibo. El formulario manual es solo para cobros independientes sin pedido documentado. Del mes que elijas sacas el Excel o el PDF para la gestoría.</p>
   <div class="card"><h3>Mis datos fiscales</h3>
     <p class="meta">Salen en las facturas. El NIF lo escribes aquí cuando la gestoría te confirme el alta.</p>
     <form id="fs" class="ficha">
@@ -638,6 +638,7 @@ function gestoria(v){loading(v,async()=>{
     <table><thead><tr><th>Concepto</th><th class="num">Base</th><th class="num">IVA ${esc(String(x.iva_pct))}%</th><th class="num">IRPF ${esc(String(x.irpf_pct))}%</th><th class="num">Total</th></tr></thead>
     <tbody><tr><td>${esc(x.concept)}</td><td class="num">${eur2(m.base)}</td><td class="num">${eur2(m.iva)}</td><td class="num">−${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td></tr></tbody></table>
     <p class="tot">Total factura: ${eur2(m.total)}</p>${x.document_kind==='credit'?`<p>Rectifica la factura ${esc(x.corrects_invoice_number||(list.find(i=>i.id===x.corrects_invoice_id)||{}).number||x.corrects_invoice_id)}. Causa: ${esc(x.correction_reason)}. Los importes indicados reducen la factura original; este documento no acredita un reembolso bancario.</p>`:''}${x.notes?`<p class="small">${esc(x.notes)}</p>`:''}<p class="small">TengoBolo · tengobolo.es · tengobolo@proton.me</p>`;}
+  import('./bank-destination-ui.js').then(m=>m.renderBankDestination(document.getElementById('bank-destination-admin'),call)).catch(()=>{document.getElementById('bank-destination-admin').textContent='No se pudo cargar la configuracion bancaria privada.';});
   $('#fs').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;$('#se').innerHTML='';
     try{const r=await call('/api/admin/settings',{method:'PATCH',auth:true,body:fiscal()});Object.assign(s,r);$('#se').innerHTML=msg('ok','Datos guardados.');}catch(x){$('#se').innerHTML=msg('err',x.message);}b.disabled=false;};
   $('#fi').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const b=e.target.querySelector('button');b.disabled=true;$('#ie').innerHTML='';
