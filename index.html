@@ -489,6 +489,10 @@ async function loadPayCfg(){
   }catch{}
 }
 
+async function loadWithdrawalAdmin(){
+ const box=document.getElementById('manual-transfers-admin');if(!box||!session||!isAdmin)return;
+ try{const rows=await call('/api/admin/withdrawals',{auth:true});if(!rows.length)return;const section=document.createElement('section');section.className='card';const h=document.createElement('h3');h.textContent='Desistimientos recibidos: pendientes de tramitar';section.append(h);const p=document.createElement('p');p.textContent='El acuse ya se entregó al cliente. Revisa el contrato, cobro y ejecución. No se ha hecho automáticamente ninguna devolución ni cancelación de suscripción.';section.append(p);for(const row of rows){const item=document.createElement('p');item.textContent='Pedido '+row.order_id+' · recibido '+new Date(row.received_at).toLocaleString('es-ES',{timeZone:'Europe/Madrid'})+' (Madrid) · '+row.state;section.append(item);const form=document.createElement('form');const label=document.createElement('label');label.textContent='Referencia de devolución ya completada (vacío solo si no se cobró)';const input=document.createElement('input');input.placeholder='re_… o pyr_…';input.pattern='(re|pyr)_[A-Za-z0-9]+';label.append(input);const b=document.createElement('button');b.className='btn sec';b.textContent='Verificar y conciliar';const status=document.createElement('p');status.setAttribute('role','status');form.append(label,b,status);const requestId=crypto.randomUUID();form.onsubmit=async e=>{e.preventDefault();b.disabled=true;try{await call('/api/admin/withdrawals/'+row.order_id+'/reconcile',{method:'POST',auth:true,body:{request_id:requestId,...(input.value.trim()?{refund_id:input.value.trim()}:{})}});status.textContent='Conciliado: acceso actualizado y rectificativa contra factura original si hubo cobro. No se ha ordenado ningún movimiento de dinero desde este botón.';input.disabled=true;}catch(x){status.textContent=x.message||'No se pudo conciliar.';b.disabled=false;}};section.append(form);}box.append(section);}catch{const p=document.createElement('p');p.textContent='No se pudieron consultar los desistimientos pendientes.';box.append(p);} 
+}
 async function loadManualTransfersAdmin(){
  const box=document.getElementById('manual-transfers-admin');if(!box||!session||!isAdmin)return;
  try{const config=await (await fetch(API+'/api/payments/config')).json();if(!config.enabled||!config.methods?.manual_transfer)return;const rows=await call('/api/admin/transfers',{auth:true});if(!rows.length)return;
@@ -589,7 +593,7 @@ function gestoria(v){loading(v,async()=>{
       <div id="ie" style="grid-column:1/-1"></div>
       <div style="grid-column:1/-1"><button class="btn" type="submit">Registrar factura</button></div>
     </form></div>`;
-  loadManualTransfersAdmin();
+  loadManualTransfersAdmin();loadWithdrawalAdmin();
   const fmtD=d=>String(d||'').slice(0,10).split('-').reverse().join('/');
   const monthName=m=>{const [y,mm]=m.split('-');return new Date(Number(y),Number(mm)-1,1).toLocaleDateString('es-ES',{month:'long',year:'numeric'});};
   const amounts=x=>{const sign=x.document_kind==='credit'?-1:1,base=sign*Number(x.base_eur),iva=sign*part(x.base_eur,x.iva_pct),irpf=sign*part(x.base_eur,x.irpf_pct);return{base,iva,irpf,total:Math.round((base+iva-irpf)*100)/100};};
