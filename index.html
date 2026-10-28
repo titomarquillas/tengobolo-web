@@ -480,11 +480,11 @@ async function loadPayCfg(){
     set('pay-s',!session?ent:isC?'<p class="sub">Se paga al publicar un bolo.</p>':'<p class="sub">Este plan es para clientes.</p>');
     set('pay-p',!session?ent:!isA?'<p class="sub">Este plan es para artistas.</p>':c.enabled?'<button class="btn" data-plan="pro_monthly">Pro mensual</button> <button class="btn sec" data-plan="pro_annual">Pro anual</button>':off('Hacerme Pro'));
     document.querySelectorAll('[data-plan]').forEach(b=>b.onclick=async()=>{
-      b.disabled=true;try{const {contractThenCheckout}=await import('./payment-document-checkout.js');const d=await contractThenCheckout(b.dataset.plan,null,document.getElementById('pay-method')?.value||'card',call);if(d)location.href=d.url;}
+      b.disabled=true;try{const {requestThenCheckout}=await import('./request-contract-candidate/request-purchase-entry.js');await requestThenCheckout({plan:b.dataset.plan,method:document.getElementById('pay-method')?.value||'card',call});}
       catch(e){alert(e.message||'No se pudo preparar el pago.');}finally{b.disabled=false;}
     });
     if(c.enabled&&c.methods?.sepa_debit){const e=document.querySelector('#view h3');if(e)e.insertAdjacentHTML('beforebegin','<label>Método de pago<select id="pay-method"><option value="card">Tarjeta</option><option value="sepa_debit">Domiciliación SEPA</option></select></label><p class="meta">La domiciliación requiere un mandato y tarda en confirmarse. El acceso se activa cuando se confirme el pago.</p>');}
-    if(c.enabled&&c.methods?.manual_transfer&&session){const e=document.getElementById(isA?'pay-p':'pay-a');if(e){const b=document.createElement('button');b.className='btn sec';b.textContent='Pedir transferencia anual';b.onclick=async()=>{b.disabled=true;try{const {contractThenCheckout}=await import('./payment-document-checkout.js');await contractThenCheckout(isA?'pro_annual':'annual',null,'manual_transfer',call);}catch(x){alert(x.message);}finally{b.disabled=false;}};b.style.marginTop='10px';e.appendChild(b);}}
+    if(c.enabled&&c.methods?.manual_transfer&&session){const e=document.getElementById(isA?'pay-p':'pay-a');if(e){const b=document.createElement('button');b.className='btn sec';b.textContent='Pedir transferencia anual';b.onclick=async()=>{b.disabled=true;try{const {requestThenCheckout}=await import('./request-contract-candidate/request-purchase-entry.js');await requestThenCheckout({plan:isA?'pro_annual':'annual',method:'manual_transfer',call});}catch(x){alert(x.message);}finally{b.disabled=false;}};b.style.marginTop='10px';e.appendChild(b);}}
     document.querySelectorAll('[data-goentrar]').forEach(b=>b.onclick=()=>setTab('entrar'));
   }catch{}
 }
@@ -527,14 +527,14 @@ async function loadManualTransfersAdmin(){
 
 async function loadBillingManagement(){
  const box=document.getElementById('billing-management');if(!box||!session)return;
- try{const c=await (await fetch(API+'/api/payments/config')).json();if(!c.enabled){const {renderPaymentDocuments}=await import('./payment-document-checkout.js');await renderPaymentDocuments(box,call);return;}
+ try{const c=await (await fetch(API+'/api/payments/config')).json();if(!c.enabled){const {renderPaymentDocuments}=await import('./payment-document-checkout.js');await renderPaymentDocuments(box,call);if(c.purchaseFlow){const {renderNewPurchaseDocuments}=await import('./request-contract-candidate/request-purchase-entry.js');await renderNewPurchaseDocuments(box,call);}return;}
  const orders=await call('/api/payments/orders',{auth:true});const names={pending:'Pendiente de pago',processing:'Pago en proceso: aún no confirmado',paid:'Pago confirmado',failed:'Pago fallido: revisa el método de pago',canceled:'Cancelado',expired:'Pedido caducado',review:'En revisión: contacta con soporte'};
  const section=document.createElement('section');section.className='card';const h=document.createElement('h3');h.textContent='Pagos y suscripción';section.appendChild(h);
  const b=document.createElement('button');b.type='button';b.className='btn sec';b.textContent='Gestionar o cancelar suscripción';b.onclick=async()=>{b.disabled=true;try{const d=await call('/api/payments/portal',{method:'POST',auth:true,body:{}});location.href=d.url;}catch(e){alert(e.message||'No hay suscripción asociada.');b.disabled=false;}};section.appendChild(b);
  const explanation=document.createElement('p');explanation.className='meta';explanation.textContent='Cancelar la renovación no elimina el periodo ya pagado. La fecha efectiva se muestra antes de confirmar en Stripe.';section.appendChild(explanation);
  orders.forEach(o=>{const p=document.createElement('p');p.textContent=(names[o.status]||'Estado pendiente de revisión')+' · '+o.reference+' · Pedido '+o.id+(o.amount_total?' · '+new Intl.NumberFormat('es-ES',{style:'currency',currency:o.currency}).format(o.amount_total/100):'')+(o.paid_until?' · Acceso hasta '+new Date(o.paid_until).toLocaleDateString('es-ES'):'');section.appendChild(p);if(['pending','failed','expired'].includes(o.status)){const retry=document.createElement('button');retry.className='btn sec';retry.textContent='Cerrar pedido pendiente para volver a intentarlo';retry.onclick=async()=>{retry.disabled=true;try{await call('/api/payments/orders/'+encodeURIComponent(o.id)+'/release',{method:'POST',auth:true,body:{}});await loadBillingManagement();}catch(e){alert(e.message);retry.disabled=false;}};section.appendChild(retry);}});box.replaceChildren(section);
- const {renderPaymentDocuments}=await import('./payment-document-checkout.js');await renderPaymentDocuments(section,call);
- const pending=await call('/api/projects?status=pending',{auth:true});const {renderPendingProjectPayment}=await import('./payment-document-checkout.js');for(const project of pending)await renderPendingProjectPayment(section,project,call);
+ const {renderPaymentDocuments}=await import('./payment-document-checkout.js');await renderPaymentDocuments(section,call);const {renderNewPurchaseDocuments}=await import('./request-contract-candidate/request-purchase-entry.js');await renderNewPurchaseDocuments(section,call);
+ const pending=await call('/api/projects?status=pending',{auth:true});const {renderNewPendingProjectPayment:renderPendingProjectPayment}=await import('./request-contract-candidate/request-purchase-entry.js');for(const project of pending)await renderPendingProjectPayment(section,project,call);
  }catch{box.textContent='No se pudo consultar el estado de los pagos. Vuelve a intentarlo.';}
 }
 
@@ -567,6 +567,7 @@ function printSheet(html){
   window.addEventListener('afterprint',done);window.print();setTimeout(done,1500);
 }
 function gestoria(v){loading(v,async()=>{
+  const {invoiceAmounts:amounts,fiscalTotals}=await import('./invoice-export.js');
   if(!isAdmin){try{await call('/api/admin/status',{auth:true});isAdmin=true;renderNav();}catch{v.innerHTML='<h2>Zona privada</h2><p>Esta sección es solo para el administrador de TengoBolo.</p>';return;}}
   const s=await call('/api/admin/settings',{auth:true});
   let paymentOrdersVisible=false;try{const c=await (await fetch(API+'/api/payments/config')).json();paymentOrdersVisible=Boolean(c.enabled&&c.methods);}catch{}
@@ -615,29 +616,30 @@ function gestoria(v){loading(v,async()=>{
   loadManualTransfersAdmin();loadWithdrawalAdmin();
   const fmtD=d=>String(d||'').slice(0,10).split('-').reverse().join('/');
   const monthName=m=>{const [y,mm]=m.split('-');return new Date(Number(y),Number(mm)-1,1).toLocaleDateString('es-ES',{month:'long',year:'numeric'});};
-  const amounts=x=>{const sign=x.document_kind==='credit'?-1:1,base=sign*Number(x.base_eur),iva=sign*part(x.base_eur,x.iva_pct),irpf=sign*part(x.base_eur,x.irpf_pct);return{base,iva,irpf,total:Math.round((base+iva-irpf)*100)/100};};
+
   async function loadMonth(){
     const box=$('#inv');box.innerHTML='<p role="status">Cargando…</p>';
     const [y,mm]=mes.split('-').map(Number);
     const last=new Date(y,mm,0).getDate();
     list=await call(`/api/admin/invoices?from=${mes}-01&to=${mes}-${String(last).padStart(2,'0')}`,{auth:true});
-    const t=list.filter(x=>x.status!=='void').reduce((a,x)=>{const m=amounts(x);a.base+=m.base;a.iva+=m.iva;a.irpf+=m.irpf;a.total+=m.total;return a;},{base:0,iva:0,irpf:0,total:0});
-    box.innerHTML=list.length?`<div class="twrap"><table class="tinv"><thead><tr><th>Nº</th><th>Fecha</th><th>Cliente</th><th>Concepto</th><th class="num">Base</th><th class="num">IVA</th><th class="num">IRPF</th><th class="num">Total</th><th>Estado</th><th></th></tr></thead><tbody>${
-      list.map(x=>{const m=amounts(x);return `<tr><td>${esc(x.number)}</td><td>${fmtD(x.issued_at)}</td><td>${esc(x.client_name)}</td><td>${esc(x.concept)}</td><td class="num">${eur2(m.base)}</td><td class="num">${eur2(m.iva)}</td><td class="num">${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td><td><span class="tag st-${esc(x.status)}">${INV_ST[x.status]||esc(x.status)}</span></td><td style="white-space:nowrap">${x.status==='issued'&&x.document_kind!=='credit'?`<button class="lnk" data-paid="${esc(x.id)}">Cobrada</button>`:''}${x.document_kind!=='credit'&&x.status!=='void'?`<button class="lnk" data-credit="${esc(x.id)}">Rectificativa</button>`:''}<button class="lnk" data-pdf1="${esc(x.id)}">PDF</button></td></tr>`;}).join('')
-    }</tbody><tfoot><tr><td colspan="4">Totales del mes (sin anuladas)</td><td class="num">${eur2(t.base)}</td><td class="num">${eur2(t.iva)}</td><td class="num">${eur2(t.irpf)}</td><td class="num">${eur2(t.total)}</td><td colspan="2"></td></tr></tfoot></table></div>
-    <p class="meta">IVA repercutido: ${eur2(t.iva)} (modelo 303) · IRPF retenido: ${eur2(t.irpf)} · Base total: ${eur2(t.base)}</p>`
+    const flowConfig=await (await fetch(API+'/api/payments/config')).json();if(flowConfig.purchaseFlow){const newRecords=await call('/api/admin/purchase-fiscal-records',{auth:true});const {purchaseRowsForLegacyExport}=await import('./request-contract-candidate/purchase-fiscal-export.js');list.push(...purchaseRowsForLegacyExport(newRecords).filter(r=>r.issued_at.startsWith(mes)));}
+    const t=fiscalTotals(list);
+    box.innerHTML=list.length?`<div class="twrap"><table class="tinv"><thead><tr><th>Nº</th><th>Fecha</th><th>Cliente</th><th>Concepto</th><th class="num">Base</th><th class="num">IVA</th><th class="num">IGIC/IPSI</th><th class="num">IRPF</th><th class="num">Total</th><th>Estado</th><th></th></tr></thead><tbody>${
+      list.map(x=>{const m=amounts(x);return `<tr><td>${esc(x.number)}</td><td>${fmtD(x.issued_at)}</td><td>${esc(x.client_name)}</td><td>${esc(x.concept)}</td><td class="num">${eur2(m.base)}</td><td class="num">${eur2(m.iva)}</td><td class="num">${eur2(m.localTax)}${x.tax_code&&x.tax_code!=='IVA'?' '+esc(x.tax_code):''}</td><td class="num">${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td><td><span class="tag st-${esc(x.status)}">${INV_ST[x.status]||esc(x.status)}</span></td><td style="white-space:nowrap">${x.source!=='purchase_request'&&x.status==='issued'&&x.document_kind!=='credit'?`<button class="lnk" data-paid="${esc(x.id)}">Cobrada</button>`:''}${x.source!=='purchase_request'&&x.document_kind!=='credit'&&x.status!=='void'?`<button class="lnk" data-credit="${esc(x.id)}">Rectificativa</button>`:''}<button class="lnk" data-pdf1="${esc(x.id)}">PDF</button></td></tr>`;}).join('')
+    }</tbody><tfoot><tr><td colspan="4">Totales del mes (sin anuladas)</td><td class="num">${eur2(t.base)}</td><td class="num">${eur2(t.iva)}</td><td class="num">${eur2(t.localTax)}</td><td class="num">${eur2(t.irpf)}</td><td class="num">${eur2(t.total)}</td><td colspan="2"></td></tr></tfoot></table></div>
+    <p class="meta">IVA repercutido: ${eur2(t.iva)} (revisar modelo 303) · IGIC/IPSI separado: ${eur2(t.localTax)} (no incluir en 303) · IRPF retenido: ${eur2(t.irpf)} · Base total: ${eur2(t.base)}</p>`
     :`<p class="meta">Ninguna factura en ${monthName(mes)}.</p>`;
     box.querySelectorAll('[data-paid]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await call('/api/admin/invoices/'+encodeURIComponent(b.dataset.paid),{method:'PATCH',auth:true,body:{status:'paid',paid_at:today}});loadMonth();}catch(e){b.disabled=false;alert(e.message);}});
-    box.querySelectorAll('[data-credit]').forEach(b=>b.onclick=async()=>{const raw=prompt('Base a reducir, sin IVA (máximo la base pendiente de rectificar):');if(raw===null)return;const base=Number(raw.replace(',','.'));const reason=prompt('Causa de la rectificación (mínimo 5 caracteres):');if(!Number.isFinite(base)||base<=0||!reason||reason.trim().length<5)return alert('Revisa base y causa.');if(!confirm('Crear documento fiscal rectificativo. NO devuelve dinero ni modifica la factura original. ¿Continuar?'))return;b.disabled=true;const request_id=crypto.randomUUID();try{await call('/api/admin/invoices/'+encodeURIComponent(b.dataset.credit)+'/credit',{method:'POST',auth:true,body:{base_eur:base,reason:reason.trim(),request_id}});loadMonth();}catch(e){alert(e.message+' Revisa el listado antes de repetir: la petición puede haberse guardado.');}finally{b.disabled=false;}});
-    box.querySelectorAll('[data-pdf1]').forEach(b=>b.onclick=()=>{const x=list.find(i=>i.id===b.dataset.pdf1);if(x)printSheet(invoiceHtml(x));});
+    box.querySelectorAll('[data-credit]').forEach(b=>b.onclick=async()=>{const raw=prompt('Base a reducir, sin impuestos (máximo la base pendiente de rectificar):');if(raw===null)return;const base=Number(raw.replace(',','.'));const reason=prompt('Causa de la rectificación (mínimo 5 caracteres):');if(!Number.isFinite(base)||base<=0||!reason||reason.trim().length<5)return alert('Revisa base y causa.');if(!confirm('Crear documento fiscal rectificativo. NO devuelve dinero ni modifica la factura original. ¿Continuar?'))return;b.disabled=true;const request_id=crypto.randomUUID();try{await call('/api/admin/invoices/'+encodeURIComponent(b.dataset.credit)+'/credit',{method:'POST',auth:true,body:{base_eur:base,reason:reason.trim(),request_id}});loadMonth();}catch(e){alert(e.message+' Revisa el listado antes de repetir: la petición puede haberse guardado.');}finally{b.disabled=false;}});
+    box.querySelectorAll('[data-pdf1]').forEach(b=>b.onclick=()=>{const x=list.find(i=>i.id===b.dataset.pdf1);if(x)printSheet(x.document_html||invoiceHtml(x));});
   }
   const fiscal=()=>{const f=new FormData($('#fs'));return{fiscal_name:(f.get('fiscal_name')||'').trim(),fiscal_id:(f.get('fiscal_id')||'').trim(),fiscal_address:(f.get('fiscal_address')||'').trim(),invoice_prefix:(f.get('invoice_prefix')||'').trim()};};
   const head=(t,issuer=fiscal())=>`<h1>${t}</h1><p><b>${esc(issuer.fiscal_name||'TengoBolo')}</b>${issuer.fiscal_id?' · NIF '+esc(issuer.fiscal_id):''}${issuer.fiscal_address?'<br>'+esc(issuer.fiscal_address):''}</p>`;
   function invoiceHtml(x){const m=amounts(x);return `${head((x.document_kind==='credit'?'Factura rectificativa ':'Factura ')+esc(x.number),x.issuer_snapshot||{fiscal_name:'Emisor original no conservado: revisar documento archivado',fiscal_id:'',fiscal_address:''})}
     <p><b>Cliente:</b> ${esc(x.client_name)}${x.client_nif?' · NIF '+esc(x.client_nif):''}${x.client_email?'<br>'+esc(x.client_email):''}${x.client_address?'<br>'+esc(x.client_address):''}<br><b>Fecha:</b> ${fmtD(x.issued_at)}${x.status==='paid'&&x.document_kind!=='credit'?' · <b>Cobrada</b>'+(x.paid_at?' el '+fmtD(x.paid_at):'')+(x.method?' ('+esc(({manual_transfer:'transferencia bancaria',card:'tarjeta',sepa_debit:'domiciliación SEPA'})[x.method]||x.method)+')':''):''}</p>
-    <table><thead><tr><th>Concepto</th><th class="num">Base</th><th class="num">IVA ${esc(String(x.iva_pct))}%</th><th class="num">IRPF ${esc(String(x.irpf_pct))}%</th><th class="num">Total</th></tr></thead>
-    <tbody><tr><td>${esc(x.concept)}</td><td class="num">${eur2(m.base)}</td><td class="num">${eur2(m.iva)}</td><td class="num">−${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td></tr></tbody></table>
-    <p class="tot">Total factura: ${eur2(m.total)}</p>${x.document_kind==='credit'?`<p>Rectifica la factura ${esc(x.corrects_invoice_number||(list.find(i=>i.id===x.corrects_invoice_id)||{}).number||x.corrects_invoice_id)}. Causa: ${esc(x.correction_reason)}. Los importes indicados reducen la factura original; este documento no acredita un reembolso bancario.</p>`:''}${x.notes?`<p class="small">${esc(x.notes)}</p>`:''}<p class="small">TengoBolo · tengobolo.es · tengobolo@proton.me</p>`;}
+    <table><thead><tr><th>Concepto</th><th class="num">Base</th><th class="num">${esc(m.taxCode)} ${m.taxRate===null?'inversión sujeto pasivo':esc(String(m.taxRate))+'%'}</th><th class="num">IRPF ${esc(String(x.irpf_pct))}%</th><th class="num">Total</th></tr></thead>
+    <tbody><tr><td>${esc(x.concept)}</td><td class="num">${eur2(m.base)}</td><td class="num">${eur2(m.taxAmount)}</td><td class="num">−${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td></tr></tbody></table>
+    <p class="tot">Total factura: ${eur2(m.total)}</p>${x.tax_code&&x.tax_code!=='IVA'?'<p>No sujeto a IVA por localización. '+esc(x.tax_code)+' · '+esc(x.tax_treatment==='reverse_charge'?'Inversión del sujeto pasivo':'Impuesto local repercutido')+'</p>':''}${x.document_kind==='credit'?`<p>Rectifica la factura ${esc(x.corrects_invoice_number||(list.find(i=>i.id===x.corrects_invoice_id)||{}).number||x.corrects_invoice_id)}. Causa: ${esc(x.correction_reason)}. Los importes indicados reducen la factura original; este documento no acredita un reembolso bancario.</p>`:''}${x.notes?`<p class="small">${esc(x.notes)}</p>`:''}<p class="small">TengoBolo · tengobolo.es · tengobolo@proton.me</p>`;}
   import('./bank-destination-ui.js').then(m=>m.renderBankDestination(document.getElementById('bank-destination-admin'),call)).catch(()=>{document.getElementById('bank-destination-admin').textContent='No se pudo cargar la configuracion bancaria privada.';});
   $('#fs').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;$('#se').innerHTML='';
     try{const r=await call('/api/admin/settings',{method:'PATCH',auth:true,body:fiscal()});Object.assign(s,r);$('#se').innerHTML=msg('ok','Datos guardados.');}catch(x){$('#se').innerHTML=msg('err',x.message);}b.disabled=false;};
@@ -650,22 +652,22 @@ function gestoria(v){loading(v,async()=>{
   const num=x=>Number(x).toFixed(2).replace('.',',');
   $('#xls').onclick=()=>{
     if(!list.length){alert('No hay facturas en el mes elegido.');return;}
-    const rows=[['Número','Fecha','Cliente','NIF cliente','Correo cliente','Concepto','Base (€)','IVA %','IVA (€)','IRPF %','IRPF (€)','Total (€)','Estado','Fecha de cobro','Método']];
-    const t={base:0,iva:0,irpf:0,total:0};
-    list.forEach(x=>{const m=amounts(x);if(x.status!=='void'){t.base+=m.base;t.iva+=m.iva;t.irpf+=m.irpf;t.total+=m.total;}
-      rows.push([x.number,fmtD(x.issued_at),x.client_name,x.client_nif,x.client_email,x.concept,num(m.base),String(x.iva_pct).replace('.',','),num(m.iva),String(x.irpf_pct).replace('.',','),num(m.irpf),num(m.total),INV_ST[x.status]||x.status,x.paid_at?fmtD(x.paid_at):'',x.method]);});
-    rows.push(['','','','','','TOTALES (sin anuladas)',num(t.base),'',num(t.iva),'',num(t.irpf),num(t.total),'','','']);
+    const rows=[['Número','Fecha','Cliente','NIF cliente','Correo cliente','Concepto','Base (€)','IVA %','IVA (€)','IRPF %','IRPF (€)','Total (€)','Estado','Fecha de cobro','Método','Código impuesto','Tipo impuesto %','Cuota impuesto (€)','IGIC/IPSI (€), fuera de 303','Tratamiento','Canal declaración']];
+    const t=fiscalTotals(list);
+    list.forEach(x=>{const m=amounts(x);
+      rows.push([x.number,fmtD(x.issued_at),x.client_name,x.client_nif,x.client_email,x.concept,num(m.base),x.tax_code&&x.tax_code!=='IVA'?'':String(x.iva_pct).replace('.',','),num(m.iva),String(x.irpf_pct).replace('.',','),num(m.irpf),num(m.total),INV_ST[x.status]||x.status,x.paid_at?fmtD(x.paid_at):'',x.method,m.taxCode,m.taxRate===null?'':String(m.taxRate).replace('.',','),num(m.taxAmount),num(m.localTax),m.taxTreatment,m.reporting]);});
+    rows.push(['','','','','','TOTALES (sin anuladas)',num(t.base),'',num(t.iva),'',num(t.irpf),num(t.total),'','','','','','',num(t.localTax),'','']);
     const csv='﻿'+rows.map(r=>r.map(csvCell).join(';')).join('\r\n');
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='tengobolo-facturas-'+mes+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   };
   $('#pdf').onclick=()=>{
     if(!list.length){alert('No hay facturas en el mes elegido.');return;}
-    const t=list.filter(x=>x.status!=='void').reduce((a,x)=>{const m=amounts(x);a.base+=m.base;a.iva+=m.iva;a.irpf+=m.irpf;a.total+=m.total;return a;},{base:0,iva:0,irpf:0,total:0});
+    const t=fiscalTotals(list);
     printSheet(`${head('Facturas y cobros · '+monthName(mes))}
-      <table><thead><tr><th>Nº</th><th>Fecha</th><th>Cliente</th><th>Concepto</th><th class="num">Base</th><th class="num">IVA</th><th class="num">IRPF</th><th class="num">Total</th><th>Estado</th></tr></thead><tbody>${
-      list.map(x=>{const m=amounts(x);return `<tr><td>${esc(x.number)}</td><td>${fmtD(x.issued_at)}</td><td>${esc(x.client_name)}</td><td>${esc(x.concept)}</td><td class="num">${eur2(m.base)}</td><td class="num">${eur2(m.iva)}</td><td class="num">${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td><td>${INV_ST[x.status]||esc(x.status)}</td></tr>`;}).join('')
+      <table><thead><tr><th>Nº</th><th>Fecha</th><th>Cliente</th><th>Concepto</th><th class="num">Base</th><th class="num">IVA</th><th class="num">IGIC/IPSI</th><th class="num">IRPF</th><th class="num">Total</th><th>Estado</th></tr></thead><tbody>${
+      list.map(x=>{const m=amounts(x);return `<tr><td>${esc(x.number)}</td><td>${fmtD(x.issued_at)}</td><td>${esc(x.client_name)}</td><td>${esc(x.concept)}</td><td class="num">${eur2(m.base)}</td><td class="num">${eur2(m.iva)}</td><td class="num">${eur2(m.localTax)}${x.tax_code&&x.tax_code!=='IVA'?' '+esc(x.tax_code):''}</td><td class="num">${eur2(m.irpf)}</td><td class="num">${eur2(m.total)}</td><td>${INV_ST[x.status]||esc(x.status)}</td></tr>`;}).join('')
       }</tbody></table>
-      <p class="tot">Base total: ${eur2(t.base)} · IVA repercutido: ${eur2(t.iva)} (modelo 303) · IRPF retenido: ${eur2(t.irpf)} · Total: ${eur2(t.total)}</p>
+      <p class="tot">Base total: ${eur2(t.base)} · IVA repercutido: ${eur2(t.iva)} (revisar modelo 303) · IGIC/IPSI separado: ${eur2(t.localTax)} (no incluir en 303) · IRPF retenido: ${eur2(t.irpf)} · Total: ${eur2(t.total)}</p>
       <p class="small">Listado sin las facturas anuladas en los totales. Generado en TengoBolo el ${fmtD(today)}.</p>`);
   };
   await loadMonth();
@@ -787,7 +789,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
     if(discs.length>12||discs.some(x=>x.length>60)){$('#e').innerHTML=msg('err','Máximo 12 tipos de arte, de hasta 60 letras cada uno.');return;}
     const b=$('#ok');b.disabled=true;
     try{const created=await call('/api/projects',{method:'POST',auth:true,body:{title:f.title,description:fichaText(f)+f.description,disciplines:discs,location:f.location,budget_eur:f.budget?Number(f.budget):null,event_date:f.event_date,deadline:dl,extras:['equipo','transporte','alojamiento'].filter(k=>f['x_'+k]),rider:f.rider||'',requires_insurance:!!f.ins,phone:f.phone||'',address:f.address||''}});
-      if(created.status==='pending'){v.innerHTML='<h2>Bolo guardado</h2>';const {renderPendingProjectPayment}=await import('./payment-document-checkout.js');await renderPendingProjectPayment(v,created,call);}else{v.innerHTML=msg('ok','Bolo publicado. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}}
+      if(created.status==='pending'){v.innerHTML='<h2>Bolo guardado</h2>';const {renderNewPendingProjectPayment:renderPendingProjectPayment}=await import('./request-contract-candidate/request-purchase-entry.js');await renderPendingProjectPayment(v,created,call);}else{v.innerHTML=msg('ok','Bolo publicado. Cuando aceptes una propuesta, el artista verá tu teléfono y dirección.');}}
     catch(err){b.disabled=false;if(err.status===402){$('#e').innerHTML=payBox();}else $('#e').innerHTML=msg('err',err.message);}};});}
 // Reduce la foto en el navegador (máx. 1600 px, JPEG) antes de subirla: así caben muchas en el almacén gratuito.
 function fichaText(f){const r=[['Tipo de evento',f.evtype],['Espacio',f.space],['Asistentes',f.guests],['Horario',f.t_from?(f.t_from+(f.t_to?' a '+f.t_to:'')):''],['Actuación',f.dur]].filter(x=>x[1]);return r.length?r.map(x=>x[0]+': '+x[1]).join('\n')+'\n\n':'';}
@@ -853,7 +855,7 @@ function setupInstall(){
   };
 }
 if('serviceWorker' in navigator){let had=!!navigator.serviceWorker.controller,rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!rl){rl=true;location.reload();}had=true;});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update().catch(()=>{});document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update().catch(()=>{});});}).catch(()=>{}));}
-restore().then(()=>{try{const p=new URLSearchParams(location.search);if(p.get('alta')==='artista'&&!session){rolePre='artist';tab='entrar';}else if(p.get('alta')==='agencia'&&!session){rolePre='agency';tab='entrar';}}catch(e){}render();});
+restore().then(()=>{try{const p=new URLSearchParams(location.search);if(p.get('alta')==='artista'&&!session){rolePre='artist';tab='entrar';}else if(p.get('alta')==='agencia'&&!session){rolePre='agency';tab='entrar';}}catch(e){}render();if(session){import('./request-contract-candidate/request-purchase-entry.js').then(m=>m.deliverPendingPurchaseConfirmation(call,new URLSearchParams(location.search).get('purchase_request'))).catch(e=>alert('No se ha podido entregar la confirmación personal: '+e.message));}});
 </script>
 </body>
 </html>
