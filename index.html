@@ -233,8 +233,8 @@ const GCOL=['#9b8fc7','#5aa3ab','#c49a82','#b07a63','#c79aad','#8a8a8a','#8fae85
 function groupsHtml(){return '<div class="groups">'+DISC.filter(g=>g[0]!=='Otras').map((g,i)=>`<section class="gc" style="--gc:${GCOL[i%GCOL.length]}"><small>${String(i+1).padStart(2,'0')}</small><h3>${g[0]}</h3><div class="chips">${g[1].map(x=>`<button type="button" class="chip" data-d="${esc(x)}">${esc(x)}</button>`).join('')}</div></section>`).join('')+'</div>';}
 const waLink=t=>'https://wa.me/?text='+encodeURIComponent(t);
 const waBolo=x=>`<a class="btn sec" style="display:inline-block;text-decoration:none;padding:14px 20px;line-height:1.2" target="_blank" rel="noopener" href="${waLink('Mira este bolo en TengoBolo: '+x.title+(x.location?' ('+x.location+')':'')+'. '+location.origin+'/')}">Compartir por WhatsApp</a>`;
-function freeBanner(){return `<div class="promo"><b>Artistas: perfil gratis, siempre.</b> Clientes: desde 25 € por bolo, sin comisión (<a href="#" data-go="precios">ver Precios</a>). Todavía no se cobra nada.</div>`;}
-function payBox(){return `<div class="promo"><b>Para publicar más bolos necesitas un plan.</b> Bolo suelto 25 €, plan mensual 49 € o anual 490 € (sin IVA, sin comisión; <a href="#" data-go="precios">ver Precios</a>). Todavía no se cobra nada.</div>`;}
+function freeBanner(){return `<div class="promo"><b>Artistas: perfil gratis, siempre.</b> Clientes: desde 25 € por bolo, sin comisión (<a href="#" data-go="precios">ver Precios</a>). Pago por transferencia bancaria. Tarjeta pendiente de activación.</div>`;}
+function payBox(){return `<div class="promo"><b>Para publicar más bolos necesitas un plan.</b> Bolo suelto 25 €, plan mensual 49 € o anual 490 € (sin IVA, sin comisión; <a href="#" data-go="precios">ver Precios</a>). Pago por transferencia bancaria. Tarjeta pendiente de activación.</div>`;}
 let session=null, me=null, tab='inicio', isAdmin=false;
 const RK='tb_rt';
 function keep(){try{if(session&&session.refresh_token)localStorage.setItem(RK,session.refresh_token);else localStorage.removeItem(RK);}catch{}}
@@ -360,7 +360,7 @@ function home(v){
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
   <div class="duo">
     <div class="du a"><span class="eyebrow">Artistas</span><h3>Soy artista</h3><p>Portfolio y propuestas a bolos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Regístrate</button></div>
-    <div class="du b"><span class="eyebrow">Agencias, empresas y particulares</span><h3>Soy agencia</h3><p>Desde 25 € por bolo o un plan mensual, sin comisión. Todavía no se cobra nada.</p>
+    <div class="du b"><span class="eyebrow">Agencias, empresas y particulares</span><h3>Soy agencia</h3><p>Desde 25 € por bolo o un plan mensual, sin comisión. Pago por transferencia bancaria. Tarjeta pendiente de activación.</p>
       <button class="btn" data-go="entrar" data-role="agency">Regístrate</button></div>
   </div>
   <section class="bw"><span class="eyebrow">Incluido al registrarte como artista</span><h2 class="bwh"><img src="logo-heart-b-sm-blue.png" alt="" width="44" height="44">Bolower</h2><p class="lead">La red de artistas de todas las disciplinas</p><p>Una herramienta de TengoBolo para que los artistas hablen entre ellos: busco grupo, busco compañía, busco componente. Sin registro aparte y sin coste.</p>${session&&me&&me.role!=='artist'?'':`<button class="btn" id="bwb">${session?'Entrar en Bolower':'Regístrate como artista'}</button>`}</section>
@@ -442,7 +442,7 @@ function about(v){
   <p class="sub">Estos datos se completarán cuando el titular formalice su alta de actividad.</p>`;
 }
 function pricing(v){
-  v.innerHTML=`<h2>Precios</h2><div class="promo"><b>Todavía no se cobra nada.</b> Estos son los precios previstos para el lanzamiento. Todos sin IVA y sin comisión sobre lo que ganas o cobras.</div>
+  v.innerHTML=`<h2>Precios</h2><div class="promo"><b>Pago por transferencia bancaria. Tarjeta pendiente de activación.</b> Precios sin IVA y sin comisión sobre lo que ganas o cobras. El pago se tramita por transferencia, con confirmación manual del ingreso.</div>
   <h3>Clientes: agencias, empresas y particulares</h3>
   <div class="card"><h3>Bolo suelto</h3><p><b><span id="pr-s">25</span> €</b> por bolo. Tu bolo publicado y 30 días para ver y contactar artistas. Pago único.</p><div id="pay-s"></div></div>
   <div class="card"><h3>Plan mensual</h3><p><b><span id="pr-m">49</span> € al mes</b>. Bolos y contactos ilimitados. Cancelas cuando quieras.</p><div id="pay-m"></div></div>
@@ -450,14 +450,22 @@ function pricing(v){
   <h3>Artistas</h3>
   <div class="card"><h3>Basic <span class="tag dst">Gratis</span></h3><p><b>0 €</b>. Perfil, bolos y propuestas sin límite, siempre. Tu perfil aparece en el listado cuando está completo (ciudad, disciplina, bio y foto).</p></div>
   <div class="card"><h3>Pro <span class="tag dst">Opcional</span></h3><p><b><span id="pr-p">6</span> € al mes</b> o <b><span id="pr-pa">60</span> € al año</b>. Tu perfil sale el primero en las listas y con la marca "Destacado". El plan Basic no pierde nada.</p><div id="pay-p"></div></div>
-  <p class="meta">Pago con tarjeta, a través de Stripe: el precio con tarjeta es el precio de la lista, sin recargo. Los planes anuales también se pueden pagar por transferencia con 10 € de descuento en el plan de cliente (480 €) y 2 € en el Pro (58 €); escríbenos a <a href="mailto:tengobolo@proton.me">tengobolo@proton.me</a>. IVA según corresponda al lanzamiento.</p>
+  <section class="card" id="transferencia-bancaria" aria-labelledby="transfer-title">
+  <h3 id="transfer-title">Pago por transferencia bancaria</h3>
+  <p>La tarjeta queda aplazada. Puedes pagar por transferencia a la cuenta profesional de TengoBolo:</p>
+  <p><b>Titular:</b> ALBERTO MARQUILLAS OLONDRIZ<br><b>IBAN:</b> <span style="overflow-wrap:anywhere;font-family:monospace;font-size:1.1em">ES72 1583 0001 1290 0904 2758</span></p>
+  <p><b>Concepto:</b> TB + nombre de la cuenta en TengoBolo + plan elegido. Indica también el título del bolo si es un bolo suelto.</p>
+  <p>Los precios de arriba son sin IVA. Antes de transferir, escribe a <a href="mailto:tengobolo@proton.me?subject=Transferencia%20TengoBolo">tengobolo@proton.me</a> con tu nombre, el email de tu cuenta, el plan y tus datos de facturación. Te confirmaremos el importe total con los impuestos que correspondan y la referencia para identificar el ingreso. Los descuentos anuales por transferencia ya anunciados se mantienen.</p>
+  <p><b>Confirmación manual:</b> una vez recibido el dinero, confirmaremos el ingreso, la factura y el inicio y fin de tu acceso. Enviar un justificante no acredita por sí solo que el dinero haya llegado. No se activa el acceso automáticamente al hacer la transferencia.</p>
+  <p>No es una domiciliación: no se cargará ni renovará automáticamente. Si ya has transferido, avísanos en ese mismo correo con la referencia y el email de tu cuenta, sin enviar claves ni datos de tarjeta.</p>
+  </section>
 <h2>Preguntas frecuentes</h2>
   <details class="card"><summary><b>¿Cobráis comisión?</b></summary><p>No. Nunca cobramos comisión por los bolos. El trato y el pago entre artista y cliente son directos.</p></details>
   <details class="card"><summary><b>¿Es gratis para los artistas?</b></summary><p>Sí. Crear el perfil y enviar propuestas es gratis y sin límite. Pro es opcional.</p></details>
   <details class="card"><summary><b>¿Qué incluye Pro?</b></summary><p>Visibilidad: tu perfil sale el primero en las listas y con la marca "Destacado".</p></details>
   <details class="card"><summary><b>¿Por qué mi perfil no aparece en el listado?</b></summary><p>Para aparecer necesitas ciudad, al menos una disciplina, una bio de 30 letras o más y foto de perfil. Lo ves en Mi perfil.</p></details>
   <details class="card"><summary><b>¿Cuándo se ven los datos de contacto?</b></summary><p>Los clientes con plan o bolo suelto activo pueden ver los perfiles completos y escribir a los artistas por mensajes internos. El teléfono del artista solo se muestra si él lo añade.</p></details>
-  <details class="card"><summary><b>¿Cómo se paga?</b></summary><p id="payfaq">De momento no se cobra nada. Cuando se activen los pagos: tarjeta en la página segura de Stripe (nunca guardamos tu tarjeta), o transferencia en los planes anuales.</p></details>
+  <details class="card"><summary><b>¿Cómo se paga?</b></summary><p id="payfaq">Por transferencia bancaria a la cuenta indicada en esta página. La tarjeta queda aplazada. El ingreso y el acceso se confirman manualmente; un justificante no equivale a ingreso recibido.</p></details>
   <details class="card"><summary><b>¿Puedo cancelar cuando quieras?</b></summary><p>Sí, los planes mensuales se cancelan en cualquier momento.</p></details>
   <details class="card"><summary><b>¿Los precios llevan IVA?</b></summary><p>Los precios se muestran sin IVA. El IVA se detallará en la factura.</p></details>`;
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.go);});
@@ -474,17 +482,17 @@ async function loadPayCfg(){
     const off=()=>'';
     const isA=session&&me&&me.role==='artist',isC=session&&me&&me.role!=='artist';
     const ent='<button class="btn" data-goentrar="1">Entra o crea tu cuenta</button>';
-    const btn=(plan,label,ok)=>!session?ent:!ok?'<p class="sub">Este plan es para '+(plan.startsWith('pro')?'artistas':'clientes')+'.</p>':c.enabled?`<button class="btn" data-plan="${plan}">${label}</button>`:off(label);
+    const btn=(plan,label,ok)=>!session?ent:!ok?'<p class="sub">Este plan es para '+(plan.startsWith('pro')?'artistas':'clientes')+'.</p>':false?`<button class="btn" data-plan="${plan}">${label}</button>`:off(label);
     const set=(id,h)=>{const e=$('#'+id);if(e)e.innerHTML=h;};
     set('pay-m',btn('monthly','Elegir plan mensual',isC));set('pay-a',btn('annual','Elegir plan anual',isC));
     set('pay-s',!session?ent:isC?'<p class="sub">Se paga al publicar un bolo.</p>':'<p class="sub">Este plan es para clientes.</p>');
-    set('pay-p',!session?ent:!isA?'<p class="sub">Este plan es para artistas.</p>':c.enabled?'<button class="btn" data-plan="pro_monthly">Pro mensual</button> <button class="btn sec" data-plan="pro_annual">Pro anual</button>':off('Hacerme Pro'));
+    set('pay-p',!session?ent:!isA?'<p class="sub">Este plan es para artistas.</p>':false?'<button class="btn" data-plan="pro_monthly">Pro mensual</button> <button class="btn sec" data-plan="pro_annual">Pro anual</button>':off('Hacerme Pro'));
     document.querySelectorAll('[data-plan]').forEach(b=>b.onclick=async()=>{
       b.disabled=true;try{const {requestThenCheckout}=await import('./request-contract-candidate/request-purchase-entry.js');await requestThenCheckout({plan:b.dataset.plan,method:document.getElementById('pay-method')?.value||'card',call});}
       catch(e){alert(e.message||'No se pudo preparar el pago.');}finally{b.disabled=false;}
     });
-    if(c.enabled&&c.methods?.sepa_debit){const e=document.querySelector('#view h3');if(e)e.insertAdjacentHTML('beforebegin','<label>Método de pago<select id="pay-method"><option value="card">Tarjeta</option><option value="sepa_debit">Domiciliación SEPA</option></select></label><p class="meta">La domiciliación requiere un mandato y tarda en confirmarse. El acceso se activa cuando se confirme el pago.</p>');}
-    if(c.enabled&&c.methods?.manual_transfer&&session){const e=document.getElementById(isA?'pay-p':'pay-a');if(e){const b=document.createElement('button');b.className='btn sec';b.textContent='Pedir transferencia anual';b.onclick=async()=>{b.disabled=true;try{const {requestThenCheckout}=await import('./request-contract-candidate/request-purchase-entry.js');await requestThenCheckout({plan:isA?'pro_annual':'annual',method:'manual_transfer',call});}catch(x){alert(x.message);}finally{b.disabled=false;}};b.style.marginTop='10px';e.appendChild(b);}}
+    if(false&&c.enabled&&c.methods?.sepa_debit){const e=document.querySelector('#view h3');if(e)e.insertAdjacentHTML('beforebegin','<label>Método de pago<select id="pay-method"><option value="card">Tarjeta</option><option value="sepa_debit">Domiciliación SEPA</option></select></label><p class="meta">La domiciliación requiere un mandato y tarda en confirmarse. El acceso se activa cuando se confirme el pago.</p>');}
+    if(false&&c.enabled&&c.methods?.manual_transfer&&session){const e=document.getElementById(isA?'pay-p':'pay-a');if(e){const b=document.createElement('button');b.className='btn sec';b.textContent='Pedir transferencia anual';b.onclick=async()=>{b.disabled=true;try{const {requestThenCheckout}=await import('./request-contract-candidate/request-purchase-entry.js');await requestThenCheckout({plan:isA?'pro_annual':'annual',method:'manual_transfer',call});}catch(x){alert(x.message);}finally{b.disabled=false;}};b.style.marginTop='10px';e.appendChild(b);}}
     document.querySelectorAll('[data-goentrar]').forEach(b=>b.onclick=()=>setTab('entrar'));
   }catch{}
 }
