@@ -170,6 +170,54 @@ html.sa footer p{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 
 nav a{flex:none;min-height:40px;display:inline-flex;align-items:center;padding:0 14px;font-size:15px;color:var(--ink2);text-decoration:none}nav a:hover{color:var(--ink)}
 .chip{cursor:default}
+
+/* ===== REDISEÑO CLARO (preparación, rama rediseno-claro) ===== */
+:root{--ink:#141414;--ink2:#5b5b57;--bg:#ffffff;--card:#fafaf8;--line:#e3e3de;--tint:#f0f0ec;--accent:#e0323c;--accent2:#c01f2a}
+body[data-role=artist]{--accent:#b06a45;--accent2:#9a5636}
+body[data-role=agency]{--accent:#4a7396;--accent2:#3c607f}
+body{background:#fff;color:#141414}
+header{background:#000;border-bottom:1px solid #000}
+header .brand .wm{color:#f2f2ef}
+header .zone{color:#9b9b95}
+nav button{color:#5b5b57}
+nav button:hover,nav button[aria-current=true]{color:#141414}
+main a{color:#141414}
+.btn{background:#141414;border-color:#141414;color:#fff}
+.btn:hover{background:#333;border-color:#333}
+.btn.sec{background:transparent;color:#141414;border-color:#c9c9c4}
+.btn.sec:hover{background:#141414;color:#fff;border-color:#141414}
+.card{background:#fafaf8;border-color:#e3e3de}
+input,textarea,select{background:#fff;border-color:#cfcfc9;color:#141414}
+input:focus,textarea:focus,select:focus{outline:2px solid #999;outline-offset:1px}
+.msg{border-color:#e3e3de}
+.ok{background:#eef6ee;border-color:#bcd8c0;color:#1e5b2e}
+.err{background:#fdf0ee;border-color:#ecc9c2;color:#8c2f24}
+.info{background:#f4f4f1}
+.avatar{background:#e8e8e3;color:#141414}
+.grid button{background:rgba(255,255,255,.92);border-color:#cfcfc9;color:#b3261e}
+.links a{background:#f4f4f1;border-color:#d8d8d2;color:#141414}
+.sect,.cols3,.cl,.concept,.end{border-color:#e3e3de}
+@media(min-width:760px){.cl{border-top-color:#e3e3de}}
+.promo{background:#fafaf8;border-color:#e3e3de;border-left-color:#141414}
+.promo a{color:#141414}
+.appbox{background:#fafaf8;border-color:#e3e3de}
+.ph{background:#fdf6e3;border-color:#d8c36a;color:#7a6410}
+.chip{background:#fff;border-color:#d8d8d2;color:#141414}
+.chip:hover{border-color:var(--gc);background:#fff}
+.gc{background:#fafaf8;border-color:#e3e3de}
+.dg{background:#fafaf8;border-color:#e3e3de}
+.fbar{background:#fafaf8;border-color:#e3e3de}
+.arch img{border-color:#e3e3de}
+.lnk{color:#141414;border-bottom-color:#c9c9c4}
+.brandhero .wordmark{color:#141414}
+.du{background:#fafaf8;border-color:#e3e3de}
+.du .chips .chip:hover{color:#141414}
+.du .btn{color:#fff}
+.du.a{background:#f7ece5;border-color:#e2c4b2;border-top-color:#b06a45}
+.du.b{background:#e9eff5;border-color:#c2d2e0;border-top-color:#4a7396}
+footer{background:#050505}
+@media(display-mode:standalone) and (max-width:700px){nav{background:rgba(255,255,255,.97);border-top-color:#e3e3de}}
+/* ===== fin rediseño claro ===== */
 </style>
 </head>
 <body>
@@ -185,7 +233,7 @@ nav a{flex:none;min-height:40px;display:inline-flex;align-items:center;padding:0
 </header>
 <main id="view">
   <section class="hero8">
-    <div class="brandhero"><img class="heart" src="logo-heart-b.png" alt="Corazón negro brillante con una B, logo de TengoBolo" width="640" height="640"><span class="wordmark">tengo<b>b</b>olo</span></div>
+    <div class="brandhero"><img class="heart" src="logo-heart-b-alpha.png" alt="Corazón negro brillante con una B, logo de TengoBolo" width="640" height="640"><span class="wordmark">tengo<b>b</b>olo</span></div>
     <div class="intro">
       <h2 class="mega">Tu próximo bolo <em>empieza aquí</em></h2>
       <p class="lead">Crea tu perfil de artista, enseña tu trabajo y recibe propuestas de bolos reales. Gratis, sin límite y sin comisión.</p>

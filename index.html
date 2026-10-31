@@ -218,6 +218,104 @@ body.bwx footer{background:#000b12;border-top-color:#003153;color:#8fb8d9}body.b
 body.bwx .lnk{color:#cfe3f3;border-bottom-color:#0a4a7a}
 body.bwx input[type=checkbox]{accent-color:#8fb8d9}
 .avbox{margin-top:12px;padding:14px;border:1px solid #003153;border-radius:10px;background:#001a2b}.avbox b{color:#cfe3f3}.avbox .meta{color:#8fb8d9}.avbox input[type=checkbox]{accent-color:#8fb8d9}
+
+/* ===== REDISEÑO CLARO (preparación, pendiente de aprobación) ===== */
+:root{--ink:#141414;--ink2:#6b6b66;--bg:#ffffff;--card:#fafafa;--line:#e7e7e3;--accent:#141414;--accent2:#3a3a3a;--tint:#f2f2ef}
+body[data-role=artist]{--accent:#b04a1a;--accent2:#8f3c14}
+body[data-role=agency]{--accent:#2a6fd4;--accent2:#1a4fa0}
+body{background:var(--bg);color:var(--ink)}
+header{background:#000;border-bottom:1px solid #000}
+.brand .wm{color:#fff}
+nav{background:#fff;border-bottom:1px solid var(--line)}
+nav button{color:#6b6b66}
+nav button:hover{color:#141414}
+nav button[aria-current=true]{color:#141414}
+main a{color:#141414}
+.btn{background:#141414;border-color:#141414;color:#fff}
+.btn:hover{background:#3a3a3a;border-color:#3a3a3a}
+.btn.sec{background:transparent;color:#141414;border:1px solid #cfcfcb}
+.btn.sec:hover{background:#141414;color:#fff;border-color:#141414}
+.card{background:#fff;border-color:var(--line);box-shadow:0 2px 10px rgba(0,0,0,.04)}
+input,textarea,select{background:#fff;border:1px solid #d8d8d4;color:#141414}
+input:focus,textarea:focus,select:focus{outline:2px solid #b9b9b4}
+.msg{background:#fafafa}
+.ok{background:#eef7f0;border-color:#cfe6d6;color:#2c6e44}
+.err{background:#fdf0ef;border-color:#f2d4d0;color:#a33a2e}
+.info{background:#f4f4f2}
+.avatar{background:#e6e6e2}
+.grid button{background:#fff;border-color:#ddd;color:#c0492f}
+.links a{background:#f4f4f2;border-color:#e4e4e0;color:#333}
+footer{background:#000;border-top:1px solid #000;color:#8f8f89}
+footer .fl a{color:#e8e8e4}
+.pbar{background:#ecece8}
+.diff li{color:var(--ink2)}.diff li b{color:var(--ink)}
+.bw{background:#fff5f5;border:1px solid #ffd9db;border-left:5px solid #e0323c}
+.bw .eyebrow{color:#e0323c}
+.bw p{color:#5a5a56}.bw .lead{color:#141414}
+.promo{background:#fafafa;border-left-color:#ccc}
+.promo a{color:#141414}
+.ph{background:#fdf6dc;border-color:#e3d488;color:#8a7420}
+.dg{background:#fff}
+.du .chips .chip:hover{color:#141414}
+.du.a{--duc:#b04a1a;--duc2:#8f3c14;background:rgba(212,98,42,.06);border-color:rgba(212,98,42,.3);border-top-color:#b04a1a}
+.du.b{--duc:#2a6fd4;--duc2:#1a4fa0;background:rgba(42,111,212,.06);border-color:rgba(42,111,212,.3);border-top-color:#2a6fd4}
+.du .btn{color:#fff}
+.end{border-top-color:#e0e0dc}
+.brandhero .wordmark{color:#141414}
+.cols3{border-top-color:#e0e0dc}
+.cl{border-bottom-color:var(--line)}
+@media(min-width:760px){.cl{border-top-color:#e0e0dc}}
+.cl .n{color:var(--accent)}
+.gc{background:#fff;border-color:var(--line)}
+.chip{background:#f4f4f2;border-color:#e4e4e0;color:#333}
+.chip:hover{background:#ececea}
+.arch img{filter:none;border-color:#e0e0dc}
+.fbar{background:#fafafa}
+.ini{color:#6b6b66;border-color:#ddd;background:#f2f2ef}
+.ficha{background:#fafafa}
+.adslot{background:#fafafa}
+.wk .cap{color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.tag{background:var(--tint)}
+.dst{background:#141414;color:#fff}
+nav button .bh,nav button img{vertical-align:-3px;border-radius:4px}
+@media(display-mode:standalone) and (max-width:700px){
+nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
+}
+@media(max-width:700px){
+html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
+}
+.bw .btn{background:#e0323c;border-color:#e0323c;color:#fff}
+.bw .btn:hover{background:#c01f2a;border-color:#c01f2a}
+.brandhero img.heart{width:min(400px,72vw)}
+
+/* home v4: foto protagonista, entrada rápida, doble vía */
+.hphoto{position:relative;margin:18px 0 6px;border-radius:18px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.10)}
+.hphoto img{width:100%;height:min(52vw,330px);object-fit:cover;object-position:center 30%;display:block}
+.hphoto .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 42%,rgba(0,0,0,.62))}
+.hphoto .h{position:absolute;left:20px;right:20px;bottom:16px;margin:0;color:#fff;font-size:clamp(24px,6vw,34px);font-weight:800;line-height:1.15;letter-spacing:-.01em}
+.qentry{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;margin:10px 0 2px;padding:15px 18px;border-radius:999px;background:#fafafa;border:1px solid #e3e3de;color:#5b5b57;font:inherit;font-size:15px;cursor:pointer;text-align:left}
+.qentry b{color:#e0323c;font-weight:700;white-space:nowrap}
+.qentry:hover{border-color:#c9c9c4;background:#f4f4f1}
+.paths{display:grid;gap:14px;margin:4px 0 8px}
+@media(min-width:700px){.paths{grid-template-columns:1fr 1fr}}
+.path{border-radius:18px;padding:24px 22px;color:#fff;display:grid;gap:10px;justify-items:start;align-content:start}
+.path .t{font-size:24px;font-weight:800;letter-spacing:-.01em}
+.path .d{font-size:15px;opacity:.94;line-height:1.45;margin:0}
+.path.a{background:linear-gradient(135deg,#d4622a,#a8430f)}
+.path.b{background:linear-gradient(135deg,#2a6fd4,#173f82)}
+.pbtn{margin-top:6px;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.14);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.pbtn:hover{background:rgba(255,255,255,.26)}
+.steps2{display:grid;gap:0;border-top:1px solid var(--line)}
+.step2{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+.step2 .n{flex:none;width:30px;height:30px;border-radius:50%;background:#141414;color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.step2 b{display:block;font-size:17px}
+.step2 .d{color:var(--ink2);font-size:14px}
+@media(min-width:760px){.steps2{grid-template-columns:repeat(3,1fr);gap:28px;border-top:0}.step2{display:block;border-bottom:0;border-top:1px solid var(--line);padding-top:16px}.step2 .n{margin-bottom:8px}}
+/* legibilidad header móvil: claim más claro */
+.zone{color:#d9d9d4}
+/* nav móvil: indicador de desplazamiento por fundido en los bordes */
+@media(max-width:700px){html:not(.sa) nav{-webkit-mask-image:linear-gradient(90deg,transparent,#000 16px,#000 calc(100% - 30px),transparent);mask-image:linear-gradient(90deg,transparent,#000 16px,#000 calc(100% - 30px),transparent)}}
+/* ===== fin rediseño claro ===== */
 </style>
 </head>
 <body>
@@ -269,7 +367,7 @@ function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){paint();document.body.classList.toggle('bwx',tab==='redartistas');
   if(session&&!me&&!meBusy){meBusy=true;getMe().catch(()=>{}).finally(()=>{meBusy=false;});}
   const rl=session&&me?me.role:null;
-  const items=[['inicio','Inicio'],['artistas','Artistas'],...(rl!=='agency'?[['proyectos','Ver bolos']]:[]),...(rl==='artist'?[['redartistas','<img class="bh" src="logo-heart-b-sm-blue.png" alt="" width="18" height="18">Bolower']]:[]),...(rl!=='artist'?[['publicar','Publicar un bolo']]:[]),['propuestas','Mis propuestas'],...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),...(session?[]:[['precios','Precios'],['quienes','Quiénes somos']]),...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  const items=[['inicio','Inicio'],['artistas','Artistas'],...(rl!=='agency'?[['proyectos','Ver bolos']]:[]),...(rl==='artist'?[['redartistas','<img class="bh" src="logo-heart-b-alpha.png" alt="" width="18" height="18">Camerino']]:[]),...(rl!=='artist'?[['publicar','Publicar un bolo']]:[]),['propuestas','Mis propuestas'],...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),...(session?[]:[['precios','Precios'],['quienes','Quiénes somos']]),...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
   const fn=$('#fnav');if(fn){fn.innerHTML=session?'<a href="#" data-t="precios">Precios</a> · <a href="#" data-t="quienes">Quiénes somos</a> · ':'';fn.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.t);});}
@@ -281,17 +379,17 @@ async function teaser(v){
   if(tab!=='proyectos'||session)return;
   const card=x=>`<div class="card"><h3>${esc(x.title)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.event_date?' · '+esc(fdate(x.event_date)):''}</div></div>`;
   v.innerHTML=`<h2 class="hbolos">Bolos disponibles</h2><p class="meta">Estos son los últimos bolos publicados. Regístrate para ver el detalle y enviar tu propuesta.</p>${r.length?r.map(card).join(''):'<p>Aún no hay bolos abiertos. Sé el primero en verlos: regístrate.</p>'}<div class="promo"><b>Regístrate para ver más.</b> Es gratis para artistas.</div><div class="row"><button class="btn" id="rg" data-role="artist">Regístrate</button><button class="btn sec" id="lg">Ya tengo cuenta</button></div>`;
-  $('#rg').onclick=()=>{rolePre='artist';setTab('entrar');};$('#lg').onclick=()=>setTab('entrar');
+  $('#rg').onclick=()=>{rolePre='artist';setTab('entrar');};$('#lg').onclick=()=>{modePre='login';setTab('entrar');};
 }
 
 const AV={grupo:'un grupo',compania:'compañía',colaborar:'colaboraciones',bolos:'bolos sueltos'};
 const NK={busco_grupo:'Busco grupo',busco_compania:'Busco compañía',busco_artista:'Busco artista para mi grupo',otro:'Otro'};
 function redView(v,q={}){loading(v,async()=>{const m=await getMe();
-  if(m.role!=='artist'){v.innerHTML='<h2>Bolower</h2><p>Este espacio es solo para artistas.</p>';return;}
+  if(m.role!=='artist'){v.innerHTML='<h2>Camerino</h2><p>Este espacio es solo para artistas.</p>';return;}
   const u=new URLSearchParams();['kind','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});
   const r=await call('/api/notices'+(u.toString()?'?'+u:''),{auth:true});
   const card=x=>`<div class="card"><span class="tag dst">${esc(NK[x.kind]||x.kind)}</span><h3>${esc(x.author_name)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''} · ${esc(fdate(String(x.created_at).slice(0,10)))}</div>${(x.avail_for||[]).length?`<div class="av">Disponible para: ${esc(x.avail_for.map(k=>AV[k]||k).join(', '))}</div>`:''}<p style="white-space:pre-line">${esc(x.body)}</p><div id="pf-${esc(x.id)}"></div><div class="row" style="margin:8px 0 0">${x.mine?`<button class="btn sec" data-c="${esc(x.id)}">Cerrar anuncio</button><button class="btn sec" data-x="${esc(x.id)}">Borrar</button>`:`<button class="btn" data-p="${esc(x.id)}" data-w="${esc(x.author_id)}" data-n="${esc(x.author_name)}" data-k="${esc(x.kind)}">Proponer colaboración</button><button class="btn sec" data-w="${esc(x.author_id)}" data-n="${esc(x.author_name)}">Escribir</button><button class="lnk" data-r="${esc(x.id)}">Reportar</button>`}</div></div>`;
-  v.innerHTML=`<h2 class="bwh"><img src="logo-heart-b-sm-blue.png" alt="" width="44" height="44">Bolower</h2><p class="lead" style="margin:0">La red de artistas de todas las disciplinas</p><p class="meta">Un espacio para que los artistas se encuentren: busco grupo, busco compañía, busco componente. Solo lo ves tú y otros artistas con sesión. Se habla por mensajes internos, sin dar correo ni teléfono.</p>
+  v.innerHTML=`<h2 class="bwh"><img src="logo-heart-b-alpha.png" alt="" width="44" height="44">TengoBolo Camerino</h2><p class="lead" style="margin:0">La red de artistas de todas las disciplinas</p><p class="meta">Un espacio para que los artistas se encuentren: busco grupo, busco compañía, busco componente. Solo lo ves tú y otros artistas con sesión. Se habla por mensajes internos, sin dar correo ni teléfono.</p>
   <div class="row"><button class="btn" id="np">Publicar un anuncio</button></div><div id="nf"></div>
   <form class="fbar" id="rf" novalidate><label>Tipo<select name="kind"><option value="">Todos</option>${Object.entries(NK).map(([k,l])=>`<option value="${k}"${q.kind===k?' selected':''}>${l}</option>`).join('')}</select></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${esc(x)}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" id="rc">Quitar filtros</button></div></form>
   <div id="rl">${r.length?r.map(card).join(''):'<p>Aún no hay anuncios con esos filtros. Publica el primero.</p>'}</div><div id="re"></div>`;
@@ -304,7 +402,7 @@ function redView(v,q={}){loading(v,async()=>{const m=await getMe();
   v.querySelectorAll('[data-w]:not([data-p])').forEach(b=>b.onclick=()=>thread(v,b.dataset.w,b.dataset.n));
   v.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const box=document.getElementById('pf-'+b.dataset.p);if(box.innerHTML){box.innerHTML='';return;}
     const my=(m.disciplines||[]).join(', ');const kn=NK[b.dataset.k]||'tu anuncio';
-    box.innerHTML=`<form class="card" style="margin:10px 0"><b>Propuesta de colaboración</b><label>Tu mensaje<textarea name="t" rows="5" required minlength="10" maxlength="1500">Hola ${esc(b.dataset.n.split(' ')[0])}, he visto tu anuncio «${esc(kn)}» en Bolower y me gustaría colaborar contigo.${my?' Soy '+esc(my)+'.':''} ¿Hablamos?</textarea></label><p class="meta">Le llega como mensaje interno. No pongas tu teléfono ni tu correo si no quieres.</p><div class="msgbox"></div><button class="btn" type="submit">Enviar propuesta</button></form>`;
+    box.innerHTML=`<form class="card" style="margin:10px 0"><b>Propuesta de colaboración</b><label>Tu mensaje<textarea name="t" rows="5" required minlength="10" maxlength="1500">Hola ${esc(b.dataset.n.split(' ')[0])}, he visto tu anuncio «${esc(kn)}» en el Camerino y me gustaría colaborar contigo.${my?' Soy '+esc(my)+'.':''} ¿Hablamos?</textarea></label><p class="meta">Le llega como mensaje interno. No pongas tu teléfono ni tu correo si no quieres.</p><div class="msgbox"></div><button class="btn" type="submit">Enviar propuesta</button></form>`;
     box.querySelector('form').onsubmit=async e=>{e.preventDefault();const bt=e.target.querySelector('button');bt.disabled=true;try{await call('/api/messages',{method:'POST',auth:true,body:{to:b.dataset.w,body:'[Propuesta de colaboración] '+e.target.t.value.trim()}});box.innerHTML=msg('ok','Propuesta enviada a '+esc(b.dataset.n)+'. La respuesta te llegará a Mensajes.');}catch(err){bt.disabled=false;e.target.querySelector('.msgbox').innerHTML=msg('err',err.message);}};});
   v.querySelectorAll('[data-c]').forEach(b=>b.onclick=async()=>{try{await call('/api/notices/'+b.dataset.c+'/close',{method:'POST',auth:true,body:{}});redView(v,q);}catch(err){$('#re').innerHTML=msg('err',err.message);}});
   v.querySelectorAll('[data-x]').forEach(b=>b.onclick=async()=>{if(!confirm('¿Borrar este anuncio?'))return;try{await call('/api/notices/'+b.dataset.x,{method:'DELETE',auth:true});redView(v,q);}catch(err){$('#re').innerHTML=msg('err',err.message);}});
@@ -334,44 +432,30 @@ function home(v){
   if(confirmed||failed)history.replaceState(null,'',location.pathname);
   v.innerHTML=`${confirmed?msg('ok','Correo confirmado. Ya puedes entrar con tu cuenta.'):''}${failed?msg('err','El enlace del correo no es válido o ha caducado. Crea la cuenta otra vez o pide un correo nuevo.'):''}
   
-  <section class="hero8">
-    <div class="brandhero"><img class="heart" src="logo-heart-b.png" alt="Corazón negro brillante con una B, logo de TengoBolo" width="640" height="640"><span class="wordmark">tengo<b>b</b>olo</span><span class="leitmotiv">La red de artistas a tu alcance</span></div>
-    <figure class="arch" style="margin:0"><img src="hero.jpg" alt="Mosaico en blanco y negro de artistas: pintores, músicos y un escultor" width="800" height="1067"><figcaption>Talento en directo</figcaption></figure>
-  </section>
-  <section class="concept"><span class="eyebrow">Qué es TengoBolo</span><h2>Artistas para tu evento, a tu alcance</h2>
-    <p>TengoBolo conecta artistas (músicos, pintores, bailarines, actores, magos, poetas y más, solos o en grupo) con agencias, empresas y particulares que buscan una actuación para su evento: una boda, un cumpleaños, una inauguración o una noche en un bar.</p>
-    <p>Publicas lo que necesitas, con fecha y presupuesto, y los artistas te envían su propuesta. El acuerdo es directo entre las dos partes.</p>
-    <ul class="diff">
-      <li><b>Todas las disciplinas en un solo sitio.</b> Música, teatro, danza, circo, artes plásticas, imagen y más.</li>
-      <li><b>Bolos en equipo.</b> Varios artistas pueden unirse en un mismo bolo.</li>
-      <li><b>Bolower, la red de artistas de todas las disciplinas.</b> Una herramienta para que los artistas hablen entre ellos, incluida al registrarte como artista: busco grupo, busco compañía, busco componente.</li>
-      <li><b>Contacto protegido.</b> Los datos del artista solo se desbloquean para clientes que publican un bolo.</li>
-      <li><b>Un precio claro para clientes.</b> 25 € por bolo o plan mensual, sin sorpresas.</li>
-      <li><b>Para artistas, gratis y sin comisión</b> sobre lo que ganan.</li>
-    </ul>
-    <p class="meta">TengoBolo solo pone en contacto a las partes y no interviene en el contrato.</p>
-  </section>
-  <div class="sech"><h2>Cómo funciona</h2><span>Tres pasos</span></div>
-  <div class="cols3">
-    <div class="cl"><span class="n">1</span><div><b>Crea tu perfil</b><span class="d">Disciplina, ciudad, fotos y vídeos de tu trabajo.</span></div></div>
-    <div class="cl"><span class="n">2</span><div><b>Publica o encuentra un bolo</b><span class="d">Las agencias publican con fecha y presupuesto.</span></div></div>
-    <div class="cl"><span class="n">3</span><div><b>Propón y contrata</b><span class="d">La agencia elige y os ponéis en contacto.</span></div></div>
-  </div>
+  <section class="hphoto"><img src="hero.jpg" alt="Artistas trabajando: pintura, música y escultura, en blanco y negro" width="800" height="1067"><div class="veil"></div><h2 class="h">Tu próximo bolo empieza aquí</h2></section>
+  ${session&&me&&me.role==='artist'?'':`<button class="qentry" id="qe" type="button"><span>¿Qué necesitas para tu evento?</span><b>Publicar un bolo</b></button>`}
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
-  <div class="duo">
-    <div class="du a"><span class="eyebrow">Artistas</span><h3>Soy artista</h3><p>Portfolio y propuestas a bolos reales. Gratis, sin límite y sin comisión.</p><button class="btn" data-go="entrar" data-role="artist">Regístrate</button></div>
-    <div class="du b"><span class="eyebrow">Agencias, empresas y particulares</span><h3>Soy agencia</h3><p>Desde 25 € por bolo o un plan mensual, sin comisión. Pago por transferencia bancaria. Tarjeta pendiente de activación.</p>
-      <button class="btn" data-go="entrar" data-role="agency">Regístrate</button></div>
+  <div class="paths">
+    <div class="path a"><div class="t">Soy artista</div><p class="d">Enseña tu trabajo, entra en el Camerino y responde a bolos. Gratis, sin comisión.</p>${session&&me?(me.role==='artist'?`<button class="pbtn" data-go="proyectos">Ver bolos</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="artist">Crear perfil gratis</button>`}</div>
+    <div class="path b"><div class="t">Busco artistas</div><p class="d">Publica tu bolo con fecha y presupuesto, y recibe propuestas de artistas.</p>${session&&me?(me.role==='agency'?`<button class="pbtn" data-go="publicar">Publicar un bolo</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="agency">Publicar un bolo</button>`}</div>
   </div>
-  <section class="bw"><span class="eyebrow">Incluido al registrarte como artista</span><h2 class="bwh"><img src="logo-heart-b-sm-blue.png" alt="" width="44" height="44">Bolower</h2><p class="lead">La red de artistas de todas las disciplinas</p><p>Una herramienta de TengoBolo para que los artistas hablen entre ellos: busco grupo, busco compañía, busco componente. Sin registro aparte y sin coste.</p>${session&&me&&me.role!=='artist'?'':`<button class="btn" id="bwb">${session?'Entrar en Bolower':'Regístrate como artista'}</button>`}</section>
+  <div class="sech"><h2>Cómo funciona</h2><span>Tres pasos</span></div>
+  <div class="steps2">
+    <div class="step2"><span class="n">1</span><div><b>Publica tu bolo</b><span class="d">Qué artista necesitas, cuándo, dónde y tu presupuesto.</span></div></div>
+    <div class="step2"><span class="n">2</span><div><b>Los artistas responden</b><span class="d">Los de esa disciplina reciben tu bolo y te envían su propuesta con precio.</span></div></div>
+    <div class="step2"><span class="n">3</span><div><b>Hablas y cierras</b><span class="d">Comparas, hablas con ellos dentro de la web y eliges. El acuerdo es directo entre las dos partes.</span></div></div>
+  </div>
+
   ${adSlot('inicio')}
   <div class="sech"><h2>Disciplinas artísticas</h2><span>Más de 80 formas de crear</span></div>
   <p class="meta" style="margin:0 0 14px">Elige una disciplina y publica tu bolo: los artistas que la practican te envían su propuesta.</p>
   ${groupsHtml()}
+  <section class="bw"><span class="eyebrow">Incluido al registrarte como artista</span><h2 class="bwh"><img src="logo-heart-b-alpha.png" alt="" width="44" height="44">TengoBolo Camerino</h2><p class="lead">La red de artistas de todas las disciplinas</p><p>Una herramienta de TengoBolo para que los artistas hablen entre ellos: busco grupo, busco compañía, busco componente. Sin registro aparte y sin coste.</p>${session&&me&&me.role!=='artist'?'':`<button class="btn" id="bwb">${session?'Entrar en el Camerino':'Regístrate como artista'}</button>`}</section>
   <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
   `;
   setupInstall();
   {const ab=$('#a');if(ab)ab.onclick=()=>setTab(session?'proyectos':'entrar');}
+  {const qe=$('#qe');if(qe)qe.onclick=()=>{rolePre='agency';setTab(session?'publicar':'entrar');};}
   {const bb=$('#bwb');if(bb)bb.onclick=()=>{if(session){setTab('redartistas');}else{rolePre='artist';setTab('entrar');}};}
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
   v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{artPre=b.dataset.d;rolePre='agency';setTab(session?'publicar':'entrar');});
@@ -393,6 +477,7 @@ async function loadRed(){
   }catch(e){}
 }
 function enter(v,mode='register',note='',rsel=null){
+  if(modePre){mode=modePre;modePre=null;}
   const rp=rolePre;rolePre=null;const role=rsel||rp||null;
   if(session){v.innerHTML='<h2>Sesión iniciada</h2><div class="row"><button class="btn" id="p">Mi perfil</button></div>';$('#p').onclick=()=>setTab('perfil');return;}
   v.innerHTML=`<h2>${mode==='register'?'Crear cuenta':'Entrar'}</h2>
@@ -427,7 +512,7 @@ function checkEmail(v,email){
 function about(v){
   v.innerHTML=`<h2>Quiénes somos</h2>
   <p>TengoBolo pone en contacto a artistas con quienes buscan una actuación para sus eventos. Estamos empezando y mejorando la plataforma con la ayuda de los primeros usuarios.</p>
-  <p><b>Bolower</b> es la red de artistas de todas las disciplinas: una herramienta de TengoBolo, incluida al registrarte como artista, donde los artistas se comunican entre sí, se anuncian y buscan propuestas unos de otros (busco grupo, busco compañía, busco componente). Solo la ven los artistas registrados.</p>
+  <p><b>TengoBolo Camerino</b> es la red de artistas de todas las disciplinas: una herramienta de TengoBolo, incluida al registrarte como artista, donde los artistas se comunican entre sí, se anuncian y buscan propuestas unos de otros (busco grupo, busco compañía, busco componente). Solo la ven los artistas registrados.</p>
   <div class="card"><h3>Responsable del servicio</h3>
   <p>Titular: Alberto Marquillas Olóndriz</p>
   <p>NIF: 35084899D</p>
@@ -684,7 +769,7 @@ function gestoria(v){loading(v,async()=>{
 function paint(){const r=session&&me?me.role:'';document.body.dataset.role=r;const z=document.getElementById('zone');if(z)z.textContent=r==='artist'?'Zona artistas':r==='agency'?'Zona agencias y clientes':'La red de artistas a tu alcance';const t=document.querySelector('meta[name=theme-color]');if(t)t.content='#000000';}
 let UNREAD=0;let meBusy=false;
 async function refreshUnread(){if(!session)return;try{const r=await call('/api/messages/unread',{auth:true});if(r.unread!==UNREAD){UNREAD=r.unread;renderNav();}}catch{}}
-async function getMe(){if(!me){me=await call('/api/me',{auth:true});refreshUnread();try{await call('/api/admin/status',{auth:true});isAdmin=true;}catch{isAdmin=false;}}paint();renderNav();return me;}
+async function getMe(){if(!me){me=await call('/api/me',{auth:true});refreshUnread();try{await call('/api/admin/status',{auth:true});isAdmin=true;}catch{isAdmin=false;}}paint();renderNav();if(tab==='inicio'){const v=$('#view');if(v&&v.querySelector('.paths [data-role]'))home(v);}return me;}
 async function loading(v,fn){v.innerHTML='<p role="status">Cargando… (la primera vez puede tardar hasta 1 minuto)</p>';try{await fn();}catch(x){v.innerHTML=msg('err',x.message);}}
 const SOCIALS=[['instagram','Instagram'],['facebook','Facebook'],['tiktok','TikTok'],['youtube','YouTube'],['soundcloud','SoundCloud'],['linkedin','LinkedIn'],['website','Web']];
 const isUrl=u=>/^https:\/\//.test(u||'')||(/^http:\/\//.test(u||'')); 
@@ -698,7 +783,7 @@ function mediaHtml(media,editable){
   const videos=vi.map(m=>`<div class="card">${m.embed?`<div class="video"><iframe src="${esc(m.embed)}" title="${esc(m.caption||'Vídeo')}" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>`:`<a href="${esc(m.url)}" target="_blank" rel="noopener nofollow">${esc(m.caption||m.url)}</a>`}${m.caption&&m.embed?`<div class="meta">${esc(m.caption)}</div>`:''}${editable?`<div class="row"><button class="btn sec" data-del="${esc(m.id)}">Borrar vídeo</button></div>`:''}</div>`).join('');
   return {photos,videos,nPhotos:ph.length,nVideos:vi.length};
 }
-let PRE=null;let rolePre=null;let evPre=null;let artPre=null;
+let PRE=null;let rolePre=null;let evPre=null;let artPre=null;let modePre=null;
 const qs=(q,page)=>{const u=new URLSearchParams();['q','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});if(q.all)u.set('all','1');if(page>1)u.set('page',page);const t=u.toString();return t?'?'+t:'';};
 const filterBar=q=>`<form class="fbar" novalidate><label>Buscar<input name="q" maxlength="60" value="${esc(q.q||'')}" placeholder="Nombre o palabra"></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${x}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row" style="margin:0"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" data-clear>Quitar filtros</button></div></form>`;
 const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim());
@@ -828,7 +913,7 @@ function profile(v){return loading(v,async()=>{const m=await getMe();const full=
   ${m.role==='artist'?visPanel(m):''}
   ${m.role==='artist'?`<p><a class="btn sec" style="display:inline-block;text-decoration:none;padding:14px 20px;line-height:1.2" target="_blank" rel="noopener" href="${waLink('Estoy en TengoBolo, la red de artistas y bolos. Échale un vistazo: '+location.origin+'/')}">Compartir TengoBolo por WhatsApp</a></p>`:''}
   ${DESTACADO&&m.role==='artist'?`<div class="promo"><b>Pro (opcional):</b> tu perfil, el primero en las listas y con la marca "Destacado", por 6 € al mes o 60 € al año (sin IVA). Basic sigue siendo gratis, siempre. <a href="#" data-go="precios">Ver Precios</a></div>`:''}
-  <form id="f">${m.role==='artist'?`<div class="card" style="margin:8px 0"><label class="chk" style="align-items:flex-start"><input type="checkbox" name="listed"${m.listed!==false?' checked':''} style="margin-top:4px"> <span><b>Aparecer en el listado de artistas</b><br><span class="meta">En el listado de la red, otros artistas registrados ven tu nombre y tu ciudad. Los clientes que publican un bolo pueden acceder a tu ficha si apareces en el listado. Tu correo no se muestra. Si añades teléfono, pueden verlo los clientes desbloqueados y aquellos a los que envíes una propuesta, como explica el aviso de abajo. Puedes quitarte del listado cuando quieras.</span></span></label><div class="avbox"><b>Disponible para... <span style="font-weight:400">(Bolower)</span></b><br><span class="meta">Se muestra en tus anuncios de Bolower, solo a otros artistas.</span><div class="row" style="gap:14px;margin:8px 0 0">${Object.entries(AV).map(([k,l])=>`<label class="chk"><input type="checkbox" name="av" value="${k}"${(m.avail_for||[]).includes(k)?' checked':''}> ${l}</label>`).join('')}</div></div></div>`:''}
+  <form id="f">${m.role==='artist'?`<div class="card" style="margin:8px 0"><label class="chk" style="align-items:flex-start"><input type="checkbox" name="listed"${m.listed!==false?' checked':''} style="margin-top:4px"> <span><b>Aparecer en el listado de artistas</b><br><span class="meta">En el listado de la red, otros artistas registrados ven tu nombre y tu ciudad. Los clientes que publican un bolo pueden acceder a tu ficha si apareces en el listado. Tu correo no se muestra. Si añades teléfono, pueden verlo los clientes desbloqueados y aquellos a los que envíes una propuesta, como explica el aviso de abajo. Puedes quitarte del listado cuando quieras.</span></span></label><div class="avbox"><b>Disponible para... <span style="font-weight:400">(Camerino)</span></b><br><span class="meta">Se muestra en tus anuncios del Camerino, solo a otros artistas.</span><div class="row" style="gap:14px;margin:8px 0 0">${Object.entries(AV).map(([k,l])=>`<label class="chk"><input type="checkbox" name="av" value="${k}"${(m.avail_for||[]).includes(k)?' checked':''}> ${l}</label>`).join('')}</div></div></div>`:''}
   <label>Nombre<input name="name" required minlength="2" value="${esc(m.name)}"></label><label>Sobre mí<textarea name="bio" rows="4">${esc(m.bio)}</textarea></label><div><b>Disciplinas artísticas</b> <span class="meta">(máximo 12)</span>${DISC.map(g=>`<details class="dg"${g[1].some(x=>(m.disciplines||[]).includes(x))?' open':''}><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}"${(m.disciplines||[]).includes(x)?' checked':''}>${x}</label>`).join('')}</details>`).join('')}</div><label>Otras disciplinas (opcional, separadas por comas)<input name="disciplines_other" value="${esc((m.disciplines||[]).filter(x=>!DISC_ALL.includes(x)).join(', '))}"></label><label>Ciudad<input name="location" value="${esc(m.location)}"></label>${m.role==='artist'?`<label>Teléfono de contacto (opcional)<input name="phone" type="tel" inputmode="tel" maxlength="25" value="${esc(m.phone||'')}" placeholder="+34 600 000 000"></label><p class="meta" style="margin-top:-6px">Aviso: si lo escribes, solo lo verán los clientes que han desbloqueado el contacto (publican un bolo) y los clientes a los que envíes una propuesta. Nunca aparece en el listado ni en la portada. Es voluntario y puedes borrarlo cuando quieras.</p>`:''}<label>Enlace a tu portfolio (https://…)<input name="portfolio_url" value="${esc(m.portfolio_url)}"></label>
   <h3 style="margin:8px 0 0">Redes</h3>${SOCIALS.map(([k,n])=>`<label>${n}${k==='website'?' (https://…)':' (enlace completo, https://…)'}<input name="${k}" type="url" value="${esc(m[k])}" placeholder="https://"></label>`).join('')}
   <div id="e"></div><button class="btn" type="submit">Guardar</button></form>
