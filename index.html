@@ -359,7 +359,7 @@ let session=null, me=null, tab='inicio', isAdmin=false;
 const RK='tb_rt';
 function keep(){try{if(session&&session.refresh_token)localStorage.setItem(RK,session.refresh_token);else localStorage.removeItem(RK);}catch{}}
 async function restore2(){try{const r=await fetch(API+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:session.refresh_token})});if(r.ok){const d=await r.json();session=d.session;keep();}}catch{}}
-async function restore(){let t=null;try{t=localStorage.getItem(RK);}catch{}if(!t)return;try{const r=await fetch(API+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:t})});if(!r.ok){if(r.status===401){try{localStorage.removeItem(RK);}catch{}}return;}const d=await r.json();session=d.session;keep();}catch{}}
+async function restore(){let t=null;try{t=localStorage.getItem(RK);}catch{}if(!t)return;try{const r=await fetch(API+'/api/auth/refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({refresh_token:t}),signal:AbortSignal.timeout(15000)});if(!r.ok){if(r.status===401){try{localStorage.removeItem(RK);}catch{}}return;}const d=await r.json();session=d.session;keep();}catch{}}
 const $=s=>document.querySelector(s);
 /* PUBLICIDAD (preparada, apagada): mientras ADS este vacio se ve solo un recuadro discreto 'Espacio para publicidad' (sin enlaces ni precios).
    Para activar un hueco: ADS.inicio={marca:'Nombre',img:'https://.../banner.jpg',url:'https://...',alt:'texto'} (https obligatorio). Huecos: inicio, lista (1 de cada 8 tarjetas). */
@@ -981,7 +981,13 @@ function setupInstall(){
   };
 }
 if('serviceWorker' in navigator){let had=!!navigator.serviceWorker.controller,rl=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had&&!rl){rl=true;location.reload();}had=true;});window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(r=>{r.update().catch(()=>{});document.addEventListener('visibilitychange',()=>{if(!document.hidden)r.update().catch(()=>{});});}).catch(()=>{}));}
-restore().then(()=>{try{const p=new URLSearchParams(location.search);if(p.get('alta')==='artista'&&!session){rolePre='artist';tab='entrar';}else if(p.get('alta')==='agencia'&&!session){rolePre='agency';tab='entrar';}}catch(e){}render();if(session){import('./request-contract-candidate/request-purchase-entry.js').then(m=>m.deliverPendingPurchaseConfirmation(call,new URLSearchParams(location.search).get('purchase_request'))).catch(e=>alert('No se ha podido entregar la confirmación personal: '+e.message));}});
+const qp=new URLSearchParams(location.search);
+render();
+restore().then(()=>{
+  if(!session){try{if(qp.get('alta')==='artista'){rolePre='artist';tab='entrar';render();}else if(qp.get('alta')==='agencia'){rolePre='agency';tab='entrar';render();}}catch(e){}return;}
+  getMe().catch(()=>{});
+  import('./request-contract-candidate/request-purchase-entry.js').then(m=>m.deliverPendingPurchaseConfirmation(call,qp.get('purchase_request'))).catch(e=>alert('No se ha podido entregar la confirmación personal: '+e.message));
+});
 </script>
 </body>
 </html>
