@@ -714,7 +714,7 @@ function gestoria(v){loading(v,async()=>{
   const today=new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Madrid'});
   let mes=today.slice(0,7), list=[];
   v.innerHTML=`<h2>Gestoría</h2>
-  <div id="bank-destination-admin"></div><div id="manual-transfers-admin"></div><p class="meta">Tu zona privada: las facturas y los cobros de TengoBolo. Los pedidos documentados conservan su factura al confirmar el cobro. Revísala antes de exportar y no emitas otra para el mismo recibo. El formulario manual es solo para cobros independientes sin pedido documentado. Del mes que elijas sacas el Excel o el PDF para la gestoría.</p>
+  <div id="bank-destination-admin"></div><div id="manual-transfers-admin"></div><div id="modred"></div><p class="meta">Tu zona privada: las facturas y los cobros de TengoBolo. Los pedidos documentados conservan su factura al confirmar el cobro. Revísala antes de exportar y no emitas otra para el mismo recibo. El formulario manual es solo para cobros independientes sin pedido documentado. Del mes que elijas sacas el Excel o el PDF para la gestoría.</p>
   <div class="card"><h3>Mis datos fiscales</h3>
     <p class="meta">Salen en las facturas. El NIF lo escribes aquí cuando la gestoría te confirme el alta.</p>
     <form id="fs" class="ficha">
@@ -753,7 +753,13 @@ function gestoria(v){loading(v,async()=>{
       <div id="ie" style="grid-column:1/-1"></div>
       <div style="grid-column:1/-1"><button class="btn" type="submit">Registrar factura</button></div>
     </form></div>`;
-  loadManualTransfersAdmin();loadWithdrawalAdmin();
+  loadManualTransfersAdmin();loadWithdrawalAdmin();loadModRed();
+  async function loadModRed(){
+    const box=$('#modred');if(!box)return;
+    let rows=[];try{rows=await call('/api/admin/notices',{auth:true});}catch(e){return;}
+    box.innerHTML=`<div class="card"><h3>Moderación de la Red</h3><p class="meta">Anuncios del tablón reportados u ocultos automáticamente. Puedes restaurar un anuncio oculto; no hay borrado: lo que no proceda se queda oculto.</p>${rows.length?rows.map(x=>`<div class="card" style="margin:8px 0"><div class="meta"><b>${esc(x.author_name)}</b> · ${esc(NK[x.kind]||x.kind)}${x.location?' · '+esc(x.location):''} · ${esc(fdate(String(x.created_at).slice(0,10)))} · ${x.reports} reporte${Number(x.reports)===1?'':'s'} · <b>${x.status==='hidden'?'Oculto':'Visible con reportes'}</b></div><p style="white-space:pre-line;margin:6px 0">${esc(x.body)}</p>${x.status==='hidden'?`<button class="btn sec" data-res="${esc(x.id)}">Restaurar anuncio</button>`:''}</div>`).join(''):'<p class="meta">Nada pendiente de revisión.</p>'}</div>`;
+    box.querySelectorAll('[data-res]').forEach(b=>b.onclick=async()=>{if(!confirm('¿Restaurar este anuncio? Vuelve a ser visible y se limpian sus reportes.'))return;b.disabled=true;try{await call('/api/admin/notices/'+encodeURIComponent(b.dataset.res)+'/restore',{method:'POST',auth:true,body:{}});loadModRed();}catch(e){b.disabled=false;alert(e.message);}});
+  }
   const fmtD=d=>String(d||'').slice(0,10).split('-').reverse().join('/');
   const monthName=m=>{const [y,mm]=m.split('-');return new Date(Number(y),Number(mm)-1,1).toLocaleDateString('es-ES',{month:'long',year:'numeric'});};
 
