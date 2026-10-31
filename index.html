@@ -411,7 +411,7 @@ function redView(v,q={}){loading(v,async()=>{const m=await getMe();
   const u=new URLSearchParams();['kind','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});
   const r=await call('/api/notices'+(u.toString()?'?'+u:''),{auth:true});
   const card=x=>`<div class="card"><span class="tag dst">${esc(NK[x.kind]||x.kind)}</span><h3>${esc(x.author_name)}</h3><div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''} · ${esc(fdate(String(x.created_at).slice(0,10)))}</div>${(x.avail_for||[]).length?`<div class="av">Disponible para: ${esc(x.avail_for.map(k=>AV[k]||k).join(', '))}</div>`:''}<p style="white-space:pre-line">${esc(x.body)}</p><div id="pf-${esc(x.id)}"></div><div class="row" style="margin:8px 0 0">${x.mine?`<button class="btn sec" data-c="${esc(x.id)}">Cerrar anuncio</button><button class="btn sec" data-x="${esc(x.id)}">Borrar</button>`:`<button class="btn" data-p="${esc(x.id)}" data-w="${esc(x.author_id)}" data-n="${esc(x.author_name)}" data-k="${esc(x.kind)}">Proponer colaboración</button><button class="btn sec" data-w="${esc(x.author_id)}" data-n="${esc(x.author_name)}">Escribir</button><button class="lnk" data-r="${esc(x.id)}">Reportar</button>`}</div></div>`;
-  const guia=m.complete===false?`<div class="promo"><b>Tu perfil está al ${Math.round((4-(m.missing||[]).length)/4*100)} %.</b> Complétalo (te falta: ${(m.missing||[]).map(esc).join(', ')}) y activa la casilla del listado en Mi perfil para que otros artistas te encuentren. <a href="#" id="cp">Completar mi perfil</a></div>`:'';
+  const guia=m.complete===false?`<div class="promo"><b>Tu perfil está al ${Math.round((4-(m.missing||[]).length)/4*100)} %.</b> La Red la puedes usar ya. Si además quieres aparecer en el listado de artistas (todas las cuentas registradas ven tu nombre y tu ciudad), completa lo que te falta (${(m.missing||[]).map(esc).join(', ')}) y marca la casilla del listado en Mi perfil. <a href="#" id="cp">Completar mi perfil</a></div>`:'';
   v.innerHTML=`<h2 class="bwh"><img src="logo-heart-b-alpha.png" alt="" width="44" height="44">Red</h2><p class="lead" style="margin:0">La red de artistas de todas las disciplinas, dentro de TengoBolo</p><p class="meta">Un espacio para que los artistas se encuentren: busco grupo, busco compañía, busco componente. Solo lo veis los artistas con sesión. Se habla por mensajes internos, sin dar correo ni teléfono.</p>${guia}
   <div class="row"><button class="btn" id="np">Publicar un anuncio</button></div><div id="nf"></div>
   <form class="fbar" id="rf" novalidate><label>Tipo<select name="kind"><option value="">Todos</option>${Object.entries(NK).map(([k,l])=>`<option value="${k}"${q.kind===k?' selected':''}>${l}</option>`).join('')}</select></label><label>Disciplina<select name="discipline"><option value="">Todas</option>${DISC.map(g=>`<optgroup label="${g[0]}">${g[1].map(x=>`<option${q.discipline===x?' selected':''}>${esc(x)}</option>`).join('')}</optgroup>`).join('')}</select></label><label>Ciudad<input name="city" maxlength="60" value="${esc(q.city||'')}" placeholder="Ej: Barcelona"></label><div class="row"><button class="btn" type="submit">Buscar</button><button class="btn sec" type="button" id="rc">Quitar filtros</button></div></form>
@@ -455,14 +455,21 @@ function home(v){
   if(confirmed||failed)history.replaceState(null,'',location.pathname);
   v.innerHTML=`${confirmed?msg('ok','Correo confirmado. Ya puedes entrar con tu cuenta.'):''}${failed?msg('err','El enlace del correo no es válido o ha caducado. Crea la cuenta otra vez o pide un correo nuevo.'):''}
   
-  <section class="hphoto"><img src="hero.jpg" alt="Artistas trabajando: pintura, música y escultura, en blanco y negro" width="800" height="1067"><div class="veil"></div><h2 class="h">Tu próximo bolo empieza aquí</h2></section>
+  <section class="hphoto"><img src="hero.jpg" alt="Artistas trabajando: pintura, música y escultura, en blanco y negro" width="800" height="1067"><div class="veil"></div><h2 class="h">La red de los artistas</h2></section>
   ${session&&me&&me.role==='artist'?'':`<button class="qentry" id="qe" type="button"><span>¿Eres artista?</span><b>Entra en la Red, gratis</b></button>`}
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
   <div class="paths">
-    <div class="path a"><div class="t">Soy artista</div><p class="d">Enseña tu trabajo, entra en la Red y responde a bolos. Gratis, sin comisión.</p>${session&&me?(me.role==='artist'?`<button class="pbtn" data-go="proyectos">Ver bolos</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="artist">Crear perfil gratis</button>`}</div>
-    <div class="path b"><div class="t">Busco artistas</div><p class="d">Publica tu bolo con fecha y presupuesto, y recibe propuestas de artistas.</p>${session&&me?(me.role==='agency'?`<button class="pbtn" data-go="publicar">Publicar un bolo</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="agency">Publicar un bolo</button>`}</div>
+    <div class="path a"><div class="t">Soy artista</div><p class="d">Crea tu perfil gratis y entra en la Red: conoce artistas, anúnciate, colabora y responde a bolos. Sin comisión.</p>${session&&me?(me.role==='artist'?`<button class="pbtn" data-go="proyectos">Ver bolos</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="artist">Crear perfil gratis</button>`}</div>
+    <div class="path b"><div class="t">Agencias, empresas y particulares</div><p class="d">Apartado de clientes: publica tu bolo con fecha y presupuesto, y recibe propuestas de artistas.</p>${session&&me?(me.role==='agency'?`<button class="pbtn" data-go="publicar">Publicar un bolo</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="agency">Publicar un bolo</button>`}</div>
   </div>
-  <div class="sech"><h2>Cómo funciona</h2><span>Tres pasos</span></div>
+  <section class="bw"><span class="eyebrow">Incluido al registrarte como artista</span><h2 class="bwh"><img src="logo-heart-b-alpha.png" alt="" width="44" height="44">Red</h2><p class="lead">La red de artistas de todas las disciplinas</p><p>Dentro de TengoBolo, sin registro aparte y sin coste: los artistas hablan entre ellos, se anuncian y colaboran (busco grupo, busco compañía, busco componente).</p>${session&&me&&me.role!=='artist'?'':`<button class="btn" id="bwb">${session?'Entrar en la Red':'Regístrate como artista'}</button>`}</section>
+  <div class="sech"><h2>Si eres artista</h2><span>Tres pasos</span></div>
+  <div class="steps2">
+    <div class="step2"><span class="n">1</span><div><b>Crea tu perfil gratis</b><span class="d">Tus disciplinas, tu ciudad, tu trabajo. Sin comisión, para siempre.</span></div></div>
+    <div class="step2"><span class="n">2</span><div><b>Entra en la Red</b><span class="d">Conoce a otros artistas, anúnciate y colabora. Todo por mensajes internos.</span></div></div>
+    <div class="step2"><span class="n">3</span><div><b>Responde a bolos</b><span class="d">Los bolos de tu disciplina te llegan y envías tu propuesta con precio.</span></div></div>
+  </div>
+  <div class="sech"><h2>Si buscas artistas</h2><span>Apartado de clientes</span></div>
   <div class="steps2">
     <div class="step2"><span class="n">1</span><div><b>Publica tu bolo</b><span class="d">Qué artista necesitas, cuándo, dónde y tu presupuesto.</span></div></div>
     <div class="step2"><span class="n">2</span><div><b>Los artistas responden</b><span class="d">Los de esa disciplina reciben tu bolo y te envían su propuesta con precio.</span></div></div>
@@ -471,9 +478,8 @@ function home(v){
 
   ${adSlot('inicio')}
   <div class="sech"><h2>Disciplinas artísticas</h2><span>Más de 80 formas de crear</span></div>
-  <p class="meta" style="margin:0 0 14px">Elige una disciplina y publica tu bolo: los artistas que la practican te envían su propuesta.</p>
+  <p class="meta" style="margin:0 0 14px">Encuentra tu disciplina: márcala en tu perfil de artista o publica un bolo que la pida.</p>
   ${groupsHtml()}
-  <section class="bw"><span class="eyebrow">Incluido al registrarte como artista</span><h2 class="bwh"><img src="logo-heart-b-alpha.png" alt="" width="44" height="44">Red</h2><p class="lead">La red de artistas de todas las disciplinas</p><p>Dentro de TengoBolo, sin registro aparte y sin coste: los artistas hablan entre ellos, se anuncian y colaboran (busco grupo, busco compañía, busco componente).</p>${session&&me&&me.role!=='artist'?'':`<button class="btn" id="bwb">${session?'Entrar en la Red':'Regístrate como artista'}</button>`}</section>
   <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
   `;
   setupInstall();
