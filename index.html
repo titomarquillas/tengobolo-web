@@ -318,15 +318,29 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .qentry{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;margin:10px 0 2px;padding:15px 18px;border-radius:999px;background:#fafafa;border:1px solid #e3e3de;color:#5b5b57;font:inherit;font-size:15px;cursor:pointer;text-align:left}
 .qentry b{color:#e0323c;font-weight:700;white-space:nowrap}
 .qentry:hover{border-color:#c9c9c4;background:#f4f4f1}
-.paths{display:grid;gap:14px;margin:4px 0 8px}
-@media(min-width:700px){.paths{grid-template-columns:1fr 1fr}}
-.path{border-radius:18px;padding:24px 22px;color:#fff;display:grid;gap:10px;justify-items:start;align-content:start}
-.path .t{font-size:24px;font-weight:800;letter-spacing:-.01em}
-.path .d{font-size:15px;opacity:.94;line-height:1.45;margin:0}
-.path.a{background:linear-gradient(135deg,#d4622a,#a8430f)}
-.path.b{background:linear-gradient(135deg,#2a6fd4,#173f82)}
-.pbtn{margin-top:6px;min-height:44px;padding:0 20px;border-radius:999px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.14);color:#fff;font:inherit;font-weight:700;cursor:pointer}
-.pbtn:hover{background:rgba(255,255,255,.26)}
+.protag{position:relative;margin:4px 0 8px;background:#fff;color:#141414;border-radius:26px;padding:56px 44px 44px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:480px}
+.protag .blobA{position:absolute;width:420px;height:420px;border-radius:50%;background:#f7ede5;top:-160px;left:-110px}
+.protag .blobB{position:absolute;width:300px;height:300px;border-radius:50%;background:#eef2f5;bottom:-140px;right:-80px}
+.protag .doodle{position:absolute;fill:none;stroke:#141414;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.protag .d-mask{width:84px;left:58%;top:64px;transform:rotate(-8deg)}
+.protag .d-mic{width:60px;left:44%;top:34px;transform:rotate(7deg)}
+.protag .d-notes{width:80px;right:9%;top:76px;stroke:#e0323c;transform:rotate(-6deg)}
+.protag .d-heart{width:64px;right:26%;top:160px;transform:rotate(10deg)}
+.protag .eyebrow{position:relative;color:#e0323c;font-size:13px;font-weight:700;letter-spacing:.22em;margin:0 0 14px}
+.protag .eyebrow::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:#e0323c;margin-right:10px;vertical-align:1px}
+.protag .mega{position:relative;font-size:clamp(40px,8.5vw,88px);line-height:.95;letter-spacing:-.03em;font-weight:900;text-transform:uppercase;margin:0 0 20px;max-width:760px}
+.protag .sticker{position:absolute;right:5%;bottom:204px;transform:rotate(-8deg);border:3px solid #e0323c;color:#e0323c;background:#fff;border-radius:999px;padding:12px 24px;font-size:15px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.protag .sub{position:relative;font-size:17px;line-height:1.55;color:#3a3a3a;max-width:540px;margin:0 0 28px}
+.protag .cta{position:relative;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.pillbtn{display:inline-block;min-height:48px;padding:0 30px;border-radius:999px;border:0;background:#141414;color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer;line-height:48px;text-decoration:none}
+.pillbtn:hover{background:#000}
+.howlink{color:#141414;font-size:15px;text-decoration:underline;text-underline-offset:4px}
+.cliente{margin:14px 0 8px;background:#fff;color:#141414;border-radius:20px;padding:20px 26px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.cliente .t{font-size:15px;font-weight:700}
+.cliente p{font-size:14px;color:#55554f;margin:0;flex:1;min-width:220px}
+.cliente .cbtn{border:1.5px solid #141414;border-radius:999px;padding:10px 22px;font:inherit;font-size:14px;font-weight:700;color:#141414;background:#fff;cursor:pointer;white-space:nowrap}
+.cliente .cbtn::after{content:" \2192";color:#e0323c;font-weight:900}
+@media(max-width:760px){.protag{padding:30px 22px 26px;min-height:0}.protag .sticker{position:static;transform:rotate(-4deg);display:inline-block;margin:0 0 20px;font-size:13px;padding:9px 16px}.protag .d-mic,.protag .d-notes,.protag .d-heart{display:none}.protag .d-mask{width:60px;left:auto;right:18px;top:22px}.protag .mega{font-size:40px}.protag .sub{font-size:15px}}
 .steps2{display:grid;gap:0;border-top:1px solid var(--line)}
 .step2{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
 .step2 .n{flex:none;width:30px;height:30px;border-radius:50%;background:#141414;color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
@@ -464,12 +478,24 @@ function home(v){
   v.innerHTML=`${confirmed?msg('ok','Correo confirmado. Ya puedes entrar con tu cuenta.'):''}${failed?msg('err','El enlace del correo no es válido o ha caducado. Crea la cuenta otra vez o pide un correo nuevo.'):''}
   
   <section class="hphoto"><img src="hero.jpg" alt="Artistas trabajando: pintura, música y escultura, en blanco y negro" width="800" height="1067"><div class="veil"></div><h2 class="h">La red de los artistas</h2></section>
-  <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
-  <div class="paths">
-    <div class="path a"><div class="t">Soy artista</div><p class="d">Crea tu perfil gratis y entra en la Red de artistas, dentro de TengoBolo y sin registro aparte: habla con otros artistas, anúnciate, colabora (busco grupo, busco compañía) y responde a bolos. Sin comisión.</p>${session&&me?(me.role==='artist'?`<button class="pbtn" data-go="redartistas">Entra en la red</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="artist">Entra en la red</button>`}</div>
-    <div class="path b"><div class="t">Agencias, empresas y particulares</div><p class="d">Apartado de clientes: publica tu bolo con fecha y presupuesto, y recibe propuestas de artistas.</p>${session&&me?(me.role==='agency'?`<button class="pbtn" data-go="publicar">Publicar un bolo</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="agency">Publicar un bolo</button>`}</div>
-  </div>
-  <div class="sech"><h2>Si eres artista</h2><span>Tres pasos</span></div>
+  <section class="protag">
+    <div class="blobA"></div><div class="blobB"></div>
+    <svg class="doodle d-mask" viewBox="0 0 80 80" aria-hidden="true"><path d="M14 22c13-8 39-8 52 0 0 28-10 47-26 47S14 50 14 22z"/><circle cx="33" cy="31" r="3.6" fill="#141414"/><circle cx="49" cy="31" r="3.6" fill="#141414"/><path d="M31 50c6 5 12 5 18 0"/></svg>
+    <svg class="doodle d-mic" viewBox="0 0 60 90" aria-hidden="true"><rect x="18" y="8" width="24" height="42" rx="12"/><path d="M8 40c0 16 9 24 22 24s22-8 22-24M30 64v16M18 80h24"/></svg>
+    <svg class="doodle d-notes" viewBox="0 0 90 80" aria-hidden="true"><path d="M40 44V10l26-7v34"/><circle cx="34" cy="46" r="7"/><circle cx="60" cy="39" r="7"/></svg>
+    <svg class="doodle d-heart" viewBox="0 0 80 80" aria-hidden="true"><path d="M40 66C26 53 12 45 12 31c0-11 8-18 17-18 6 0 10 4 11 9 1-5 5-9 11-9 9 0 17 7 17 18 0 14-14 22-28 35z"/></svg>
+    <p class="eyebrow">Para artistas</p>
+    <h2 class="mega">Tu red.<br>Tus bolos.<br>Tu gente.</h2>
+    <span class="sticker">Gratis · Sin comisión</span>
+    <p class="sub">Crea tu ficha y entra en la Red: habla con otros artistas, anúnciate, colabora y responde a bolos. Dentro de TengoBolo, sin registro aparte.</p>
+    <div class="cta">${session&&me?(me.role==='artist'?`<button class="pillbtn" data-go="redartistas">Entra en la Red</button>`:`<button class="pillbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pillbtn" data-go="entrar" data-role="artist">Entra en la Red</button>`}<a class="howlink" href="#pasosartista">Cómo funciona</a></div>
+  </section>
+  <section class="cliente">
+    <span class="t">Agencias, empresas y particulares</span>
+    <p>Publica tu bolo con fecha y presupuesto, y recibe propuestas de artistas.</p>
+    ${session&&me?(me.role==='agency'?`<button class="cbtn" data-go="publicar">Publicar un bolo</button>`:`<button class="cbtn" data-go="artistas">Explorar artistas</button>`):`<button class="cbtn" data-go="entrar" data-role="agency">Explorar artistas</button>`}
+  </section>
+  <div class="sech" id="pasosartista"><h2>Si eres artista</h2><span>Tres pasos</span></div>
   <div class="steps2">
     <div class="step2"><span class="n">1</span><div><b>Crea tu perfil gratis</b><span class="d">Tus disciplinas, tu ciudad, tu trabajo. Sin comisión, para siempre.</span></div></div>
     <div class="step2"><span class="n">2</span><div><b>Entra en la Red</b><span class="d">Conoce a otros artistas, anúnciate y colabora. Todo por mensajes internos.</span></div></div>
@@ -802,7 +828,7 @@ function paint(){const r=session&&me?me.role:'';document.body.dataset.role=r;con
 let UNREAD=0;let meBusy=false;
 let PROPEND=0;
 async function refreshUnread(){if(!session)return;let ch=false;try{const r=await call('/api/messages/unread',{auth:true});if(r.unread!==UNREAD){UNREAD=r.unread;ch=true;}}catch{}try{if(me&&me.role==='agency'){const ps=await call('/api/proposals',{auth:true});const n=ps.filter(x=>x.status==='pending').length;if(n!==PROPEND){PROPEND=n;ch=true;}}}catch{}if(ch)renderNav();}
-async function getMe(){if(!me){me=await call('/api/me',{auth:true});refreshUnread();try{await call('/api/admin/status',{auth:true});isAdmin=true;}catch{isAdmin=false;}}paint();renderNav();if(tab==='inicio'){const v=$('#view');if(v&&v.querySelector('.paths [data-role]'))home(v);}return me;}
+async function getMe(){if(!me){me=await call('/api/me',{auth:true});refreshUnread();try{await call('/api/admin/status',{auth:true});isAdmin=true;}catch{isAdmin=false;}}paint();renderNav();if(tab==='inicio'){const v=$('#view');if(v&&v.querySelector('.protag [data-role]'))home(v);}return me;}
 async function loading(v,fn){v.innerHTML='<p role="status">Cargando… (la primera vez puede tardar hasta 1 minuto)</p>';try{await fn();}catch(x){v.innerHTML=msg('err',x.message);}}
 const SOCIALS=[['instagram','Instagram'],['facebook','Facebook'],['tiktok','TikTok'],['youtube','YouTube'],['soundcloud','SoundCloud'],['linkedin','LinkedIn'],['website','Web']];
 const isUrl=u=>/^https:\/\//.test(u||'')||(/^http:\/\//.test(u||'')); 
