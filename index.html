@@ -320,13 +320,12 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .qentry:hover{border-color:#c9c9c4;background:#f4f4f1}
 .protag{position:relative;margin:4px 0 8px;background:#fff;color:#141414;border-radius:26px;padding:56px 44px 44px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;min-height:480px}
 .protag .blobA{position:absolute;width:420px;height:420px;border-radius:50%;background:#f7ede5;top:-160px;left:-110px}
-.protag .blobB{position:absolute;width:300px;height:300px;border-radius:50%;background:#eef2f5;bottom:-140px;right:-80px}
 .protag .megarow{position:relative;display:flex;align-items:center;gap:44px}
-.protag .bigheart{flex:none;width:clamp(150px,22vw,270px);height:auto;transform:rotate(6deg)}
+.protag .bigheart{flex:none;width:clamp(160px,24vw,290px);height:auto;transform:rotate(3deg)}
 .protag .eyebrow{position:relative;color:#e0323c;font-size:13px;font-weight:700;letter-spacing:.22em;margin:0 0 14px}
 .protag .eyebrow::before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;background:#e0323c;margin-right:10px;vertical-align:1px}
-.protag .mega{position:relative;font-size:clamp(40px,8.5vw,88px);line-height:.95;letter-spacing:-.03em;font-weight:900;text-transform:uppercase;margin:0 0 20px;max-width:760px}
-.protag .sticker{position:absolute;right:5%;bottom:204px;transform:rotate(-8deg);border:3px solid #e0323c;color:#e0323c;background:#fff;border-radius:999px;padding:12px 24px;font-size:15px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.protag .mega{position:relative;font-size:clamp(34px,7.5vw,84px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:0 0 22px;max-width:640px}.protag .mega .pt{color:#e0323c}
+.protag .sticker{position:absolute;right:6%;bottom:196px;transform:rotate(-3deg);border:2.5px solid #e0323c;color:#e0323c;background:#fff;border-radius:999px;padding:11px 22px;font-size:14px;font-weight:800;letter-spacing:.10em;text-transform:uppercase}
 .protag .sub{position:relative;font-size:17px;line-height:1.55;color:#3a3a3a;max-width:540px;margin:0 0 28px}
 .protag .cta{position:relative;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .pillbtn{display:inline-block;min-height:48px;padding:0 30px;border-radius:999px;border:0;background:#141414;color:#fff;font:inherit;font-weight:700;font-size:16px;cursor:pointer;line-height:48px;text-decoration:none}
@@ -337,7 +336,7 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .cliente p{font-size:14px;color:#55554f;margin:0;flex:1;min-width:220px}
 .cliente .cbtn{border:1.5px solid #141414;border-radius:999px;padding:10px 22px;font:inherit;font-size:14px;font-weight:700;color:#141414;background:#fff;cursor:pointer;white-space:nowrap}
 .cliente .cbtn::after{content:" \2192";color:#e0323c;font-weight:900}
-@media(max-width:760px){.protag{padding:30px 22px 26px;min-height:0}.protag .sticker{position:static;transform:rotate(-4deg);display:inline-block;margin:0 0 20px;font-size:13px;padding:9px 16px}.protag .megarow{gap:12px}.protag .bigheart{width:76px}.protag .mega{font-size:32px}.protag .sub{font-size:15px}}
+@media(max-width:760px){.protag{padding:30px 22px 26px;min-height:0}.protag .sticker{position:static;transform:rotate(-4deg);display:inline-block;margin:0 0 20px;font-size:13px;padding:9px 16px}.protag .megarow{gap:14px}.protag .bigheart{width:88px}.protag .mega{font-size:38px}.protag .sub{font-size:15px}}
 .steps2{display:grid;gap:0;border-top:1px solid var(--line)}
 .step2{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
 .step2 .n{flex:none;width:30px;height:30px;border-radius:50%;background:#141414;color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
@@ -476,9 +475,9 @@ function home(v){
   
   <section class="hphoto"><img src="hero.jpg" alt="Artistas trabajando: pintura, música y escultura, en blanco y negro" width="800" height="1067"><div class="veil"></div><h2 class="h">La red de los artistas</h2></section>
   <section class="protag">
-    <div class="blobA"></div><div class="blobB"></div>
+    <div class="blobA"></div>
     <p class="eyebrow">Para artistas</p>
-    <div class="megarow"><h2 class="mega">Tu red.<br>Tus bolos.</h2><img class="bigheart" src="logo-heart-b-alpha.png" alt="Corazón negro chorreante de TengoBolo" width="270" height="270"></div>
+    <div class="megarow"><h2 class="mega">Tu red<span class="pt">.</span><br>Tus bolos<span class="pt">.</span></h2><img class="bigheart" src="logo-heart-b-alpha.png" alt="Corazón negro chorreante de TengoBolo" width="270" height="270"></div>
     <span class="sticker">Gratis · Sin comisión</span>
     <p class="sub">Crea tu ficha y entra en la Red: habla con otros artistas, anúnciate, colabora y responde a bolos. Dentro de TengoBolo, sin registro aparte.</p>
     <div class="cta">${session&&me?(me.role==='artist'?`<button class="pillbtn" data-go="redartistas">Entra en la Red</button>`:`<button class="pillbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pillbtn" data-go="entrar" data-role="artist">Entra en la Red</button>`}<a class="howlink" href="#pasosartista">Cómo funciona</a></div>
