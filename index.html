@@ -456,13 +456,12 @@ function home(v){
   v.innerHTML=`${confirmed?msg('ok','Correo confirmado. Ya puedes entrar con tu cuenta.'):''}${failed?msg('err','El enlace del correo no es válido o ha caducado. Crea la cuenta otra vez o pide un correo nuevo.'):''}
   
   <section class="hphoto"><img src="hero.jpg" alt="Artistas trabajando: pintura, música y escultura, en blanco y negro" width="800" height="1067"><div class="veil"></div><h2 class="h">La red de los artistas</h2></section>
-  ${session?'':`<button class="qentry" id="qe" type="button"><span>¿Eres artista?</span><b>Entra en la Red, gratis</b></button>`}
   <div class="sech"><h2>¿Quién eres?</h2><span>Dos caminos</span></div>
   <div class="paths">
-    <div class="path a"><div class="t">Soy artista</div><p class="d">Crea tu perfil gratis y entra en la Red: conoce artistas, anúnciate, colabora y responde a bolos. Sin comisión.</p>${session&&me?(me.role==='artist'?`<button class="pbtn" data-go="proyectos">Ver bolos</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="artist">Crear perfil gratis</button>`}</div>
+    <div class="path a"><div class="t">Soy artista</div><p class="d">Crea tu perfil gratis y entra en la Red: conoce artistas, anúnciate, colabora y responde a bolos. Sin comisión.</p>${session&&me?(me.role==='artist'?`<button class="pbtn" data-go="redartistas">Entra en la red</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="artist">Entra en la red</button>`}</div>
     <div class="path b"><div class="t">Agencias, empresas y particulares</div><p class="d">Apartado de clientes: publica tu bolo con fecha y presupuesto, y recibe propuestas de artistas.</p>${session&&me?(me.role==='agency'?`<button class="pbtn" data-go="publicar">Publicar un bolo</button>`:`<button class="pbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pbtn" data-go="entrar" data-role="agency">Publicar un bolo</button>`}</div>
   </div>
-  <section class="bw"><span class="eyebrow">Incluido al registrarte como artista</span><h2 class="bwh"><img src="logo-heart-b-alpha.png" alt="" width="44" height="44">Red</h2><p class="lead">La red de artistas de todas las disciplinas</p><p>Dentro de TengoBolo, sin registro aparte y sin coste: los artistas hablan entre ellos, se anuncian y colaboran (busco grupo, busco compañía, busco componente).</p>${session&&me&&me.role!=='artist'?'':`<button class="btn" id="bwb">${session?'Entrar en la Red':'Regístrate como artista'}</button>`}</section>
+  <section class="bw"><span class="eyebrow">Incluido al registrarte como artista</span><h2 class="bwh"><img src="logo-heart-b-alpha.png" alt="" width="44" height="44">Red</h2><p class="lead">La red de artistas de todas las disciplinas</p><p>Dentro de TengoBolo, sin registro aparte y sin coste: los artistas hablan entre ellos, se anuncian y colaboran (busco grupo, busco compañía, busco componente).</p>${session&&me&&me.role==='artist'?`<button class="btn" id="bwb">Entrar en la Red</button>`:''}</section>
   <div class="sech"><h2>Si eres artista</h2><span>Tres pasos</span></div>
   <div class="steps2">
     <div class="step2"><span class="n">1</span><div><b>Crea tu perfil gratis</b><span class="d">Tus disciplinas, tu ciudad, tu trabajo. Sin comisión, para siempre.</span></div></div>
@@ -484,7 +483,6 @@ function home(v){
   `;
   setupInstall();
   {const ab=$('#a');if(ab)ab.onclick=()=>setTab(session?'proyectos':'entrar');}
-  {const qe=$('#qe');if(qe)qe.onclick=()=>{rolePre='artist';setTab(session?'redartistas':'entrar');};}
   {const bb=$('#bwb');if(bb)bb.onclick=()=>{if(session){setTab('redartistas');}else{rolePre='artist';setTab('entrar');}};}
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
   v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{artPre=b.dataset.d;rolePre='agency';setTab(session?'publicar':'entrar');});
