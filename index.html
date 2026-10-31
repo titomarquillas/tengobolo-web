@@ -397,7 +397,7 @@ function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){paint();document.body.classList.toggle('bwx',tab==='redartistas');
   if(session&&!me&&!meBusy){meBusy=true;getMe().catch(()=>{}).finally(()=>{meBusy=false;});}
   const rl=session&&me?me.role:null;
-  const items=[['inicio','Inicio'],...(rl==='artist'?[['redartistas','<img class="bh" src="logo-heart-b-alpha.png" alt="" width="18" height="18">Red'],['proyectos','Ver bolos'],['artistas','Artistas'],['propuestas','Mis candidaturas']]:rl==='agency'?[['artistas','Artistas'],['publicar','Publicar un bolo'],['propuestas','Propuestas']]:[['artistas','Artistas'],['publicar','Publicar un bolo']]),...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),...(session?[]:[['precios','Precios'],['quienes','Quiénes somos']]),...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
+  const items=[['inicio','Inicio'],...(rl==='artist'?[['redartistas','<img class="bh" src="logo-heart-b-alpha.png" alt="" width="18" height="18">Red'],['muro','Muro'],['proyectos','Ver bolos'],['artistas','Artistas'],['propuestas','Mis candidaturas']]:rl==='agency'?[['artistas','Artistas'],['publicar','Publicar un bolo'],['propuestas','Propuestas']]:[['artistas','Artistas'],['publicar','Publicar un bolo']]),...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),...(session?[]:[['precios','Precios'],['quienes','Quiénes somos']]),...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
   const fn=$('#fnav');if(fn){fn.innerHTML=session?'<a href="#" data-t="precios">Precios</a> · <a href="#" data-t="quienes">Quiénes somos</a> · ':'';fn.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.t);});}
@@ -414,6 +414,14 @@ async function teaser(v){
 
 const AV={grupo:'un grupo',compania:'compañía',colaborar:'colaboraciones',bolos:'bolos sueltos'};
 const NK={busco_grupo:'Busco grupo',busco_compania:'Busco compañía',busco_artista:'Busco artista para mi grupo',otro:'Otro'};
+function muroView(v){loading(v,async()=>{const m=await getMe();
+  if(m.role!=='artist'){v.innerHTML='<h2>Muro</h2><p>El muro es solo para artistas. Entra con tu cuenta de artista o crea tu perfil gratis.</p>';return;}
+  let page=1;const r=await call('/api/feed',{auth:true});
+  const card=x=>`<div class="card"><div class="meta"><b>${esc(x.author_name)}</b>${x.author_location?' · '+esc(x.author_location):''} · ${esc(fdt(x.created_at))}</div><p style="white-space:pre-line;margin:6px 0">${esc(x.body)}</p><div class="row"><button class="btn sec" data-r="${esc(x.id)}">${x.reacted?'♥ '+x.reactions:'♡ '+x.reactions}</button>${x.mine?`<button class="btn sec" data-del="${esc(x.id)}">Borrar</button>`:`<button class="btn sec" data-rep="${esc(x.id)}">Reportar</button>`}</div></div>`;
+  v.innerHTML=`<h2>Muro</h2><p class="meta">La actividad de la Red: cuenta qué haces, comparte ensayos y bolos, saluda. Solo lo veis los artistas. (Fotos y vídeos: próximamente.)</p><form id="pf"><label>Escribe algo<textarea name="body" rows="3" required minlength="2" maxlength="1000" placeholder="Hoy ensayo con la compañía, el sábado tengo bolo..."></textarea></label><div id="pe"></div><button class="btn" type="submit">Publicar</button></form><div id="res">${r.length?r.map(card).join(''):'<p class="meta">Todavía no hay publicaciones. Estrena el muro.</p>'}</div>`+(r.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
+  $('#pf').onsubmit=async e=>{e.preventDefault();const body=new FormData(e.target).get('body').trim();if(!body)return;e.target.querySelector('button').disabled=true;try{await call('/api/feed',{method:'POST',auth:true,body:{body}});muroView(v);}catch(err){e.target.querySelector('button').disabled=false;$('#pe').innerHTML=msg('err',err.message);}};
+  const bind=()=>{v.querySelectorAll('button[data-r]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await call('/api/feed/'+encodeURIComponent(b.dataset.r)+'/react',{method:'POST',auth:true,body:{}});muroView(v);}catch(e){b.disabled=false;}});v.querySelectorAll('button[data-rep]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await call('/api/feed/'+encodeURIComponent(b.dataset.rep)+'/report',{method:'POST',auth:true,body:{}});muroView(v);}catch(e){b.disabled=false;}});v.querySelectorAll('button[data-del]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await call('/api/feed/'+encodeURIComponent(b.dataset.del),{method:'DELETE',auth:true});muroView(v);}catch(e){b.disabled=false;}});};bind();
+  const more=$('#more');if(more)more.onclick=async()=>{more.disabled=true;try{page++;const n=await call('/api/feed?page='+page,{auth:true});$('#res').insertAdjacentHTML('beforeend',n.map(card).join(''));bind();if(n.length<20)more.remove();else more.disabled=false;}catch(err){more.disabled=false;}};});}
 function redView(v,q={}){loading(v,async()=>{const m=await getMe();
   if(m.role!=='artist'){v.innerHTML='<h2>Red</h2><p>La Red es solo para artistas. Entra con tu cuenta de artista o crea tu perfil gratis.</p>';return;}
   const u=new URLSearchParams();['kind','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});
@@ -443,13 +451,14 @@ function needLogin(){return `<h2>Necesitas entrar</h2><p>Para ver esto, crea tu 
 async function render(){
   renderNav();const v=$('#view');
   if(tab==='proyectos'&&!session)return teaser(v);
-  if(['artistas','proyectos','publicar','propuestas','perfil','gestoria','mensajes','redartistas'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
+  if(['artistas','proyectos','publicar','propuestas','perfil','gestoria','mensajes','redartistas','muro'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
   if(tab==='inicio')return home(v);
   if(tab==='entrar')return enter(v);
   if(tab==='precios')return pricing(v);
   if(tab==='quienes')return about(v);
   if(tab==='propuestas')return proposalsView(v);
   if(tab==='redartistas')return redView(v);
+  if(tab==='muro')return muroView(v);
   if(tab==='artistas'){const q=PRE||{};PRE=null;return artists(v,q);}
   if(tab==='proyectos')return projects(v);
   if(tab==='publicar')return publish(v);
