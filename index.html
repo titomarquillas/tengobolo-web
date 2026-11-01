@@ -1101,7 +1101,7 @@ render();
 restore().then(()=>{
   if(!session){try{if(qp.get('alta')==='artista'){rolePre='artist';tab='entrar';render();}else if(qp.get('alta')==='agencia'){rolePre='agency';tab='entrar';render();}}catch(e){}return;}
   getMe().catch(()=>{});
-  import('./request-contract-candidate/request-purchase-entry.js').then(m=>m.deliverPendingPurchaseConfirmation(call,qp.get('purchase_request'))).catch(e=>alert('No se ha podido entregar la confirmación personal: '+e.message));
+  import('./request-contract-candidate/request-purchase-entry.js').then(m=>m.deliverPendingPurchaseConfirmation(call,qp.get('purchase_request'))).catch(e=>{try{console.error('confirmacion-pendiente-no-entregada',e&&e.message);}catch{}});
 });
 </script>
 </body>

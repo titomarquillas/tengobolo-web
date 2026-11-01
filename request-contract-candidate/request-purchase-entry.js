@@ -25,7 +25,7 @@ export async function renderNewPendingProjectPayment(container,project,call){if(
 // Payment return or next authenticated visit delivers the personal confirmation
 // automatically. It never marks it delivered until exact bytes are displayed.
 export async function deliverPendingPurchaseConfirmation(call,preferredId=null){
- const rows=preferredId?[{id:preferredId}]:await call('/api/payments/purchase-requests',{auth:true});
+ let rows;try{rows=preferredId?[{id:preferredId}]:await call('/api/payments/purchase-requests',{auth:true});}catch(e){if(e&&e.status===404)return{status:'nothing_pending'};throw e;}
  for(const row of rows){const b=await call('/api/payments/purchase-requests/'+encodeURIComponent(row.id)+'/documents',{auth:true});if(b?.contract&&!b.confirmationDelivery)return showAcceptedPurchase(row.id,call);}
  return{status:'nothing_pending'};
 }
