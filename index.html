@@ -549,6 +549,15 @@ label.pfile span.btn.sec{background:#f0f0ed;border:0;border-radius:10px;padding:
 .grid{grid-template-columns:repeat(3,1fr);gap:6px}
 .grid img{height:auto;aspect-ratio:1;border-radius:8px}
 @media(max-width:640px){.phead{gap:16px;padding:16px}.phead .avatar{width:84px;height:84px;font-size:24px}.grid{gap:4px}}
+/* Lote 8: Mensajes a dos paneles en escritorio (lista + conversacion). Movil sin cambios. */
+@media(max-width:860px){.msgpane{display:none}}
+@media(min-width:861px){
+.msgwrap{display:grid;grid-template-columns:320px 1fr;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;min-height:55vh}
+.msglist{border-right:1px solid var(--line);overflow-y:auto;max-height:72vh;display:flex;flex-direction:column}
+.msglist .imrow{border:0;border-radius:0;border-bottom:1px solid var(--line);margin:0}
+.msglist .imrow.on{background:#f6f6f4}
+.msgpane{padding:4px 20px 18px;overflow-y:auto;max-height:72vh}
+}
 </style>
 </head>
 <body>
@@ -1116,12 +1125,13 @@ const fdr=d=>{try{const sec=(Date.now()-new Date(d).getTime())/1e3;if(sec<90)ret
 const IMVC=['#e0323c','#e07b39','#0f8a5f','#6a5ae0'];
 const imav=n=>{const ini=esc(String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>(w[0]||'').toUpperCase()).join(''));const col=IMVC[(String(n||'?').charCodeAt(0)||0)%IMVC.length];return `<span class="imav" style="background:${col}" aria-hidden="true">${ini}</span>`;};
 function inbox(v){loading(v,async()=>{await getMe();const r=await call('/api/messages',{auth:true});UNREAD=r.reduce((n,x)=>n+Number(x.unread||0),0);renderNav();
-  v.innerHTML='<h2>Mensajes</h2><p class="meta">Aquí te escriben y escribes sin dar tu correo ni tu teléfono.</p>'+(r.length?r.map(x=>`<button class="imrow" data-o="${esc(x.other_id)}" data-n="${esc(x.other_name)}">${imav(x.other_name)}<span class="imbody"><b class="${Number(x.unread)>0?'un':''}">${esc(x.other_name)}${Number(x.unread)>0?`<span class="imdot" title="${Number(x.unread)} nuevo${Number(x.unread)>1?'s':''}"></span>`:''}</b><span class="imp">${x.last_from_me?'Tú: ':''}${esc(x.last_body)} · ${esc(fdt(x.last_at))}</span></span><span class="imchev" aria-hidden="true">›</span></button>`).join(''):'<div class="imempty"><img src="logo-heart-b-alpha.png" alt=""><b>Todavía no tienes mensajes</b><p>Entra en <b>Artistas</b> y pulsa Contactar: hablaréis por aquí, sin dar tu correo ni tu teléfono.</p></div>');
-  v.querySelectorAll('button[data-o]').forEach(b=>b.onclick=()=>thread(v,b.dataset.o,b.dataset.n));});}
+  v.innerHTML='<h2>Mensajes</h2><p class="meta">Aquí te escriben y escribes sin dar tu correo ni tu teléfono.</p>'+(r.length?'<div class="msgwrap"><div class="msglist">'+r.map(x=>`<button class="imrow" data-o="${esc(x.other_id)}" data-n="${esc(x.other_name)}">${imav(x.other_name)}<span class="imbody"><b class="${Number(x.unread)>0?'un':''}">${esc(x.other_name)}${Number(x.unread)>0?`<span class="imdot" title="${Number(x.unread)} nuevo${Number(x.unread)>1?'s':''}"></span>`:''}</b><span class="imp">${x.last_from_me?'Tú: ':''}${esc(x.last_body)} · ${esc(fdt(x.last_at))}</span></span><span class="imchev" aria-hidden="true">›</span></button>`).join('')+'</div><div class="msgpane" id="mp"><div class="imempty"><b>Elige una conversación</b><p>Selecciona un chat de la lista para leerlo aquí.</p></div></div></div>':'<div class="imempty"><img src="logo-heart-b-alpha.png" alt=""><b>Todavía no tienes mensajes</b><p>Entra en <b>Artistas</b> y pulsa Contactar: hablaréis por aquí, sin dar tu correo ni tu teléfono.</p></div>');
+  v.querySelectorAll('button[data-o]').forEach(b=>b.onclick=()=>{const pane=document.getElementById('mp');if(pane&&matchMedia('(min-width:861px)').matches){v.querySelectorAll('button[data-o]').forEach(x=>x.classList.remove('on'));b.classList.add('on');thread(pane,b.dataset.o,b.dataset.n);}else thread(v,b.dataset.o,b.dataset.n);});});}
 function thread(v,id,name){loading(v,async()=>{await getMe();const r=await call('/api/messages/'+encodeURIComponent(id),{auth:true});refreshUnread();const nm=(r[0]&&r[0].other_name)||name||'Usuario';const can=r.length?r[0].can_reply:true;
-  v.innerHTML=`<p><button class="btn sec" id="back">← Volver</button></p><div class="thead">${imav(nm)}<h2>${esc(nm)}</h2></div><div class="twrap">`+(r.length?r.map(x=>`<div class="bub${x.from_me?' me':''}"><p>${esc(x.body)}</p><span class="btime">${x.from_me?'Tú':esc(nm)} · ${esc(fdt(x.created_at))}</span></div>`).join(''):'<div class="imempty"><img src="logo-heart-b-alpha.png" alt=""><b>Aún no habéis hablado</b><p>Preséntate y cuéntale qué buscas.</p></div>')+`</div><div id="me"></div>`+
+  const two=v.classList&&v.classList.contains('msgpane');
+  v.innerHTML=(two?'':`<p><button class="btn sec" id="back">← Volver</button></p>`)+`<div class="thead">${imav(nm)}<h2>${esc(nm)}</h2></div><div class="twrap">`+(r.length?r.map(x=>`<div class="bub${x.from_me?' me':''}"><p>${esc(x.body)}</p><span class="btime">${x.from_me?'Tú':esc(nm)} · ${esc(fdt(x.created_at))}</span></div>`).join(''):'<div class="imempty"><img src="logo-heart-b-alpha.png" alt=""><b>Aún no habéis hablado</b><p>Preséntate y cuéntale qué buscas.</p></div>')+`</div><div id="me"></div>`+
    (can?`<form id="mf" class="tform"><textarea name="body" rows="1" required maxlength="2000" placeholder="Escribe un mensaje..." aria-label="Tu mensaje"></textarea><button class="send" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24"><path d="M3 11.2 21 3l-8.2 18-2.4-7.3z"/></svg></button></form>`:'<div class="msg info">Para escribir a este usuario necesitas tener el contacto desbloqueado.</div>');
-  $('#back').onclick=()=>inbox(v);
+  const bk=$('#back');if(bk)bk.onclick=()=>inbox(v);
   const f=$('#mf');if(f)f.onsubmit=async e=>{e.preventDefault();const body=new FormData(f).get('body').trim();if(!body)return;f.querySelector('button').disabled=true;try{await call('/api/messages',{method:'POST',auth:true,body:{to:id,body}});thread(v,id,nm);}catch(err){f.querySelector('button').disabled=false;$('#me').innerHTML=msg('err',err.message);}};});}
 function viewProfile(v,id){loading(v,async()=>{const [p,m]=await Promise.all([call('/api/profiles/'+encodeURIComponent(id),{auth:true}),getMe()]);const md=mediaHtml(p.media,false);const isArt=m&&m.role==='artist',mine=m&&m.id===p.id;
   let fst=null;if(isArt&&!mine){try{const st=await call('/api/follow/status?ids='+encodeURIComponent(id),{auth:true});fst=(st&&st[0])||null;}catch{}}
