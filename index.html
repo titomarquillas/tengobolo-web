@@ -500,11 +500,49 @@ fieldset.pcard{margin:0 0 14px}
 .imempty img{width:58px;height:auto;opacity:.9}
 .imempty>b{display:block;font-size:17px;margin:12px 0 4px}
 .imempty p{margin:0;color:var(--ink2);font-size:14.5px}
+/* Lote 6: shell estilo Instagram, solo visual. Marca tengoBolo. Sin funciones nuevas. -->
+*/
+header{background:#fff;border-bottom:1px solid var(--line)}
+.brand .wm{color:#141414}
+nav button .nico{display:none}
+nav button .nico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block}
+nav button .bh{display:none}
+@media(max-width:700px){
+header,html.sa header{backdrop-filter:none;-webkit-backdrop-filter:none}
+html.sa nav,html:not(.sa) nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;display:flex;flex-wrap:nowrap;overflow-x:auto;grid-template-columns:none;gap:0;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:rgba(255,255,255,.97);border-top:1px solid var(--line);border-bottom:0;box-shadow:0 -1px 8px rgba(0,0,0,.04)}
+main,html.sa main{padding-bottom:calc(118px + env(safe-area-inset-bottom))}
+footer p,html.sa footer p{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+html.sa nav button,html:not(.sa) nav button{display:flex;flex-direction:column;white-space:nowrap;align-items:center;justify-content:center;gap:3px;flex:1 0 52px;min-width:52px;min-height:52px;padding:4px 4px;font-size:10px;line-height:1.15}
+html.sa nav button .nico,html:not(.sa) nav button .nico{display:inline-flex}
+html.sa nav button .nico svg,html:not(.sa) nav button .nico svg{width:23px;height:23px}
+html.sa nav button[aria-current=true]:after,html:not(.sa) nav button[aria-current=true]:after{display:none}
+nav button[aria-current=true]{font-weight:700}
+}
+@media(min-width:861px){
+header{position:fixed;inset:0 auto 0 0;width:250px;display:flex;flex-direction:column;background:#fff;border-bottom:0;border-right:1px solid var(--line);backdrop-filter:none;-webkit-backdrop-filter:none}
+.bar{display:block;max-width:none;margin:0;padding:24px 16px 10px}
+.brand img{height:34px;width:34px}
+.brand .wm{font-size:22px}
+.zone{display:block;font-size:10px;max-width:none;text-align:left;margin:6px 0 0 2px;letter-spacing:.12em}
+.zone:before{display:none}
+nav{display:flex;flex-direction:column;gap:2px;max-width:none;margin:0;padding:8px 14px;overflow-y:auto;border-bottom:0;flex:1}
+nav button{display:flex;align-items:center;gap:13px;width:100%;min-height:46px;padding:0 12px;border-radius:11px;font-size:15.5px;text-align:left;color:#3d3d3a}
+html.sa nav button .nico,html:not(.sa) nav button .nico{display:inline-flex}
+nav button:hover{background:#f6f6f4;color:#141414}
+nav button[aria-current=true]{background:#fafafa;color:#141414;font-weight:700}
+nav button[aria-current=true]:after{display:none}
+nav button[data-t=redartistas][aria-current=true]{color:#e0323c}
+nav button[data-t=publicar]{background:#141414;color:#fff;font-weight:600;margin-top:10px}
+nav button[data-t=publicar]:hover{background:#3a3a3a;color:#fff}
+main{margin-left:250px;max-width:none;width:auto;padding:26px 34px 80px}
+#view{max-width:980px;margin:0 auto}
+footer{margin-left:250px}
+}
 </style>
 </head>
 <body>
 <header>
-  <div class="bar"><a class="brand" href="/" aria-label="TengoBolo, inicio"><img src="logo-heart-b-sm.png" alt="" width="38" height="38"><span class="wm">tengo<b>b</b>olo</span><h1 class="sr">TengoBolo</h1></a><span class="zone" id="zone">La red de artistas a tu alcance</span></div>
+  <div class="bar"><a class="brand" href="/" aria-label="TengoBolo, inicio"><img src="logo-heart-b-alpha.png" alt="" width="38" height="38"><span class="wm">tengo<b>B</b>olo</span><h1 class="sr">TengoBolo</h1></a><span class="zone" id="zone">La red de artistas a tu alcance</span></div>
   <nav aria-label="Secciones" id="nav"></nav>
 </header>
 <main id="view"></main>
@@ -556,11 +594,23 @@ async function call(path,{method='GET',body,auth,responseType}={}){
   return d;
 }
 function setTab(t){tab=t;render();window.scrollTo(0,0);}
-function renderNav(){paint();document.body.classList.toggle('bwx',tab==='redartistas');
+function renderNav(){paint();
   if(session&&!me&&!meBusy){meBusy=true;getMe().catch(()=>{}).finally(()=>{meBusy=false;});}
   const rl=session&&me?me.role:null;
   const items=[['inicio','Inicio'],...(rl==='artist'?[['redartistas','<img class="bh" src="logo-heart-b-alpha.png" alt="" width="18" height="18">Red'],['proyectos','Ver bolos'],['artistas','Artistas'],['propuestas','Mis candidaturas']]:rl==='agency'?[['artistas','Artistas'],['publicar','Publicar un bolo'],['propuestas','Propuestas'+(PROPEND>0?' ('+PROPEND+')':'')]]:[['artistas','Artistas'],['publicar','Publicar un bolo']]),...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),...(session?[]:[['precios','Precios'],['quienes','Quiénes somos']]),...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar']];
-  $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}>${l}</button>`).join('');
+const ICO={inicio:'<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>',
+redartistas:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>',
+proyectos:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+artistas:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.5a4.6 4.6 0 0 1 5 4.5"/></svg>',
+propuestas:'<svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M14 2v6h6"/></svg>',
+publicar:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg>',
+mensajes:'<svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>',
+precios:'<svg viewBox="0 0 24 24"><path d="M20.6 13.4 11 3H4v7l9.6 10.4a2 2 0 0 0 2.8 0l4.2-4.2a2 2 0 0 0 0-2.8z"/><circle cx="7.5" cy="7.5" r="1"/></svg>',
+quienes:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',
+gestoria:'<svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 7.7-8 9-4.8-1.3-8-4.5-8-9V6z"/></svg>',
+perfil:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"/><path d="M5 20a7 7 0 0 1 14 0"/></svg>',
+entrar:'<svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg>'};
+  $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}><span class="nico" aria-hidden="true">${ICO[k]||''}</span><span class="nlb">${l}</span></button>`).join('');
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>setTab(b.dataset.t));
   const fn=$('#fnav');if(fn){fn.innerHTML=session?'<a href="#" data-t="precios">Precios</a> · <a href="#" data-t="quienes">Quiénes somos</a> · ':'';fn.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.t);});}
 }
@@ -1014,7 +1064,7 @@ function gestoria(v){loading(v,async()=>{
   await loadMonth();
   if(paymentOrdersVisible)try{const receipts=await call('/api/admin/payment-receipts',{auth:true});$('#payment-receipts-list').innerHTML=receipts.length?receipts.map(r=>'<p style="overflow-wrap:anywhere">Pedido '+esc(r.order_id)+'<br>Cobro '+esc(r.id)+'<br>'+eur2(r.amount_total/100)+' € · '+fmtD(r.received_at)+'</p>').join(''):'<p class="meta">Todavía no hay cobros verificados.</p>';}catch(e){$('#payment-receipts-list').textContent=e.message;}
 });}
-function paint(){const r=session&&me?me.role:'';document.body.dataset.role=r;const z=document.getElementById('zone');if(z)z.textContent=r==='artist'?'Zona artistas':r==='agency'?'Zona agencias y clientes':'La red de artistas a tu alcance';const t=document.querySelector('meta[name=theme-color]');if(t)t.content='#000000';}
+function paint(){const r=session&&me?me.role:'';document.body.dataset.role=r;const z=document.getElementById('zone');if(z)z.textContent=r==='artist'?'Zona artistas':r==='agency'?'Zona agencias y clientes':'La red de artistas a tu alcance';const t=document.querySelector('meta[name=theme-color]');if(t)t.content='#ffffff';}
 let UNREAD=0;let meBusy=false;
 let PROPEND=0;
 async function refreshUnread(){if(!session)return;let ch=false;try{const r=await call('/api/messages/unread',{auth:true});if(r.unread!==UNREAD){UNREAD=r.unread;ch=true;}}catch{}try{if(me&&me.role==='agency'){const ps=await call('/api/proposals',{auth:true});const n=ps.filter(x=>x.status==='pending').length;if(n!==PROPEND){PROPEND=n;ch=true;}}}catch{}if(ch)renderNav();}
