@@ -372,6 +372,11 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .pill{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;min-height:38px}
 .pill.red{background:#e0323c;border-color:#e0323c;color:#fff}
 .pill.dark{background:#141414;border-color:#141414;color:#fff}
+.discb{margin:26px 0 8px;border-top:1px solid var(--line);padding-top:22px}
+.discb .dblock{margin:0 0 22px}
+.discb h2{font-size:22px;letter-spacing:-.02em;margin:0 0 6px}
+.discb .dline{margin:7px 0;font-size:14.5px;color:var(--ink2);line-height:1.55}
+.discb .dline b{color:var(--ink)}
 html.sa nav button[data-t=mas],html:not(.sa) nav button[data-t=mas]{display:none}
 #maspop{position:fixed;left:16px;bottom:16px;z-index:40;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:6px;display:none}
 #maspop:not([hidden]){display:block}
@@ -769,7 +774,20 @@ function home(v){
     </section>
   </div>
   ${adSlot('inicio')}
-  <p class="meta" style="margin:14px 0">Música, teatro, danza, circo, artes visuales y mucho más: más de 80 disciplinas. El artista elige las suyas en su perfil y el cliente las consulta al registrarse y al publicar su bolo.</p>
+  <section class="discb" aria-label="Disciplinas y para quien">
+    <div class="dblock">
+      <h2>Qué artistas caben en TengoBolo</h2>
+      <p class="meta" style="margin:0 0 10px">El catálogo de disciplinas que un artista puede elegir en su perfil. Al publicar un bolo, eliges la disciplina que buscas.</p>
+      ${DISC.filter(g=>g[0]!=='Otras').map(g=>`<p class="dline"><b>${esc(g[0])}.</b> ${g[1].map(esc).join(' · ')}</p>`).join('')}
+      <p class="dline"><b>Y más.</b> Si una disciplina no está en la lista, el artista puede escribirla en su perfil como otra disciplina.</p>
+    </div>
+    <div class="dblock">
+      <h2>Quién publica bolos y para qué</h2>
+      <p class="dline"><b>Quién encarga.</b> Agencias y promotoras, empresas para sus eventos, ayuntamientos y comisiones de fiestas, salas, teatros y festivales, y también particulares.</p>
+      <p class="dline"><b>Qué se pide.</b> La verbena o la fiesta mayor, el evento de empresa, una boda, un cumpleaños o una comunión, un concierto en una sala, una función de teatro, animación infantil, una sesión de fotos o un retrato por encargo.</p>
+      <p class="dline"><b>Cómo.</b> Publicas el bolo con fecha, lugar y presupuesto; los artistas de esa disciplina lo ven primero y te envían su propuesta con precio. Hablas con ellos dentro de la web y eliges.</p>
+    </div>
+  </section>
   <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
   `;
   setupInstall();
