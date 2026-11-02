@@ -727,6 +727,7 @@ async function revista(v){
   const fmtDT=upd?upd.toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
   let h='<h2>Revista cultural</h2>'
     +'<p class="meta">Agenda y noticias culturales de fuentes institucionales abiertas: Ministerio de Cultura, Madrid y Barcelona. No cubre toda España. Última actualización de los datos: '+fmtDT+'.</p>'
+    +'<p class="meta">Mostramos hasta 150 eventos por fuente. El segundo número indica fichas importadas, incluidas las ya terminadas; no es el total de eventos vigentes. Los textos son extractos de la fuente original.</p>'
     +'<div class="dgroups">';
   for(const [src,g] of Object.entries(RV_GROUPS)){
     const items=by[src]||[];const meta=(d.sources||{})[src]||{};
@@ -734,9 +735,9 @@ async function revista(v){
     h+='<details class="dgroup"><summary>'+g.t+' <span class="dgn">'+items.length+(meta.item_count>items.length?' de '+meta.item_count:'')+'</span></summary>'
       +items.map(x=>{
         const fechas=x.kind==='noticia'?(x.date_start?fmtD(x.date_start):''):((x.date_start?fmtD(x.date_start):'')+(x.date_end&&x.date_end!==x.date_start?' – '+fmtD(x.date_end):''));
-        return '<div class="dline rvcard"><a class="rvt" href="'+esc(x.url)+'" target="_blank" rel="external noopener">'+esc(x.title)+'</a>'
+        return '<div class="dline rvcard">'+(src==='bcn'?'<span class="rvt">'+esc(x.title)+'</span>':'<a class="rvt" href="'+esc(x.url)+'" target="_blank" rel="external noopener">'+esc(x.title)+'</a>')
           +'<div class="rvm">'+[fechas,x.venue,x.city,x.category].filter(Boolean).map(esc).join(' · ')+'</div>'
-          +(x.summary?'<div class="rvs">'+esc(x.summary)+'</div>':'')
+          +(x.summary?'<div class="rvs">'+esc(x.summary)+'</div>':'')+(src==='bcn'?'<div class="meta">Fuente: Open Data Barcelona · <a href="'+esc(x.url)+'" target="_blank" rel="external noopener">Ver conjunto de datos (no ficha del evento)</a></div>':'')
         +'</div>';
       }).join('')
       +'<div class="rvatr">'+esc(g.atr)+(meta.last_success_at?' · datos del '+new Date(meta.last_success_at).toLocaleDateString('es-ES'):'')+(meta.status==='error'?' · fuente en revisión, se muestran los últimos datos válidos':'')+' · <a href="'+g.link+'" target="_blank" rel="external noopener">Ver en la fuente</a></div>'
