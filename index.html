@@ -467,6 +467,18 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .tform .send:disabled{opacity:.5}
 .tform .send svg{width:20px;height:20px;fill:currentColor}
 
+.bcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 18px 16px;margin:0 0 16px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.bch{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bch .imav{width:38px;height:38px;font-size:13px;flex:none}
+.bci{display:flex;flex-direction:column;line-height:1.25;min-width:0}
+.bci b{font-size:15px}
+.bci .meta{font-size:12.5px}
+.bcard h3{margin:2px 0 8px;font-size:19px;letter-spacing:-.01em}
+.bchips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.bchip{background:#f4f4f5;border-radius:999px;padding:4px 11px;font-size:12.5px;color:var(--ink2)}
+.bchip.bud{background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:600}
+.bdesc{margin:0 0 8px;white-space:pre-line;font-size:14.5px;color:#222}
+.bcta{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
 .imempty{text-align:center;border:1px dashed var(--line);border-radius:20px;padding:38px 22px;margin:20px auto;max-width:460px;background:#fff}
 .imempty img{width:58px;height:auto;opacity:.9}
 .imempty>b{display:block;font-size:17px;margin:12px 0 4px}
@@ -1059,7 +1071,7 @@ function projects(v,q={}){loading(v,async()=>{let page=1;const [p,m]=await Promi
   const seen=m.role==='artist'?localStorage.getItem('tb_bolos_seen'):null;
   const nuevos=m.role==='artist'&&seen?p.filter(x=>String(x.created_at)>seen).length:0;
   if(m.role==='artist'&&p.length)localStorage.setItem('tb_bolos_seen',p.reduce((a,x)=>String(x.created_at)>a?String(x.created_at):a,''));
-  const card=(x,i)=>`<div class="card"><h3>${esc(x.title)}</h3>${zm(x)?`<span class="tag dst">${ZONE_TAG[zm(x)]}</span>`:''}${x.owner_name?`<div class="meta">Publicado por <b>${esc(x.owner_name)}</b>${x.owner_location?' · '+esc(x.owner_location):''}</div>`:''}<div class="meta">${esc((x.disciplines||[]).join(', '))}${x.location?' · '+esc(x.location):''}${x.budget_eur!=null?' · '+esc(x.budget_eur)+' €':''}</div><p style="white-space:pre-line">${esc(x.description)}</p>${boloInfo(x)}${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button><div id="pf${i}"></div>`:''} ${waBolo(x)}</div>`;
+  const card=(x,i)=>`<div class="bcard"><div class="bch">${imav(x.owner_name||'Bolo')}<span class="bci"><b>${esc(x.owner_name||'Bolo')}</b><span class="meta">${x.owner_location?esc(x.owner_location):'TengoBolo'}</span></span>${zm(x)?`<span class="tag dst" style="margin-left:auto">${ZONE_TAG[zm(x)]}</span>`:''}</div><h3>${esc(x.title)}</h3><div class="bchips">${(x.disciplines||[]).map(d=>`<span class="bchip">${esc(d)}</span>`).join('')}${x.location?`<span class="bchip">${esc(x.location)}</span>`:''}${x.budget_eur!=null?`<span class="bchip bud">${esc(x.budget_eur)} €</span>`:''}</div><p class="bdesc">${esc(x.description)}</p>${boloInfo(x)}<div class="bcta">${m.role==='artist'?`<button class="btn" data-i="${i}">Enviar propuesta</button>`:''}${waBolo(x)}</div>${m.role==='artist'?`<div id="pf${i}"></div>`:''}</div>`;
   const nudge=m.role==='artist'&&!m.complete?`<div class="promo"><b>Tu perfil está al ${Math.round((4-m.missing.length)/4*100)} % y aún no aparece en el listado.</b> Te falta: ${m.missing.map(esc).join(', ')}. <a href="#" id="cp">Completar mi perfil</a></div>`:'';
   const mineBar=(m.role==='artist'?`${nuevos?`<div class="msg ok"><b>${nuevos} ${nuevos===1?'bolo nuevo':'bolos nuevos'}</b> de tus disciplinas desde tu última visita.</div>`:''}<p class="meta">${q.all?'Ves todos los bolos.':'Ves los bolos de tus disciplinas.'}${m.location?' Los de tu zona van primero (zona: '+SCOPE_LABEL[m.travel_scope||'province'].toLowerCase()+(m.travel_scope!==undefined?', cámbiala en Mi perfil':'')+').':''} <a href="#" id="allt">${q.all?'Ver solo los míos':'Ver todos'}</a></p>`:'');
   v.innerHTML='<h2 class="hbolos">Bolos disponibles</h2>'+nudge+mineBar+filterBar(q)+`<div id="res">${p.length?p.map(card).join(''):(hasQ(q)?'<p>No hay bolos con esos filtros. Prueba con menos filtros.</p>':'<p>No hay bolos abiertos todavía.</p>')}</div>`+(p.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
