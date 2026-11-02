@@ -374,6 +374,29 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .pill.ron{color:#e0323c;border-color:#e0323c;background:#fff}
 .comp textarea{border:0;resize:vertical;min-height:46px;font:inherit;width:100%;outline:none;background:transparent;padding:8px 0;color:inherit}
 @media(max-width:560px){.rd-icons svg{width:20px;height:20px}.rd-icons{gap:12px}}
+.pf-head{display:flex;gap:22px;align-items:center;margin:14px 0 6px;flex-wrap:wrap}
+.pf-ava{width:88px!important;height:88px!important;font-size:26px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;background:#141414}
+.pf-name{font-size:23px;font-weight:800;letter-spacing:-.02em;margin:0}
+.pf-sub{color:var(--ink2);font-size:14px;margin:3px 0 0}
+.pf-counts{display:flex;gap:20px;font-size:14px;color:var(--ink2);margin:10px 0 0}
+.pf-counts b{color:var(--ink)}
+.pf-acts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;align-items:center}
+.folbtn{border:1.5px solid #e0323c;color:#e0323c;background:#fff;border-radius:999px;padding:8px 24px;font:600 14px var(--font);cursor:pointer;min-height:44px}
+.folbtn.on{background:#e0323c;color:#fff}
+.pf-tabs{display:flex;gap:24px;border-bottom:1px solid var(--line);margin:18px 0 14px}
+.pf-tab{padding:10px 2px;font-weight:600;font-size:15px;color:var(--ink2);cursor:pointer}
+.pf-tab.on{color:var(--ink);border-bottom:2px solid #e0323c;margin-bottom:-1px}
+.pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:10px 0}
+.pf-grid figure{margin:0}
+.pf-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;display:block}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.acard2{border:1px solid var(--line);border-radius:16px;padding:18px 14px;text-align:center;background:var(--card)}
+.acard2 .avatar{margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:#fff;background:#141414}
+.acard2 img.avatar{padding:0;background:none}
+.acard2 h3{margin:0 0 2px;font-size:16px}
+.acard2 .meta{margin:0 0 12px}
+.acard2 .row{justify-content:center}
+@media(max-width:640px){.pf-grid{gap:4px}.pf-ava{width:72px!important;height:72px!important;font-size:20px}}
 </style>
 </head>
 <body>
@@ -901,11 +924,13 @@ const hasQ=q=>!!((q.q||'').trim()||(q.discipline||'').trim()||(q.city||'').trim(
 function wireFilters(v,q,go){const f=v.querySelector('form.fbar');f.onsubmit=e=>{e.preventDefault();go(Object.fromEntries(new FormData(f)));};f.querySelector('[data-clear]').onclick=()=>go({});}
 function artistCard(x,m){const un=x.unlocked;const isArt=m.role==='artist';
   const btn=(isArt||un)?`<button class="btn" data-m="${esc(x.id)}" data-n="${esc(x.name)}">Contactar</button>`:`<button class="btn sec" disabled title="Publica tu bolo para desbloquear el contacto">Contactar (bloqueado)</button>`;
-  return `<div class="card"><div class="head">${un?avatar(x):''}<div><h3>${esc(x.name)} ${dstTag(x)}</h3><div class="meta">${un&&(x.disciplines||[]).length?esc(x.disciplines.join(', '))+(x.location?' · ':''):''}${esc(x.location||'')}</div></div></div><div class="row">${un?`<button class="btn sec" data-p="${esc(x.id)}">Ver ficha</button>`:''}${btn}</div></div>`;}
+  const ini=esc(String(x.name||'?').trim().split(/\s+/).slice(0,2).map(w=>(w[0]||'').toUpperCase()).join(''));
+  const av=un?(x.avatar_url?`<img class="avatar" src="${esc(x.avatar_url)}" alt="" loading="lazy">`:`<div class="avatar" aria-hidden="true">${ini}</div>`):'';
+  return `<div class="acard2">${av}<h3>${esc(x.name)} ${dstTag(x)}</h3><div class="meta">${un&&(x.disciplines||[]).length?esc(x.disciplines.join(', '))+(x.location?' · ':''):''}${esc(x.location||'')}</div><div class="row">${un?`<button class="btn sec" data-p="${esc(x.id)}">Ver ficha</button>`:''}${btn}</div></div>`;}
 function artists(v,q={}){loading(v,async()=>{const m=await getMe();let page=1;const a=await call('/api/artists'+qs(q,1),{auth:true});
   if(a&&a.locked){const discs=Object.entries(a.disciplines||{}).sort((x,y)=>y[1]-x[1]);v.innerHTML='<h2>Artistas</h2>'+filterBar(q)+`<div class="card"><b>Hay ${a.total==null?'menos de 3':a.total} ${a.total===1?'artista':'artistas'} en la red${q.discipline?' de '+esc(q.discipline):''}${q.city?' que coinciden con "'+esc(q.city)+'"':''}.</b><p class="meta">Sin nombres ni fichas hasta publicar tu primer bolo: es la protección de los artistas y de tu búsqueda, todo queda dentro de TengoBolo.</p>${!q.discipline&&discs.length?'<p class="meta">Por disciplina: '+discs.map(([d,n])=>esc(d)+' '+n).join(' · ')+'</p>':''}</div><div class="promo"><b>Publica tu bolo (gratis) y verás el listado completo</b> con fichas y botón Contactar. Mientras tanto, los artistas verán tu bolo y podrán enviarte propuestas. <div class="row" style="margin-top:10px"><button class="btn" data-go="publicar">Publicar un bolo</button></div></div>`;wireFilters(v,q,nq=>artists(v,nq));const g0=v.querySelector('[data-go]');if(g0)g0.onclick=()=>setTab('publicar');return;}
   const lockNote=(m.role!=='artist'&&!m.unlocked)?`<div class="promo"><b>Estás viendo solo nombre y ciudad.</b> Publica tu bolo y se desbloquean la ficha completa y el botón Contactar de los artistas. Mientras tanto, los artistas verán tu bolo y podrán enviarte propuestas. <div class="row" style="margin-top:10px"><button class="btn" data-go="publicar">Publicar un bolo</button></div></div>`:'';
-  v.innerHTML='<h2>Artistas</h2>'+lockNote+filterBar(q)+`<div id="res">${a.length?a.map((x,i)=>artistCard(x,m)+((i+1)%8===0?adSlot('lista'):'')).join(''):(hasQ(q)?'<p>No hay artistas con esos filtros. Prueba con menos filtros.</p>':'<p>Todavía no hay artistas en la red.</p>')}</div>`+(a.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
+  v.innerHTML='<h2>Artistas</h2>'+lockNote+filterBar(q)+`<div id="res" class="agrid">${a.length?a.map((x,i)=>artistCard(x,m)+((i+1)%8===0?adSlot('lista'):'')).join(''):(hasQ(q)?'<p>No hay artistas con esos filtros. Prueba con menos filtros.</p>':'<p>Todavía no hay artistas en la red.</p>')}</div>`+(a.length>=20?'<p><button class="btn sec" id="more">Ver más</button></p>':'');
   wireFilters(v,q,nq=>artists(v,nq));
   const g=v.querySelector('[data-go]');if(g)g.onclick=()=>setTab('publicar');
   const bind=()=>{v.querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>viewProfile(v,b.dataset.p));v.querySelectorAll('button[data-m]').forEach(b=>b.onclick=()=>thread(v,b.dataset.m,b.dataset.n));};bind();
@@ -920,9 +945,20 @@ function thread(v,id,name){loading(v,async()=>{await getMe();const r=await call(
    (can?`<form id="mf"><label>Tu mensaje<textarea name="body" rows="4" required maxlength="2000"></textarea></label><div id="me"></div><button class="btn" type="submit">Enviar</button></form>`:'<div class="msg info">Para escribir a este usuario necesitas tener el contacto desbloqueado.</div>');
   $('#back').onclick=()=>inbox(v);
   const f=$('#mf');if(f)f.onsubmit=async e=>{e.preventDefault();const body=new FormData(f).get('body').trim();if(!body)return;f.querySelector('button').disabled=true;try{await call('/api/messages',{method:'POST',auth:true,body:{to:id,body}});thread(v,id,nm);}catch(err){f.querySelector('button').disabled=false;$('#me').innerHTML=msg('err',err.message);}};});}
-function viewProfile(v,id){loading(v,async()=>{const p=await call('/api/profiles/'+encodeURIComponent(id),{auth:true});const m=mediaHtml(p.media,false);
-  v.innerHTML=`<p><button class="btn sec" id="back">← Volver</button></p><div class="head">${avatar(p)}<div><h2 style="margin:0">${esc(p.name)} ${dstTag(p)}</h2><div class="meta">${esc((p.disciplines||[]).join(', '))}${p.location?' · '+esc(p.location):''}</div></div></div>${p.bio?`<p>${esc(p.bio)}</p>`:''}${socialLinks(p)}${p.phone?`<p><b>Teléfono:</b> <a href="tel:${esc(p.phone.replace(/[^0-9+]/g,''))}">${esc(p.phone)}</a></p>`:''}<div class="row"><button class="btn" id="ct">Contactar</button></div>${m.photos?'<h2>Fotos</h2>'+m.photos:''}${m.videos?'<h2>Vídeos</h2>'+m.videos:''}${!m.photos&&!m.videos?'<p class="meta">Este perfil todavía no tiene fotos ni vídeos.</p>':''}`;
-  $('#back').onclick=()=>artists(v);$('#ct').onclick=()=>thread(v,p.id,p.name);});}
+function viewProfile(v,id){loading(v,async()=>{const [p,m]=await Promise.all([call('/api/profiles/'+encodeURIComponent(id),{auth:true}),getMe()]);const md=mediaHtml(p.media,false);const isArt=m&&m.role==='artist',mine=m&&m.id===p.id;
+  let fst=null;if(isArt&&!mine){try{const st=await call('/api/follow/status?ids='+encodeURIComponent(id),{auth:true});fst=(st&&st[0])||null;}catch{}}
+  const ini=esc(String(p.name||'?').trim().split(/\s+/).slice(0,2).map(w=>(w[0]||'').toUpperCase()).join(''));
+  const pav=p.avatar_url?`<img class="avatar pf-ava" src="${esc(p.avatar_url)}" alt="" loading="lazy">`:`<div class="avatar pf-ava" aria-hidden="true">${ini}</div>`;
+  const cnt=fst?`<div class="pf-counts"><span><b>${fst.followers}</b> seguidores</span></div>`:'';
+  const folBtn=isArt&&!mine?`<button class="folbtn${fst&&fst.following?' on':''}" id="flw">${fst&&fst.following?'Siguiendo':'Seguir'}</button>`:'';
+  const ctBtn=mine?'':`<button class="btn" id="ct">Contactar</button>`;
+  const fotos=md.photos?md.photos.replace('class="grid"','class="pf-grid"'):'<p class="meta">Todavía no tiene fotos.</p>';
+  const vids=md.nVideos?md.videos.join(''):'<p class="meta">Todavía no tiene vídeos.</p>';
+  v.innerHTML=`<p><button class="btn sec" id="back">← Volver</button></p><div class="pf-head">${pav}<div style="min-width:200px;flex:1"><h2 class="pf-name">${esc(p.name)} ${dstTag(p)}</h2><div class="pf-sub">${esc((p.disciplines||[]).join(', '))}${p.location?' · '+esc(p.location):''}</div>${cnt}<div class="pf-acts">${folBtn}${ctBtn}</div></div></div>${p.bio?`<p>${esc(p.bio)}</p>`:''}${socialLinks(p)}${p.phone?`<p><b>Teléfono:</b> <a href="tel:${esc(p.phone.replace(/[^0-9+]/g,''))}">${esc(p.phone)}</a></p>`:''}<div class="pf-tabs"><span class="pf-tab on" data-t="f">Fotos</span><span class="pf-tab" data-t="v">Vídeos</span></div><div id="pff">${fotos}</div><div id="pfv" hidden>${vids}</div>`;
+  $('#back').onclick=()=>artists(v);
+  const ct=v.querySelector('#ct');if(ct)ct.onclick=()=>thread(v,p.id,p.name);
+  const fb=v.querySelector('#flw');if(fb)fb.onclick=async()=>{fb.disabled=true;try{const r=await call('/api/follow/'+encodeURIComponent(id),{method:'POST',auth:true,body:{}});fb.classList.toggle('on',!!r.following);fb.textContent=r.following?'Siguiendo':'Seguir';const c=v.querySelector('.pf-counts b');if(c)c.textContent=Math.max(0,Number(c.textContent)+(r.following?1:-1));fb.disabled=false;}catch(e){fb.disabled=false;}};
+  v.querySelectorAll('.pf-tab').forEach(t=>t.onclick=()=>{v.querySelectorAll('.pf-tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');$('#pff').hidden=t.dataset.t!=='f';$('#pfv').hidden=t.dataset.t!=='f'?false:true;});});}
 const EXTRA={equipo:'Equipo de sonido/luz incluido',transporte:'Transporte incluido',alojamiento:'Alojamiento incluido'};
 const fdate=d=>d?String(d).split('-').reverse().join('/'):'';
 function boloInfo(x){const t=[];
