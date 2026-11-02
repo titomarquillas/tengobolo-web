@@ -776,6 +776,12 @@ function home(v){
   ${adSlot('inicio')}
   <section class="discb" aria-label="Disciplinas y para quien">
     <div class="dblock">
+      <h2>Qué es tengoBolo y qué no</h2>
+      <p class="dline"><b>Es un punto de encuentro directo.</b> El artista y quien le contrata hablan dentro de la web y el acuerdo es entre las dos partes.</p>
+      <p class="dline"><b>No es una agencia.</b> No interviene en el trato ni cobra comisión al artista: su perfil es gratis, para siempre.</p>
+      <p class="dline"><b>No garantiza bolos.</b> Da visibilidad y conecta; la contratación la decidís entre vosotros.</p>
+    </div>
+    <div class="dblock">
       <h2>Qué artistas caben en TengoBolo</h2>
       <p class="meta" style="margin:0 0 10px">El catálogo de disciplinas que un artista puede elegir en su perfil. Al publicar un bolo, eliges la disciplina que buscas.</p>
       ${DISC.filter(g=>g[0]!=='Otras').map(g=>`<p class="dline"><b>${esc(g[0])}.</b> ${g[1].map(esc).join(' · ')}</p>`).join('')}
