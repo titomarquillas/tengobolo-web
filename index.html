@@ -397,6 +397,51 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .acard2 .meta{margin:0 0 12px}
 .acard2 .row{justify-content:center}
 @media(max-width:640px){.pf-grid{gap:4px}.pf-ava{width:72px!important;height:72px!important;font-size:20px}}
+
+/* ===== lote 2: portada y acceso estilo red social ===== */
+.land{display:grid;justify-items:center;text-align:center;padding:44px 16px 28px}
+.land .lheart{width:clamp(110px,20vw,170px);height:auto;filter:drop-shadow(0 12px 22px rgba(0,0,0,.12))}
+.land .lwm{font-size:clamp(46px,9.5vw,76px);font-weight:800;letter-spacing:-.045em;line-height:1;margin:16px 0 6px;color:#141414}
+.land .lwm b{font-weight:800}
+.land .ltag{font-size:clamp(17px,3.2vw,22px);font-weight:600;color:#141414;margin:0}
+.land .lsub{color:#6b6b66;max-width:32em;margin:10px auto 0;font-size:16px}
+.land .lcta{display:flex;gap:24px;align-items:center;justify-content:center;margin-top:26px;flex-wrap:wrap}
+.lbtn{min-height:50px;padding:0 32px;border-radius:999px;border:0;background:#141414;color:#fff;font:700 16px var(--font);cursor:pointer}
+.lbtn:hover{background:#000}
+.llink{color:#141414;font-weight:700;text-decoration:none;border-bottom:2px solid #e0323c;padding:2px 1px;min-height:44px;display:inline-flex;align-items:center}
+.doors{display:grid;gap:16px;margin:28px 0 8px}
+.door{position:relative;background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px 28px 26px;display:flex;flex-direction:column;gap:12px;box-shadow:0 8px 26px rgba(0,0,0,.05)}
+.door .deye{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#e0323c;font-weight:800;margin:0}
+.door h3{margin:0;font-size:clamp(26px,4.8vw,36px);letter-spacing:-.025em;line-height:1.05}
+.door h3 .pt{color:#e0323c}
+.door .dsub{margin:0;color:#55554f;font-size:15px}
+.dsteps{list-style:none;margin:8px 0 0;padding:14px 0 0;border-top:1px solid var(--line);display:grid;gap:9px}
+.dsteps li{display:flex;gap:11px;align-items:baseline;color:#3a3a3a;font-size:14.5px;line-height:1.45}
+.dsteps li b{color:#141414}
+.dsteps .n{flex:none;width:20px;height:20px;border-radius:50%;background:#141414;color:#fff;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;transform:translateY(3px)}
+.dstick{align-self:flex-start;border:2px solid #e0323c;color:#e0323c;background:#fff;border-radius:999px;padding:7px 15px;font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;transform:rotate(-2deg)}
+.door .dgo{margin-top:auto;padding-top:14px}
+.dbtn{min-height:48px;padding:0 26px;border-radius:999px;font:700 15px var(--font);cursor:pointer;border:0}
+.dbtn.dark{background:#141414;color:#fff}.dbtn.dark:hover{background:#000}
+.dbtn.line{background:#fff;color:#141414;border:1.5px solid #141414}.dbtn.line:hover{background:#141414;color:#fff}
+@media(min-width:820px){.doors{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.land{padding-top:32px}.door{padding:24px 20px}}
+.authwrap{display:grid;justify-items:center;padding:26px 0 10px}
+.authcard{width:min(100%,440px);background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:0 10px 34px rgba(0,0,0,.07);padding:32px 28px 28px}
+.authcard .aheart{width:64px;height:auto;display:block;margin:0 auto}
+.authcard .awm{text-align:center;font-size:29px;font-weight:800;letter-spacing:-.03em;margin:8px 0 0;color:#141414}
+.authcard .asub{text-align:center;color:#6b6b66;font-size:14px;margin:2px 0 16px}
+.authseg{display:flex;background:#f2f2ef;border-radius:999px;padding:4px;margin:0 0 18px}
+.authseg button{flex:1;min-height:42px;border:0;border-radius:999px;background:transparent;font:700 14px var(--font);color:#6b6b66;cursor:pointer}
+.authseg button.on{background:#141414;color:#fff}
+.rolepick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:2px 0 6px}
+.rolebtn{border:1.5px solid var(--line);border-radius:16px;background:#fff;padding:18px 8px 14px;display:grid;gap:4px;justify-items:center;font:700 15px var(--font);color:#141414;cursor:pointer;text-align:center}
+.rolebtn small{font-weight:400;color:#6b6b66;font-size:12.5px;line-height:1.35}
+.rolebtn:hover{border-color:#141414}
+.rolebtn img{width:34px;height:auto}
+.authcard form{margin:10px 0 0;max-width:none}
+.authcard .btn{width:100%}
+.authcard .meta a{color:#141414}
 </style>
 </head>
 <body>
@@ -550,33 +595,38 @@ function home(v){
   if(confirmed||failed)history.replaceState(null,'',location.pathname);
   v.innerHTML=`${confirmed?msg('ok','Correo confirmado. Ya puedes entrar con tu cuenta.'):''}${failed?msg('err','El enlace del correo no es válido o ha caducado. Crea la cuenta otra vez o pide un correo nuevo.'):''}
   
-  <section class="hphoto"><img src="hero.jpg" alt="Artistas trabajando: pintura, música y escultura, en blanco y negro" width="800" height="1067"><div class="veil"></div><h2 class="h">La red de los artistas</h2></section>
-  <section class="protag">
-    <div class="blobA"></div>
-    <p class="eyebrow">Para artistas</p>
-    <div class="megarow"><h2 class="mega">Tu red<span class="pt">.</span><br>Tus bolos<span class="pt">.</span></h2><img class="bigheart" src="logo-heart-b-alpha.png" alt="Corazón negro chorreante de TengoBolo" width="270" height="270"></div>
-    <span class="sticker">Gratis · Sin comisión</span>
-    <p class="sub">Crea tu ficha y entra en la Red: habla con otros artistas, anúnciate, colabora y responde a bolos. Dentro de TengoBolo, sin registro aparte.</p>
-    <div class="cta">${session&&me?(me.role==='artist'?`<button class="pillbtn" data-go="redartistas">Entra en la Red</button>`:`<button class="pillbtn" data-go="artistas">Explorar artistas</button>`):`<button class="pillbtn" data-go="entrar" data-role="artist">Entra en la Red</button>`}<a class="howlink" href="#pasosartista">Cómo funciona</a></div>
+  <section class="land">
+    <img class="lheart" src="logo-heart-b-alpha.png" alt="Corazón negro chorreante de TengoBolo" width="170" height="170">
+    <h2 class="lwm">tengo<b>b</b>olo</h2>
+    <p class="ltag">La red de los artistas</p>
+    <p class="lsub">Los artistas se conocen, colaboran y encuentran bolos. Quien busca artista publica el suyo y recibe propuestas.</p>
+    <div class="lcta">${session&&me?(me.role==='artist'?`<button class="lbtn" data-go="redartistas">Entra en la Red</button>`:`<button class="lbtn" data-go="artistas">Explorar artistas</button>`):`<button class="lbtn" data-go="entrar" data-role="artist">Crear cuenta gratis</button><a class="llink" href="#" data-go="entrar" data-mode="login">Ya tengo cuenta</a>`}</div>
   </section>
-  <section class="cliente">
-    <span class="t">Agencias, empresas y particulares</span>
-    <p>Publica tu bolo con fecha y presupuesto, y recibe propuestas de artistas.</p>
-    ${session&&me?(me.role==='agency'?`<button class="cbtn" data-go="publicar">Publicar un bolo</button>`:`<button class="cbtn" data-go="artistas">Explorar artistas</button>`):`<button class="cbtn" data-go="entrar" data-role="agency">Explorar artistas</button>`}
-  </section>
-  <div class="sech" id="pasosartista"><h2>Si eres artista</h2><span>Tres pasos</span></div>
-  <div class="steps2">
-    <div class="step2"><span class="n">1</span><div><b>Crea tu perfil gratis</b><span class="d">Tus disciplinas, tu ciudad, tu trabajo. Sin comisión, para siempre.</span></div></div>
-    <div class="step2"><span class="n">2</span><div><b>Entra en la Red</b><span class="d">Conoce a otros artistas, anúnciate y colabora. Todo por mensajes internos.</span></div></div>
-    <div class="step2"><span class="n">3</span><div><b>Responde a bolos</b><span class="d">En Ver bolos ves primero los de tu disciplina y envías tu propuesta con precio.</span></div></div>
+  <div class="doors" id="pasosartista">
+    <section class="door">
+      <p class="deye">Para artistas</p>
+      <h3>Tu red<span class="pt">.</span> Tus bolos<span class="pt">.</span></h3>
+      <p class="dsub">Crea tu ficha y entra en la Red: habla con otros artistas, anúnciate, colabora y responde a bolos. Dentro de TengoBolo, sin registro aparte.</p>
+      <span class="dstick">Gratis · Sin comisión</span>
+      <ul class="dsteps">
+        <li><span class="n">1</span><span><b>Crea tu perfil gratis.</b> Tus disciplinas, tu ciudad, tu trabajo. Sin comisión, para siempre.</span></li>
+        <li><span class="n">2</span><span><b>Entra en la Red.</b> Conoce a otros artistas, anúnciate y colabora. Todo por mensajes internos.</span></li>
+        <li><span class="n">3</span><span><b>Responde a bolos.</b> En Ver bolos ves primero los de tu disciplina y envías tu propuesta con precio.</span></li>
+      </ul>
+      <div class="dgo">${session&&me?(me.role==='artist'?`<button class="dbtn dark" data-go="redartistas">Entra en la Red</button>`:`<button class="dbtn dark" data-go="artistas">Explorar artistas</button>`):`<button class="dbtn dark" data-go="entrar" data-role="artist">Entra en la Red</button>`}</div>
+    </section>
+    <section class="door">
+      <p class="deye">Si buscas artistas</p>
+      <h3>Publica tu bolo</h3>
+      <p class="dsub">Agencias, empresas y particulares: publica tu bolo con fecha y presupuesto, y recibe propuestas de artistas.</p>
+      <ul class="dsteps">
+        <li><span class="n">1</span><span><b>Publica tu bolo.</b> Qué artista necesitas, cuándo, dónde y tu presupuesto.</span></li>
+        <li><span class="n">2</span><span><b>Los artistas responden.</b> Los de esa disciplina ven tu bolo primero y te envían su propuesta con precio.</span></li>
+        <li><span class="n">3</span><span><b>Hablas y cierras.</b> Comparas, hablas con ellos dentro de la web y eliges. El acuerdo es directo entre las dos partes.</span></li>
+      </ul>
+      <div class="dgo">${session&&me?(me.role==='agency'?`<button class="dbtn line" data-go="publicar">Publicar un bolo</button>`:`<button class="dbtn line" data-go="artistas">Explorar artistas</button>`):`<button class="dbtn line" data-go="entrar" data-role="agency">Explorar artistas</button>`}</div>
+    </section>
   </div>
-  <div class="sech"><h2>Si buscas artistas</h2><span>Apartado de clientes</span></div>
-  <div class="steps2">
-    <div class="step2"><span class="n">1</span><div><b>Publica tu bolo</b><span class="d">Qué artista necesitas, cuándo, dónde y tu presupuesto.</span></div></div>
-    <div class="step2"><span class="n">2</span><div><b>Los artistas responden</b><span class="d">Los de esa disciplina ven tu bolo primero y te envían su propuesta con precio.</span></div></div>
-    <div class="step2"><span class="n">3</span><div><b>Hablas y cierras</b><span class="d">Comparas, hablas con ellos dentro de la web y eliges. El acuerdo es directo entre las dos partes.</span></div></div>
-  </div>
-
   ${adSlot('inicio')}
   <p class="meta" style="margin:14px 0">Música, teatro, danza, circo, artes visuales y mucho más: más de 80 disciplinas. El artista elige las suyas en su perfil y el cliente las consulta al registrarse y al publicar su bolo.</p>
   <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
@@ -584,7 +634,7 @@ function home(v){
   setupInstall();
   {const ab=$('#a');if(ab)ab.onclick=()=>setTab(session?'proyectos':'entrar');}
   {const bb=$('#bwb');if(bb)bb.onclick=()=>{if(session){setTab('redartistas');}else{rolePre='artist';setTab('entrar');}};}
-  v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
+  v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();if(a.dataset.role)rolePre=a.dataset.role;if(a.dataset.mode)modePre=a.dataset.mode;setTab(a.dataset.go==='artistas'&&!session?'entrar':a.dataset.go);});
   v.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{artPre=b.dataset.d;rolePre='agency';setTab(session?'publicar':'entrar');});
   v.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>{evPre=b.dataset.ev;rolePre='agency';setTab(session?'publicar':'entrar');});
 }
@@ -607,13 +657,16 @@ function enter(v,mode='register',note='',rsel=null){
   if(modePre){mode=modePre;modePre=null;}
   const rp=rolePre;rolePre=null;const role=rsel||rp||null;
   if(session){v.innerHTML='<h2>Sesión iniciada</h2><div class="row"><button class="btn" id="p">Mi perfil</button></div>';$('#p').onclick=()=>setTab('perfil');return;}
-  v.innerHTML=`<h2>${mode==='register'?'Crear cuenta':'Entrar'}</h2>
-  <div class="row"><button class="btn ${mode==='register'?'':'sec'}" id="m1">Crear cuenta</button><button class="btn ${mode==='login'?'':'sec'}" id="m2">Ya tengo cuenta</button></div>${note}
-  <form id="f">${mode==='register'?(role?`<p class="meta" style="margin:0">Te registras como: <b>${role==='artist'?'Artista':'Agencia, empresa o particular'}</b> · <a href="#" id="chg">${role==='artist'?'¿No eres artista? Cambiar':'¿No eres agencia o empresa? Cambiar'}</a></p><input type="hidden" name="role" value="${role}"><label>Nombre<input name="name" required minlength="2" autocomplete="name"></label>${role==='artist'?`<div id="rd"><b>Tus disciplinas</b> <span class="meta">(marca una o varias, hasta 12; luego podrás cambiarlas en Mi perfil)</span>${DISC.map(g=>`<details class="dg"><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}">${x}</label>`).join('')}</details>`).join('')}</div>`:''}`:`<b>¿Cómo te registras?</b><div class="row" style="margin:8px 0"><button type="button" class="btn sec" id="r1">Artista</button><button type="button" class="btn sec" id="r2">Agencia, empresa o particular</button></div>`):''}
+  v.innerHTML=`<div class="authwrap"><section class="authcard">
+  <img class="aheart" src="logo-heart-b-alpha.png" alt="" width="64" height="64">
+  <h2 class="awm">tengo<b>b</b>olo</h2>
+  <p class="asub">${mode==='register'?'Crea tu cuenta y entra en la red de artistas':'Entra en tu cuenta'}</p>
+  <div class="authseg"><button type="button" class="${mode==='register'?'on':''}" id="m1">Crear cuenta</button><button type="button" class="${mode==='login'?'on':''}" id="m2">Ya tengo cuenta</button></div>${note}
+  <form id="f">${mode==='register'?(role?`<p class="meta" style="margin:0">Te registras como: <b>${role==='artist'?'Artista':'Agencia, empresa o particular'}</b> · <a href="#" id="chg">${role==='artist'?'¿No eres artista? Cambiar':'¿No eres agencia o empresa? Cambiar'}</a></p><input type="hidden" name="role" value="${role}"><label>Nombre<input name="name" required minlength="2" autocomplete="name"></label>${role==='artist'?`<div id="rd"><b>Tus disciplinas</b> <span class="meta">(marca una o varias, hasta 12; luego podrás cambiarlas en Mi perfil)</span>${DISC.map(g=>`<details class="dg"><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="d" value="${esc(x)}">${x}</label>`).join('')}</details>`).join('')}</div>`:''}`:`<b>¿Cómo te registras?</b><div class="rolepick"><button type="button" class="rolebtn" id="r1"><img src="logo-heart-b-alpha.png" alt="" width="34" height="34">Artista<small>Perfil gratis, para siempre. Sin comisión.</small></button><button type="button" class="rolebtn" id="r2">Agencia, empresa o particular<small>Publica bolos y recibe propuestas.</small></button></div>`):''}
   <label>Correo<input name="email" type="email" required autocomplete="email"></label>
   <label>Contraseña${mode==='register'?' (mínimo 12 caracteres)':''}<input name="password" type="password" required minlength="${mode==='register'?12:1}" autocomplete="${mode==='register'?'new-password':'current-password'}"></label>
   ${mode==='register'?`<label class="chk"><input type="checkbox" name="legal" required><span>Soy mayor de 14 años y he leído y acepto el <a href="/aviso-legal.html" target="_blank" rel="noopener">Aviso legal</a> y la <a href="/privacidad.html" target="_blank" rel="noopener">Política de privacidad</a>.</span></label>`:''}
-  <div id="e"></div><button class="btn" type="submit">${mode==='register'?'Crear cuenta':'Entrar'}</button></form>`;
+  <div id="e"></div><button class="btn" type="submit">${mode==='register'?'Crear cuenta':'Entrar'}</button></form></section></div>`;
   $('#m1').onclick=()=>enter(v,'register','',role||'');$('#m2').onclick=()=>enter(v,'login');
   if(mode==='register'){if($('#chg'))$('#chg').onclick=e=>{e.preventDefault();enter(v,'register',note,'');};if($('#r1')){$('#r1').onclick=()=>enter(v,'register',note,'artist');$('#r2').onclick=()=>enter(v,'register',note,'agency');}}
   $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const b=e.target.querySelector('button[type=submit]');b.disabled=true;b.textContent='Un momento…';$('#e').innerHTML='';
