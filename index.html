@@ -587,6 +587,26 @@ label.pfile span.btn.sec{background:#f0f0ed;border:0;border-radius:10px;padding:
 .msglist .imrow.on{background:#f6f6f4}
 .msgpane{padding:4px 20px 18px;overflow-y:auto;max-height:72vh}
 }
+
+/* Portada: identidad protagonista, dos entradas antes de la explicación. */
+.land{padding:24px 12px 10px}
+.land .lheart{width:clamp(122px,23vw,156px)}
+.land .lwm{font-size:clamp(42px,8vw,64px);margin:10px 0 6px}
+.land .lsub{max-width:32em;margin-top:8px}
+.land .lcta{margin-top:8px;gap:14px}
+.doors{margin-top:16px}
+.door{gap:10px;border-radius:16px;box-shadow:none;padding:24px}
+.door .deye{text-transform:none;letter-spacing:0;font-size:14px;color:#555}
+.dstick{border:0;border-radius:0;padding:0;letter-spacing:0;text-transform:none;transform:none;font-size:13px;color:#141414}
+.door .dgo{margin-top:0;padding-top:4px}
+.door .dbtn{width:100%;border-radius:10px}
+.dhow{border-top:1px solid var(--line);margin-top:4px;padding-top:6px}
+.dhow summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:14px;font-weight:600}
+.dhow summary::after{content:'+';margin-left:auto;color:#e0323c}
+.dhow[open] summary::after{content:'−'}
+.dhow .dsteps{border:0;padding-top:0;margin-top:0}
+@media(max-width:560px){.land{padding-top:18px}.door{padding:20px}.land .lsub{font-size:15px;max-width:23em}.land .ltag{font-size:18px}}
+
 </style>
 </head>
 <body>
@@ -800,32 +820,32 @@ function home(v){
     <img class="lheart" src="logo-heart-b-alpha.png" alt="Corazón negro chorreante de TengoBolo" width="170" height="170">
     <h2 class="lwm">tengo<b>B</b>olo</h2>
     <p class="ltag">La red de los artistas</p>
-    <p class="lsub">Los artistas se conocen, colaboran y encuentran bolos. Quien busca artista publica el suyo y recibe propuestas.</p>
-    <div class="lcta">${session&&me?(me.role==='artist'?`<button class="lbtn" data-go="redartistas">Entra en la Red</button>`:`<button class="lbtn" data-go="artistas">Explorar artistas</button>`):`<button class="lbtn" data-go="entrar" data-role="artist">Crear cuenta gratis</button><a class="llink" href="#" data-go="entrar" data-mode="login">Ya tengo cuenta</a>`}</div>
+    <p class="lsub">Conoce a otros artistas, encuentra bolos o publica el tuyo.</p>
+    <div class="lcta">${session&&me?(me.role==='artist'?`<button class="lbtn" data-go="redartistas">Entra en la Red</button>`:`<button class="lbtn" data-go="artistas">Explorar artistas</button>`):`<a class="llink" href="#" data-go="entrar" data-mode="login">Ya tengo cuenta</a>`}</div>
   </section>
   <div class="doors" id="pasosartista">
     <section class="door">
       <p class="deye">Para artistas</p>
       <h3>Tu red<span class="pt">.</span> Tus bolos<span class="pt">.</span></h3>
-      <p class="dsub">Crea tu ficha y entra en la Red: habla con otros artistas, anúnciate, colabora y responde a bolos. Dentro de TengoBolo, sin registro aparte.</p>
-      <span class="dstick">Gratis · Sin comisión</span>
-      <ul class="dsteps">
-        <li><span class="n">1</span><span><b>Crea tu perfil gratis.</b> Tus disciplinas, tu ciudad, tu trabajo. Sin comisión, para siempre.</span></li>
+      <p class="dsub">Conoce a otros artistas, colabora y responde a bolos de tus disciplinas.</p>
+      <span class="dstick">Perfil básico gratuito · Sin comisión</span>
+      <div class="dgo">${session&&me?(me.role==='artist'?`<button class="dbtn dark" data-go="redartistas">Entra en la Red</button>`:`<button class="dbtn dark" data-go="artistas">Explorar artistas</button>`):`<button class="dbtn dark" data-go="entrar" data-role="artist">Crear mi perfil de artista</button>`}</div>
+      <details class="dhow"><summary>Cómo funciona</summary><ul class="dsteps">
+        <li><span class="n">1</span><span><b>Crea tu perfil.</b> Tus disciplinas, tu ciudad, tu trabajo. Perfil básico gratuito, sin comisión.</span></li>
         <li><span class="n">2</span><span><b>Entra en la Red.</b> Conoce a otros artistas, anúnciate y colabora. Todo por mensajes internos.</span></li>
         <li><span class="n">3</span><span><b>Responde a bolos.</b> En Ver bolos ves primero los de tu disciplina y envías tu propuesta con precio.</span></li>
-      </ul>
-      <div class="dgo">${session&&me?(me.role==='artist'?`<button class="dbtn dark" data-go="redartistas">Entra en la Red</button>`:`<button class="dbtn dark" data-go="artistas">Explorar artistas</button>`):`<button class="dbtn dark" data-go="entrar" data-role="artist">Entra en la Red</button>`}</div>
+      </ul></details>
     </section>
     <section class="door">
       <p class="deye">Si buscas artistas</p>
       <h3>Publica tu bolo</h3>
       <p class="dsub">Agencias, empresas y particulares: publica tu bolo con fecha y presupuesto, y recibe propuestas de artistas.</p>
-      <ul class="dsteps">
+      <div class="dgo">${session&&me?(me.role==='agency'?`<button class="dbtn line" data-go="publicar">Publicar un bolo</button>`:`<button class="dbtn line" data-go="artistas">Explorar artistas</button>`):`<button class="dbtn line" data-go="entrar" data-role="agency">Publicar un bolo</button>`}</div>
+      <details class="dhow"><summary>Cómo funciona</summary><ul class="dsteps">
         <li><span class="n">1</span><span><b>Publica tu bolo.</b> Qué artista necesitas, cuándo, dónde y tu presupuesto.</span></li>
         <li><span class="n">2</span><span><b>Los artistas responden.</b> Los de esa disciplina ven tu bolo primero y te envían su propuesta con precio.</span></li>
         <li><span class="n">3</span><span><b>Hablas y cierras.</b> Comparas, hablas con ellos dentro de la web y eliges. El acuerdo es directo entre las dos partes.</span></li>
-      </ul>
-      <div class="dgo">${session&&me?(me.role==='agency'?`<button class="dbtn line" data-go="publicar">Publicar un bolo</button>`:`<button class="dbtn line" data-go="artistas">Explorar artistas</button>`):`<button class="dbtn line" data-go="entrar" data-role="agency">Explorar artistas</button>`}</div>
+      </ul></details>
     </section>
   </div>
   ${adSlot('inicio')}
