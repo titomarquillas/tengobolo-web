@@ -733,14 +733,14 @@ async function revista(v){
     const items=by[src]||[];const meta=(d.sources||{})[src]||{};
     if(!items.length)continue;
     h+='<details class="dgroup"><summary>'+g.t+' <span class="dgn">'+items.length+(meta.item_count>items.length?' de '+meta.item_count:'')+'</span></summary>'
-      +items.map(x=>{
+      +items.slice().sort((a,b)=>src==='mcult_noticias'?String(b.date_start||'').localeCompare(String(a.date_start||'')):0).map(x=>{
         const fechas=x.kind==='noticia'?(x.date_start?fmtD(x.date_start):''):((x.date_start?fmtD(x.date_start):'')+(x.date_end&&x.date_end!==x.date_start?' – '+fmtD(x.date_end):''));
         return '<div class="dline rvcard">'+(src==='bcn'?'<span class="rvt">'+esc(x.title)+'</span>':'<a class="rvt" href="'+esc(x.url)+'" target="_blank" rel="external noopener">'+esc(x.title)+'</a>')
           +'<div class="rvm">'+[fechas,x.venue,x.city,x.category].filter(Boolean).map(esc).join(' · ')+'</div>'
           +(x.summary?'<div class="rvs">'+esc(x.summary)+'</div>':'')+(src==='bcn'?'<div class="meta">Fuente: Open Data Barcelona · <a href="'+esc(x.url)+'" target="_blank" rel="external noopener">Ver conjunto de datos (no ficha del evento)</a></div>':'')
-        +'</div>';
+        +'<div class="meta">'+esc(g.atr)+'</div></div>';
       }).join('')
-      +'<div class="rvatr">'+esc(g.atr)+(meta.last_success_at?' · datos del '+new Date(meta.last_success_at).toLocaleDateString('es-ES'):'')+(meta.status==='error'?' · fuente en revisión, se muestran los últimos datos válidos':'')+' · <a href="'+g.link+'" target="_blank" rel="external noopener">Ver en la fuente</a></div>'
+      +'<div class="rvatr">'+esc(g.atr)+(src.startsWith('mcult_')?' · <a href="https://www.cultura.gob.es/comunes/aviso-legal.html" target="_blank" rel="external noopener">Condiciones de reutilización</a>':'')+(meta.last_success_at?' · datos del '+new Date(meta.last_success_at).toLocaleDateString('es-ES'):'')+(meta.status==='error'?' · fuente en revisión, se muestran los últimos datos válidos':'')+' · <a href="'+g.link+'" target="_blank" rel="external noopener">Ver en la fuente</a></div>'
       +'</details>';
   }
   h+='</div>';
