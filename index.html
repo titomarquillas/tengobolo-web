@@ -442,6 +442,30 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .authcard form{margin:10px 0 0;max-width:none}
 .authcard .btn{width:100%}
 .authcard .meta a{color:#141414}
+
+/* ===== lote 3: mensajes estilo DM ===== */
+.imrow{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:10px 0;cursor:pointer;font:inherit;color:inherit}
+.imrow:hover{border-color:#141414}
+.imav{width:46px;height:46px;border-radius:50%;flex:none;display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px}
+.imbody{flex:1;min-width:0}
+.imbody b{display:block;font-size:15.5px;font-weight:700}
+.imbody b.un{font-weight:800}
+.imp{display:block;color:var(--ink2);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.imdot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#e0323c;margin-left:7px;vertical-align:1px}
+.imchev{color:var(--ink2);font-size:24px;flex:none;line-height:1}
+.thead{display:flex;gap:12px;align-items:center;margin:8px 0 4px}
+.thead h2{margin:0;font-size:22px}
+.twrap{display:grid;gap:8px;margin:18px 0}
+.bub{max-width:76%;background:#f2f2ef;border-radius:18px 18px 18px 5px;padding:10px 14px;justify-self:start}
+.bub.me{justify-self:end;background:#141414;color:#fff;border-radius:18px 18px 5px 18px}
+.bub p{margin:0;white-space:pre-line;font-size:15px}
+.btime{display:block;font-size:11px;color:var(--ink2);margin-top:4px}
+.bub.me .btime{color:#b9b9b3}
+.tform{display:flex;gap:10px;align-items:flex-end;border:1px solid var(--line);border-radius:26px;padding:6px 6px 6px 18px;background:#fff;max-width:none;margin:14px 0 0}
+.tform textarea{flex:1;border:0;outline:none;resize:none;font:inherit;font-size:15px;max-height:130px;background:transparent;padding:10px 0;color:#141414}
+.tform .send{flex:none;width:46px;height:46px;border-radius:50%;border:0;background:#e0323c;color:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.tform .send:disabled{opacity:.5}
+.tform .send svg{width:20px;height:20px;fill:currentColor}
 </style>
 </head>
 <body>
@@ -990,12 +1014,14 @@ function artists(v,q={}){loading(v,async()=>{const m=await getMe();let page=1;co
   const more=$('#more');if(more)more.onclick=async()=>{more.disabled=true;try{page++;const n=await call('/api/artists'+qs(q,page),{auth:true});$('#res').insertAdjacentHTML('beforeend',n.map(x=>artistCard(x,m)).join(''));bind();if(n.length<20)more.remove();else more.disabled=false;}catch(err){more.disabled=false;}};});}
 const fdt=d=>{try{return new Date(d).toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}catch{return '';}};
 const fdr=d=>{try{const sec=(Date.now()-new Date(d).getTime())/1e3;if(sec<90)return 'ahora';if(sec<3600)return 'hace '+Math.round(sec/60)+' min';if(sec<86400)return 'hace '+Math.round(sec/3600)+' h';return 'hace '+Math.round(sec/86400)+' d';}catch{return '';}};
+const IMVC=['#e0323c','#e07b39','#0f8a5f','#6a5ae0'];
+const imav=n=>{const ini=esc(String(n||'?').trim().split(/\s+/).slice(0,2).map(w=>(w[0]||'').toUpperCase()).join(''));const col=IMVC[(String(n||'?').charCodeAt(0)||0)%IMVC.length];return `<span class="imav" style="background:${col}" aria-hidden="true">${ini}</span>`;};
 function inbox(v){loading(v,async()=>{await getMe();const r=await call('/api/messages',{auth:true});UNREAD=r.reduce((n,x)=>n+Number(x.unread||0),0);renderNav();
-  v.innerHTML='<h2>Mensajes</h2><p class="meta">Aquí te escriben y escribes sin dar tu correo ni tu teléfono.</p>'+(r.length?r.map(x=>`<div class="card"><h3>${esc(x.other_name)} ${Number(x.unread)>0?`<span class="tag dst">${Number(x.unread)} nuevo${Number(x.unread)>1?'s':''}</span>`:''}</h3><p class="meta">${x.last_from_me?'Tú: ':''}${esc(x.last_body)} · ${esc(fdt(x.last_at))}</p><button class="btn sec" data-o="${esc(x.other_id)}" data-n="${esc(x.other_name)}">Abrir</button></div>`).join(''):'<p>Todavía no tienes mensajes. Entra en <b>Artistas</b> y pulsa Contactar.</p>');
+  v.innerHTML='<h2>Mensajes</h2><p class="meta">Aquí te escriben y escribes sin dar tu correo ni tu teléfono.</p>'+(r.length?r.map(x=>`<button class="imrow" data-o="${esc(x.other_id)}" data-n="${esc(x.other_name)}">${imav(x.other_name)}<span class="imbody"><b class="${Number(x.unread)>0?'un':''}">${esc(x.other_name)}${Number(x.unread)>0?`<span class="imdot" title="${Number(x.unread)} nuevo${Number(x.unread)>1?'s':''}"></span>`:''}</b><span class="imp">${x.last_from_me?'Tú: ':''}${esc(x.last_body)} · ${esc(fdt(x.last_at))}</span></span><span class="imchev" aria-hidden="true">›</span></button>`).join(''):'<p>Todavía no tienes mensajes. Entra en <b>Artistas</b> y pulsa Contactar.</p>');
   v.querySelectorAll('button[data-o]').forEach(b=>b.onclick=()=>thread(v,b.dataset.o,b.dataset.n));});}
 function thread(v,id,name){loading(v,async()=>{await getMe();const r=await call('/api/messages/'+encodeURIComponent(id),{auth:true});refreshUnread();const nm=(r[0]&&r[0].other_name)||name||'Usuario';const can=r.length?r[0].can_reply:true;
-  v.innerHTML=`<p><button class="btn sec" id="back">← Volver</button></p><h2>${esc(nm)}</h2>`+(r.length?r.map(x=>`<div class="card" style="${x.from_me?'margin-left:36px':'margin-right:36px'}"><div class="meta">${x.from_me?'Tú':esc(nm)} · ${esc(fdt(x.created_at))}</div><p style="white-space:pre-line;margin:6px 0 0">${esc(x.body)}</p></div>`).join(''):'<p class="meta">Aún no habéis hablado. Preséntate y cuéntale qué buscas.</p>')+
-   (can?`<form id="mf"><label>Tu mensaje<textarea name="body" rows="4" required maxlength="2000"></textarea></label><div id="me"></div><button class="btn" type="submit">Enviar</button></form>`:'<div class="msg info">Para escribir a este usuario necesitas tener el contacto desbloqueado.</div>');
+  v.innerHTML=`<p><button class="btn sec" id="back">← Volver</button></p><div class="thead">${imav(nm)}<h2>${esc(nm)}</h2></div><div class="twrap">`+(r.length?r.map(x=>`<div class="bub${x.from_me?' me':''}"><p>${esc(x.body)}</p><span class="btime">${x.from_me?'Tú':esc(nm)} · ${esc(fdt(x.created_at))}</span></div>`).join(''):'<p class="meta">Aún no habéis hablado. Preséntate y cuéntale qué buscas.</p>')+`</div><div id="me"></div>`+
+   (can?`<form id="mf" class="tform"><textarea name="body" rows="1" required maxlength="2000" placeholder="Escribe un mensaje..." aria-label="Tu mensaje"></textarea><button class="send" type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24"><path d="M3 11.2 21 3l-8.2 18-2.4-7.3z"/></svg></button></form>`:'<div class="msg info">Para escribir a este usuario necesitas tener el contacto desbloqueado.</div>');
   $('#back').onclick=()=>inbox(v);
   const f=$('#mf');if(f)f.onsubmit=async e=>{e.preventDefault();const body=new FormData(f).get('body').trim();if(!body)return;f.querySelector('button').disabled=true;try{await call('/api/messages',{method:'POST',auth:true,body:{to:id,body}});thread(v,id,nm);}catch(err){f.querySelector('button').disabled=false;$('#me').innerHTML=msg('err',err.message);}};});}
 function viewProfile(v,id){loading(v,async()=>{const [p,m]=await Promise.all([call('/api/profiles/'+encodeURIComponent(id),{auth:true}),getMe()]);const md=mediaHtml(p.media,false);const isArt=m&&m.role==='artist',mine=m&&m.id===p.id;
