@@ -372,8 +372,17 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .pill{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;min-height:38px}
 .pill.red{background:#e0323c;border-color:#e0323c;color:#fff}
 .pill.dark{background:#141414;border-color:#141414;color:#fff}
-.discb{margin:26px 0 8px;border-top:1px solid var(--line);padding-top:22px}
-.discb .dblock{margin:0 0 22px}
+.discb{margin:30px 0 8px;border-top:1px solid var(--line);padding-top:26px}
+.discb .dblock{margin:0 0 30px}
+.discb .dblock+.dblock{border-top:1px solid var(--line);padding-top:26px}
+.dgroups{display:grid;gap:8px;margin:0 0 12px}
+details.dgroup{border:1px solid var(--line);border-radius:12px;background:#fff;padding:2px 16px}
+details.dgroup>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:46px;font-weight:600;font-size:15px;color:var(--ink);cursor:pointer;list-style:none}
+details.dgroup>summary::-webkit-details-marker{display:none}
+details.dgroup>summary:after{content:"+";font-size:19px;font-weight:400;color:var(--ink2);line-height:1}
+details.dgroup[open]>summary:after{content:"–"}
+details.dgroup>summary .dgn{font-weight:400;font-size:13px;color:var(--ink2);margin-left:auto;margin-right:10px}
+details.dgroup .dline{margin:0 0 14px}
 .discb h2{font-size:22px;letter-spacing:-.02em;margin:0 0 6px}
 .discb .dline{margin:7px 0;font-size:14.5px;color:var(--ink2);line-height:1.55}
 .discb .dline b{color:var(--ink)}
@@ -778,13 +787,15 @@ function home(v){
     <div class="dblock">
       <h2>Qué es tengoBolo y qué no</h2>
       <p class="dline"><b>Es un punto de encuentro directo.</b> El artista y quien le contrata hablan dentro de la web y el acuerdo es entre las dos partes.</p>
-      <p class="dline"><b>No es una agencia.</b> No interviene en el trato ni cobra comisión al artista: su perfil es gratis, para siempre.</p>
+      <p class="dline"><b>No es una agencia.</b> No interviene en el trato ni cobra comisión al artista: el perfil básico es gratuito.</p>
       <p class="dline"><b>No garantiza bolos.</b> Da visibilidad y conecta; la contratación la decidís entre vosotros.</p>
     </div>
     <div class="dblock">
-      <h2>Qué artistas caben en TengoBolo</h2>
+      <h2>Qué artistas caben en tengoBolo</h2>
       <p class="meta" style="margin:0 0 10px">El catálogo de disciplinas que un artista puede elegir en su perfil. Al publicar un bolo, eliges la disciplina que buscas.</p>
-      ${DISC.filter(g=>g[0]!=='Otras').map(g=>`<p class="dline"><b>${esc(g[0])}.</b> ${g[1].map(esc).join(' · ')}</p>`).join('')}
+      <div class="dgroups">
+      ${DISC.filter(g=>g[0]!=='Otras').map(g=>`<details class="dgroup"><summary>${esc(g[0])} <span class="dgn">${g[1].length}</span></summary><p class="dline">${g[1].map(esc).join(' · ')}</p></details>`).join('')}
+      </div>
       <p class="dline"><b>Y más.</b> Si una disciplina no está en la lista, el artista puede escribirla en su perfil como otra disciplina.</p>
     </div>
     <div class="dblock">
