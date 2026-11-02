@@ -509,7 +509,7 @@ nav button .nico svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke
 nav button .bh{display:none}
 @media(max-width:700px){
 header,html.sa header{backdrop-filter:none;-webkit-backdrop-filter:none}
-html.sa nav,html:not(.sa) nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;display:flex;flex-wrap:nowrap;overflow-x:auto;grid-template-columns:none;gap:0;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:rgba(255,255,255,.97);border-top:1px solid var(--line);border-bottom:0;box-shadow:0 -1px 8px rgba(0,0,0,.04)}
+html.sa nav,html:not(.sa) nav{position:fixed;left:0;right:0;bottom:0;z-index:20;max-width:none;margin:0;display:flex;flex-wrap:nowrap;overflow-x:auto;grid-template-columns:none;gap:0;padding:0 max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(6px,env(safe-area-inset-left));background:#fff;border-top:1px solid var(--line);border-bottom:0;box-shadow:0 -1px 8px rgba(0,0,0,.05)}
 main,html.sa main{padding-bottom:calc(118px + env(safe-area-inset-bottom))}
 footer p,html.sa footer p{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
 html.sa nav button,html:not(.sa) nav button{display:flex;flex-direction:column;white-space:nowrap;align-items:center;justify-content:center;gap:3px;flex:1 0 52px;min-width:52px;min-height:52px;padding:4px 4px;font-size:10px;line-height:1.15}
@@ -524,7 +524,7 @@ header{position:fixed;inset:0 auto 0 0;width:250px;display:flex;flex-direction:c
 .bar{display:block;max-width:none;margin:0;padding:24px 16px 10px}
 .brand img{height:34px;width:34px}
 .brand .wm{font-size:22px}
-.zone{display:block;font-size:10px;max-width:none;text-align:left;margin:6px 0 0 2px;letter-spacing:.12em}
+.zone{display:block;font-size:10px;max-width:none;text-align:left;margin:6px 0 0 2px;letter-spacing:.12em;color:#55554f}
 .zone:before{display:none}
 nav{display:flex;flex-direction:column;gap:2px;max-width:none;margin:0;padding:8px 14px;overflow-y:auto;border-bottom:0;flex:1}
 nav button{display:flex;align-items:center;gap:13px;width:100%;min-height:46px;padding:0 12px;border-radius:11px;font-size:15.5px;text-align:left;color:#3d3d3a}
@@ -540,6 +540,7 @@ main#view{max-width:none;width:auto;margin:0 0 0 250px;padding:26px 34px 80px}
 main#view>*{max-width:980px;margin-left:auto;margin-right:auto}
 footer{margin-left:250px}
 }
+header .zone{color:#55554f}
 </style>
 </head>
 <body>
@@ -707,7 +708,7 @@ function home(v){
   
   <section class="land">
     <img class="lheart" src="logo-heart-b-alpha.png" alt="Corazón negro chorreante de TengoBolo" width="170" height="170">
-    <h2 class="lwm">tengo<b>b</b>olo</h2>
+    <h2 class="lwm">tengo<b>B</b>olo</h2>
     <p class="ltag">La red de los artistas</p>
     <p class="lsub">Los artistas se conocen, colaboran y encuentran bolos. Quien busca artista publica el suyo y recibe propuestas.</p>
     <div class="lcta">${session&&me?(me.role==='artist'?`<button class="lbtn" data-go="redartistas">Entra en la Red</button>`:`<button class="lbtn" data-go="artistas">Explorar artistas</button>`):`<button class="lbtn" data-go="entrar" data-role="artist">Crear cuenta gratis</button><a class="llink" href="#" data-go="entrar" data-mode="login">Ya tengo cuenta</a>`}</div>
