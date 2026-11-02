@@ -383,6 +383,14 @@ details.dgroup>summary:after{content:"+";font-size:19px;font-weight:400;color:va
 details.dgroup[open]>summary:after{content:"–"}
 details.dgroup>summary .dgn{font-weight:400;font-size:13px;color:var(--ink2);margin-left:auto;margin-right:10px}
 details.dgroup .dline{margin:0 0 14px}
+.rvcard{padding:10px 0;border-top:1px solid var(--line)}
+.rvcard:first-of-type{border-top:none;padding-top:2px}
+.rvt{font-weight:600;color:var(--ink);text-decoration:none;font-size:15px;line-height:1.4}
+.rvt:hover{color:#e0323c}
+.rvm{font-size:13px;color:var(--ink2);margin-top:3px}
+.rvs{font-size:14px;color:var(--ink2);margin-top:5px;line-height:1.5}
+.rvatr{font-size:12.5px;color:var(--ink2);margin:12px 0 14px}
+.rvatr a{color:var(--ink2)}
 .discb h2{font-size:22px;letter-spacing:-.02em;margin:0 0 6px}
 .discb .dline{margin:7px 0;font-size:14.5px;color:var(--ink2);line-height:1.55}
 .discb .dline b{color:var(--ink)}
@@ -638,8 +646,9 @@ function setTab(t){tab=t;render();window.scrollTo(0,0);}
 function renderNav(){paint();
   if(session&&!me&&!meBusy){meBusy=true;getMe().catch(()=>{}).finally(()=>{meBusy=false;});}
   const rl=session&&me?me.role:null;
-  const items=[['inicio','Inicio'],...(rl==='artist'?[['redartistas','<img class="bh" src="logo-heart-b-alpha.png" alt="" width="18" height="18">Red'],['proyectos','Ver bolos'],['artistas','Artistas'],['propuestas','Mis candidaturas']]:rl==='agency'?[['artistas','Artistas'],['publicar','Publicar un bolo'],['propuestas','Propuestas'+(PROPEND>0?' ('+PROPEND+')':'')]]:[['artistas','Artistas'],['publicar','Publicar un bolo']]),...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),...(session?[]:[['precios','Precios'],['quienes','Quiénes somos']]),...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar'],...(session?[['mas','Más']]:[])];
+  const items=[['inicio','Inicio'],['revista','Revista'],...(rl==='artist'?[['redartistas','<img class="bh" src="logo-heart-b-alpha.png" alt="" width="18" height="18">Red'],['proyectos','Ver bolos'],['artistas','Artistas'],['propuestas','Mis candidaturas']]:rl==='agency'?[['artistas','Artistas'],['publicar','Publicar un bolo'],['propuestas','Propuestas'+(PROPEND>0?' ('+PROPEND+')':'')]]:[['artistas','Artistas'],['publicar','Publicar un bolo']]),...(session?[['mensajes','Mensajes'+(UNREAD>0?' ('+UNREAD+')':'')]]:[]),...(session?[]:[['precios','Precios'],['quienes','Quiénes somos']]),...(isAdmin?[['gestoria','Gestoría']]:[]),[session?'perfil':'entrar',session?'Mi perfil':'Entrar'],...(session?[['mas','Más']]:[])];
 const ICO={inicio:'<svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>',
+revista:'<svg viewBox="0 0 24 24"><path d="M4 4h13a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M19 8h1a1.5 1.5 0 0 1 1.5 1.5V18a2 2 0 0 1-2 2h-1"/><path d="M7.5 8.5h6M7.5 12h6M7.5 15.5h4"/></svg>',
 redartistas:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>',
 proyectos:'<svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
 artistas:'<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.5a4.6 4.6 0 0 1 5 4.5"/></svg>',
@@ -655,7 +664,7 @@ entrar:'<svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2
   $('#nav').innerHTML=items.map(([k,l])=>`<button data-t="${k}" ${tab===k?'aria-current="true"':''}><span class="nico" aria-hidden="true">${ICO[k]||''}</span><span class="nlb">${l}</span></button>`).join('');
   const mp0=document.getElementById('maspop');if(mp0)mp0.hidden=true;
   $('#nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{if(b.dataset.t==='mas')toggleMas();else setTab(b.dataset.t);});
-  const fn=$('#fnav');if(fn){fn.innerHTML=session?'<a href="#" data-t="precios">Precios</a> · <a href="#" data-t="quienes">Quiénes somos</a> · ':'';fn.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.t);});}
+  const fn=$('#fnav');if(fn){fn.innerHTML='<a href="#" data-t="revista">Revista</a> · '+(session?'<a href="#" data-t="precios">Precios</a> · <a href="#" data-t="quienes">Quiénes somos</a> · ':'');fn.querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.t);});}
 }
 function toggleMas(){let p=document.getElementById('maspop');if(!p){p=document.createElement('div');p.id='maspop';p.hidden=true;p.innerHTML='<button type="button" id="masout">Salir</button>';document.body.appendChild(p);p.querySelector('#masout').onclick=()=>{p.hidden=true;doLogout();};}p.hidden=!p.hidden;}
 async function doLogout(){try{await call('/api/auth/logout',{method:'POST',auth:true,body:{refresh_token:session.refresh_token}});}catch{}session=null;keep();me=null;setTab('inicio');}
@@ -702,6 +711,41 @@ function redView(v,q={}){loading(v,async()=>{const m=await getMe();
   const c=$('#rsec');
   if(sec==='tablon')return tablonSec(c,{},m,v);
   return muroSec(c);});}
+const RV_GROUPS={
+  mcult_noticias:{t:'Noticias · Ministerio de Cultura',link:'https://www.cultura.gob.es/prensa/actualidad.html',atr:'Origen de los datos: Ministerio de Cultura'},
+  mcult_agenda:{t:'Agenda · Ministerio de Cultura',link:'https://agendacultural.cultura.gob.es/listado.html',atr:'Origen de los datos: Ministerio de Cultura'},
+  madrid:{t:'Agenda · Madrid',link:'https://datos.madrid.es/dataset/300107-0-agenda-actividades-eventos',atr:'Fuente: Ayuntamiento de Madrid (datos.madrid.es), CC BY 4.0'},
+  bcn:{t:'Agenda · Barcelona',link:'https://opendata-ajuntament.barcelona.cat/data/es/dataset/agenda-cultural',atr:'Fuente: Ajuntament de Barcelona (Open Data BCN), CC BY 4.0'},
+};
+async function revista(v){
+  v.innerHTML='<h2>Revista cultural</h2><p class="meta">Cargando…</p>';
+  let d=null;try{const r=await fetch(API+'/api/public/revista');if(r.ok)d=await r.json();}catch{}
+  if(!d||!Array.isArray(d.items)||!d.items.length){v.innerHTML='<h2>Revista cultural</h2>'+msg('warn','La revista no está disponible ahora mismo. Prueba en unos minutos.');return;}
+  const by={};d.items.forEach(x=>{(by[x.source]=by[x.source]||[]).push(x);});
+  const fmtD=d0=>String(d0||'').slice(0,10).split('-').reverse().join('/');
+  const upd=d.updated_at?new Date(d.updated_at):null;
+  const fmtDT=upd?upd.toLocaleString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+  let h='<h2>Revista cultural</h2>'
+    +'<p class="meta">Agenda y noticias culturales de fuentes institucionales abiertas: Ministerio de Cultura, Madrid y Barcelona. No cubre toda España. Última actualización de los datos: '+fmtDT+'.</p>'
+    +'<div class="dgroups">';
+  for(const [src,g] of Object.entries(RV_GROUPS)){
+    const items=by[src]||[];const meta=(d.sources||{})[src]||{};
+    if(!items.length)continue;
+    h+='<details class="dgroup"><summary>'+g.t+' <span class="dgn">'+items.length+(meta.item_count>items.length?' de '+meta.item_count:'')+'</span></summary>'
+      +items.map(x=>{
+        const fechas=x.kind==='noticia'?(x.date_start?fmtD(x.date_start):''):((x.date_start?fmtD(x.date_start):'')+(x.date_end&&x.date_end!==x.date_start?' – '+fmtD(x.date_end):''));
+        return '<div class="dline rvcard"><a class="rvt" href="'+esc(x.url)+'" target="_blank" rel="external noopener">'+esc(x.title)+'</a>'
+          +'<div class="rvm">'+[fechas,x.venue,x.city,x.category].filter(Boolean).map(esc).join(' · ')+'</div>'
+          +(x.summary?'<div class="rvs">'+esc(x.summary)+'</div>':'')
+        +'</div>';
+      }).join('')
+      +'<div class="rvatr">'+esc(g.atr)+(meta.last_success_at?' · datos del '+new Date(meta.last_success_at).toLocaleDateString('es-ES'):'')+(meta.status==='error'?' · fuente en revisión, se muestran los últimos datos válidos':'')+' · <a href="'+g.link+'" target="_blank" rel="external noopener">Ver en la fuente</a></div>'
+      +'</details>';
+  }
+  h+='</div>';
+  if(upd&&Date.now()-upd.getTime()>4*864e5)h+=msg('warn','Estos datos llevan varios días sin actualizarse; estamos revisando la conexión con las fuentes.');
+  v.innerHTML=h;
+}
 function tablonSec(c,q,m,v){loading(c,async()=>{
   const u=new URLSearchParams();['kind','discipline','city'].forEach(k=>{const x=(q[k]||'').trim();if(x)u.set(k,x);});
   const r=await call('/api/notices'+(u.toString()?'?'+u:''),{auth:true});
@@ -733,6 +777,7 @@ async function render(){
   if(['artistas','proyectos','publicar','propuestas','perfil','gestoria','mensajes','redartistas'].includes(tab)&&!session){v.innerHTML=needLogin();$('#go').onclick=()=>setTab('entrar');return;}
   if(tab==='inicio')return home(v);
   if(tab==='entrar')return enter(v);
+  if(tab==='revista')return revista(v);
   if(tab==='precios')return pricing(v);
   if(tab==='quienes')return about(v);
   if(tab==='propuestas')return proposalsView(v);
@@ -803,6 +848,11 @@ function home(v){
       <p class="dline"><b>Quién encarga.</b> Agencias y promotoras, empresas para sus eventos, ayuntamientos y comisiones de fiestas, salas, teatros y festivales, y también particulares.</p>
       <p class="dline"><b>Qué se pide.</b> La verbena o la fiesta mayor, el evento de empresa, una boda, un cumpleaños o una comunión, un concierto en una sala, una función de teatro, animación infantil, una sesión de fotos o un retrato por encargo.</p>
       <p class="dline"><b>Cómo.</b> Publicas el bolo con fecha, lugar y presupuesto; los artistas de esa disciplina lo ven primero y te envían su propuesta con precio. Hablas con ellos dentro de la web y eliges.</p>
+    </div>
+    <div class="dblock">
+      <h2>Revista cultural</h2>
+      <p class="dline"><b>Qué pasa en la cultura.</b> Agenda y noticias de fuentes institucionales abiertas: Ministerio de Cultura, Madrid y Barcelona, con la fecha de la última actualización a la vista.</p>
+      <div class="dgo"><button class="dbtn line" data-go="revista">Ver la revista</button></div>
     </div>
   </section>
   <section class="appbox" id="appbox" hidden><img src="icon-192.png" alt="" width="64" height="64"><div style="flex:1;min-width:200px"><h3>Descárgate la app</h3><p>Ten TengoBolo en tu móvil, a un toque, como cualquier app. Gratis.</p></div><button class="btn" id="inst">Instalar app</button><div class="how" id="how" hidden></div></section>
