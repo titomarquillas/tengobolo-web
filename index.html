@@ -467,6 +467,10 @@ html.sa nav{background:rgba(255,255,255,.97);border-top:1px solid var(--line)}
 .tform .send:disabled{opacity:.5}
 .tform .send svg{width:20px;height:20px;fill:currentColor}
 
+.pricegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:12px 0 20px}
+.pricegrid .card{margin:0}
+.pprice{font-size:30px;font-weight:800;letter-spacing:-.02em;display:block;margin:6px 0}
+fieldset.pcard{margin:0 0 14px}
 .phead{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin:12px 0}
 .phead .avatar{width:72px;height:72px}
 .phead .pinfo{min-width:0;flex:1}
@@ -763,12 +767,16 @@ function about(v){
 function pricing(v){
   v.innerHTML=`<h2>Precios</h2><div class="promo"><b>Pago por transferencia bancaria. Tarjeta pendiente de activación.</b> Precios sin IVA y sin comisión sobre lo que ganas o cobras. El pago se tramita por transferencia, con confirmación manual del ingreso.</div>
   <h3>Clientes: agencias, empresas y particulares</h3>
-  <div class="card"><h3>Bolo suelto</h3><p><b><span id="pr-s">25</span> €</b> por bolo. Tu bolo publicado y 30 días para ver y contactar artistas. Pago único.</p><div id="pay-s"></div></div>
-  <div class="card"><h3>Plan mensual</h3><p><b><span id="pr-m">49</span> € al mes</b>. Bolos y contactos ilimitados. Cancelas cuando quieras.</p><div id="pay-m"></div></div>
-  <div class="card"><h3>Plan anual</h3><p><b><span id="pr-a">490</span> € al año</b> (2 meses gratis frente al mensual). Bolos y contactos ilimitados.</p><div id="pay-a"></div></div>
+  <div class="pricegrid">
+  <div class="card"><h3>Bolo suelto</h3><p><b class="pprice"><span id="pr-s">25</span> €</b> por bolo. Tu bolo publicado y 30 días para ver y contactar artistas. Pago único.</p><div id="pay-s"></div></div>
+  <div class="card"><h3>Plan mensual</h3><p><b class="pprice"><span id="pr-m">49</span> €</b> al mes. Bolos y contactos ilimitados. Cancelas cuando quieras.</p><div id="pay-m"></div></div>
+  <div class="card"><h3>Plan anual</h3><p><b class="pprice"><span id="pr-a">490</span> €</b> al año (2 meses gratis frente al mensual). Bolos y contactos ilimitados.</p><div id="pay-a"></div></div>
+  </div>
   <h3>Artistas</h3>
-  <div class="card"><h3>Basic <span class="tag dst">Gratis</span></h3><p><b>0 €</b>. Perfil, bolos y propuestas sin límite, siempre. Tu perfil aparece en el listado cuando está completo (ciudad, disciplina, bio y foto).</p></div>
-  <div class="card"><h3>Pro <span class="tag dst">Opcional</span></h3><p><b><span id="pr-p">6</span> € al mes</b> o <b><span id="pr-pa">60</span> € al año</b>. Tu perfil sale el primero en las listas y con la marca "Destacado". El plan Basic no pierde nada.</p><div id="pay-p"></div></div>
+  <div class="pricegrid">
+  <div class="card"><h3>Basic <span class="tag dst">Gratis</span></h3><p><b class="pprice">0 €</b> Perfil, bolos y propuestas sin límite, siempre. Tu perfil aparece en el listado cuando está completo (ciudad, disciplina, bio y foto).</p></div>
+  <div class="card"><h3>Pro <span class="tag dst">Opcional</span></h3><p><b class="pprice"><span id="pr-p">6</span> €</b> al mes o <b><span id="pr-pa">60</span> € al año</b>. Tu perfil sale el primero en las listas y con la marca "Destacado". El plan Basic no pierde nada.</p><div id="pay-p"></div></div>
+  </div>
   <section class="card" id="transferencia-bancaria" aria-labelledby="transfer-title">
   <h3 id="transfer-title">Pago por transferencia bancaria</h3>
   <p>La tarjeta queda aplazada. Puedes pagar por transferencia a la cuenta profesional de TengoBolo:</p>
@@ -1103,7 +1111,7 @@ function publish(v){loading(v,async()=>{const m=await getMe();
   const ARTS=['Música','Pintura','Fotografía','Diseño','Audiovisual','Danza','Teatro','Otro'];
   v.innerHTML=`<h2>Publicar un bolo</h2><p class="steps" id="st"></p>
   <form id="f" novalidate>
-  <fieldset data-s="0"><h3>1. Qué evento es</h3>
+  <fieldset class="pcard" data-s="0"><h3>1. Qué evento es</h3>
     <label>Título del bolo<input name="title" required minlength="3" maxlength="150" placeholder="Ej: Música en directo para una boda"></label>
     <p class="meta" style="margin:-6px 0 0">El título se muestra públicamente: no pongas nombres ni datos privados.</p>
     <div class="ficha"><label>Tipo de evento<select name="evtype"><option value="">Elige uno</option><optgroup label="Particulares"><option>Boda</option><option>Cumpleaños o fiesta privada</option><option>Aniversario</option><option>Comunión o bautizo</option><option>Despedida de soltero/a</option></optgroup><optgroup label="Empresas"><option>Evento de empresa</option><option>Cena de empresa</option><option>Inauguración o exposición</option><option>Sala, bar o restaurante</option></optgroup><optgroup label="Agencias"><option>Activación de marca</option><option>Lanzamiento o presentación</option><option>Feria, congreso o convención</option><option>Gala o ceremonia</option><option>Concierto o festival</option></optgroup><option>Otro</option></select></label>
@@ -1112,21 +1120,21 @@ function publish(v){loading(v,async()=>{const m=await getMe();
     <label>Asistentes (aprox.)<input name="guests" type="number" min="1" inputmode="numeric"></label></div>
     <div><b>Tipo de arte que buscas</b> <span class="meta">(marca una o varias; solo lo verán artistas de esas disciplinas)</span>${DISC.map(g=>`<details class="dg"><summary>${g[0]}</summary>${g[1].map(x=>`<label><input type="checkbox" name="art" value="${esc(x)}">${x}</label>`).join('')}</details>`).join('')}</div><label>Si no está en la lista, escribe cuál (opcional, varias separadas por comas)<input name="art_other" maxlength="120"></label>
     <label>Detalles (qué necesitas, ambiente, público...)<textarea name="description" required minlength="10" maxlength="3000" rows="4" placeholder="Cuéntanos qué buscas"></textarea></label><div id="sug"></div></fieldset>
-  <fieldset data-s="1" hidden><h3>2. Fecha, horario y dinero</h3>
+  <fieldset class="pcard" data-s="1" hidden><h3>2. Fecha, horario y dinero</h3>
     <div class="ficha"><label>Fecha del bolo<input name="event_date" type="date" required min="${today}"></label>
     <label>Presupuesto en € (opcional)<input name="budget" type="number" min="0" inputmode="numeric"></label>
     <label>Hora de inicio<input name="t_from" type="time"></label>
     <label>Hora de fin<input name="t_to" type="time"></label>
     <label>Duración de la actuación (opcional)<input name="dur" maxlength="40" placeholder="Ej: 2 pases de 45 min"></label>
     <label>Fecha límite para propuestas (opcional)<input name="deadline" type="date" min="${today}"></label></div></fieldset>
-  <fieldset data-s="2" hidden><h3>3. Extras y requisitos</h3>
+  <fieldset class="pcard" data-s="2" hidden><h3>3. Extras y requisitos</h3>
     <p class="meta">Marca lo que ofreces:</p>
     <label class="chk"><input type="checkbox" name="x_equipo"> Equipo de sonido/luz</label>
     <label class="chk"><input type="checkbox" name="x_transporte"> Transporte</label>
     <label class="chk"><input type="checkbox" name="x_alojamiento"> Alojamiento</label>
     <label>Rider (necesidades técnicas, opcional)<textarea name="rider" rows="4" maxlength="3000" placeholder="Ej: 2 micros, escenario de 3x2 m..."></textarea></label>
     <label class="chk"><input type="checkbox" name="ins"> Exijo que el artista tenga seguro de responsabilidad civil</label></fieldset>
-  <fieldset data-s="3" hidden><h3>4. Contacto privado</h3>
+  <fieldset class="pcard" data-s="3" hidden><h3>4. Contacto privado</h3>
     <p class="meta">Solo lo verán tú y el artista cuya propuesta aceptes. Nadie más.</p>
     <label>Teléfono<input name="phone" type="tel" maxlength="25" autocomplete="tel"></label>
     <label>Dirección del bolo<input name="address" maxlength="300"></label></fieldset>
