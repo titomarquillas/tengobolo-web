@@ -961,7 +961,7 @@ function about(v){
   <p class="sub">Estos datos se completarán cuando el titular formalice su alta de actividad.</p>`;
 }
 function pricing(v){
-  v.innerHTML=`<h2>Precios</h2><div class="promo"><b>Pago por transferencia bancaria. Tarjeta pendiente de activación.</b> Precios sin IVA y sin comisión sobre lo que ganas o cobras. El pago se tramita por transferencia, con confirmación manual del ingreso.</div>
+  v.innerHTML=`<h2>Precios</h2><div class="promo" id="pay-status"><b>Contratación con tarjeta no disponible hasta comprobar la configuración.</b> Precios sin IVA y sin comisión sobre lo que ganas o cobras. Para consultar una transferencia, confirma antes el plan y el importe por correo.</div>
   <h3>Clientes: agencias, empresas y particulares</h3>
   <div class="pricegrid">
   <div class="card"><h3>Bolo suelto</h3><p><b class="pprice"><span id="pr-s">25</span> €</b> por bolo. Tu bolo publicado y 30 días para ver y contactar artistas. Pago único.</p><div id="pay-s"></div></div>
@@ -975,10 +975,10 @@ function pricing(v){
   </div>
   <section class="card" id="transferencia-bancaria" aria-labelledby="transfer-title">
   <h3 id="transfer-title">Pago por transferencia bancaria</h3>
-  <p>La tarjeta queda aplazada. Puedes pagar por transferencia a la cuenta profesional de TengoBolo:</p>
+  <p>Para consultar un pago por transferencia, escribe antes al correo indicado abajo. No transfieras sin confirmar la disponibilidad del plan y el importe total. Cuenta profesional de TengoBolo:</p>
   <p><b>Titular:</b> ALBERTO MARQUILLAS OLONDRIZ<br><b>IBAN:</b> <span style="overflow-wrap:anywhere;font-family:monospace;font-size:1.1em">ES72 1583 0001 1290 0904 2758</span></p>
   <p><b>Concepto:</b> TB + nombre de la cuenta en TengoBolo + plan elegido. Indica también el título del bolo si es un bolo suelto.</p>
-  <p>Los precios de arriba son sin IVA. Antes de transferir, escribe a <a href="mailto:tengobolo@proton.me?subject=Transferencia%20TengoBolo">tengobolo@proton.me</a> con tu nombre, el email de tu cuenta, el plan y tus datos de facturación. Te confirmaremos el importe total con los impuestos que correspondan y la referencia para identificar el ingreso. Los descuentos anuales por transferencia ya anunciados se mantienen.</p>
+  <p>Los precios de arriba son sin IVA. Antes de transferir, escribe a <a href="mailto:tengobolo@proton.me?subject=Transferencia%20TengoBolo">tengobolo@proton.me</a> con tu nombre, el email de tu cuenta, el plan y tus datos de facturación. Te confirmaremos el importe total con los impuestos que correspondan y la referencia para identificar el ingreso. La disponibilidad de cada plan por transferencia y su importe total se confirman por correo antes de pagar.</p>
   <p><b>Confirmación manual:</b> una vez recibido el dinero, confirmaremos el ingreso, la factura y el inicio y fin de tu acceso. Enviar un justificante no acredita por sí solo que el dinero haya llegado. No se activa el acceso automáticamente al hacer la transferencia.</p>
   <p>No es una domiciliación: no se cargará ni renovará automáticamente. Si ya has transferido, avísanos en ese mismo correo con la referencia y el email de tu cuenta, sin enviar claves ni datos de tarjeta.</p>
   </section>
@@ -988,7 +988,7 @@ function pricing(v){
   <details class="card"><summary><b>¿Qué incluye Pro?</b></summary><p>Visibilidad: tu perfil sale el primero en las listas y con la marca "Destacado".</p></details>
   <details class="card"><summary><b>¿Por qué mi perfil no aparece en el listado?</b></summary><p>Para aparecer necesitas ciudad, al menos una disciplina, una bio de 30 letras o más y foto de perfil. Lo ves en Mi perfil.</p></details>
   <details class="card"><summary><b>¿Cuándo se ven los datos de contacto?</b></summary><p>Los clientes con plan o bolo suelto activo pueden ver los perfiles completos y escribir a los artistas por mensajes internos. El teléfono del artista solo se muestra si él lo añade.</p></details>
-  <details class="card"><summary><b>¿Cómo se paga?</b></summary><p id="payfaq">Por transferencia bancaria a la cuenta indicada en esta página. La tarjeta queda aplazada. El ingreso y el acceso se confirman manualmente; un justificante no equivale a ingreso recibido.</p></details>
+  <details class="card"><summary><b>¿Cómo se paga?</b></summary><p id="payfaq">La disponibilidad de tarjeta se indica al cargar la configuración de los planes. Para una transferencia, confirma antes por correo la disponibilidad del plan y el total. El ingreso y el acceso se confirman manualmente.</p></details>
   <details class="card"><summary><b>¿Puedo cancelar cuando quieras?</b></summary><p>Sí, los planes mensuales se cancelan en cualquier momento.</p></details>
   <details class="card"><summary><b>¿Los precios llevan IVA?</b></summary><p>Los precios se muestran sin IVA. El IVA se detallará en la factura.</p></details>`;
   v.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{e.preventDefault();setTab(a.dataset.go);});
@@ -1002,16 +1002,21 @@ async function loadPayCfg(){
     if(session&&!me){try{await getMe();}catch{}}
     const eur=n=>String(n).replace('.',',');const P=c.prices||{};
     [['pr-s','single'],['pr-m','monthly'],['pr-a','annual'],['pr-p','pro_monthly'],['pr-pa','pro_annual']].forEach(([id,k])=>{const e=$('#'+id);if(e&&P[k])e.textContent=eur(P[k]);});
-    const off=()=>'';
+    const off=(label='Este plan')=>'<p class="sub">'+label+': no disponible para contratación con tarjeta.</p>';
+    // Card only: fail closed unless the server exposes the current purchase flow.
+    const plans=new Set(Array.isArray(c.plans)?c.plans.filter(p=>typeof p==='string'):[]);
+    const cardReady=plan=>c.enabled===true&&c.methods?.card===true&&c.purchaseFlow===true&&plans.has(plan);
     const isA=session&&me&&me.role==='artist',isC=session&&me&&me.role!=='artist';
     const ent='<button class="btn" data-goentrar="1">Entra o crea tu cuenta</button>';
-    const btn=(plan,label,ok)=>!session?ent:!ok?'<p class="sub">Este plan es para '+(plan.startsWith('pro')?'artistas':'clientes')+'.</p>':false?`<button class="btn" data-plan="${plan}">${label}</button>`:off(label);
+    const btn=(plan,label,ok)=>!cardReady(plan)?off(label):!session?ent:!ok?'<p class="sub">Este plan es para '+(plan.startsWith('pro')?'artistas':'clientes')+'.</p>':`<button class="btn" data-plan="${plan}">${label}</button>`;
     const set=(id,h)=>{const e=$('#'+id);if(e)e.innerHTML=h;};
     set('pay-m',btn('monthly','Elegir plan mensual',isC));set('pay-a',btn('annual','Elegir plan anual',isC));
-    set('pay-s',!session?ent:isC?'<p class="sub">Se paga al publicar un bolo.</p>':'<p class="sub">Este plan es para clientes.</p>');
-    set('pay-p',!session?ent:!isA?'<p class="sub">Este plan es para artistas.</p>':false?'<button class="btn" data-plan="pro_monthly">Pro mensual</button> <button class="btn sec" data-plan="pro_annual">Pro anual</button>':off('Hacerme Pro'));
+    set('pay-s',!cardReady('single')?off():!session?ent:isC?'<p class="sub">Se paga al publicar un bolo.</p>':'<p class="sub">Este plan es para clientes.</p>');
+    set('pay-p',['pro_monthly','pro_annual'].map(plan=>btn(plan,plan==='pro_monthly'?'Pro mensual':'Pro anual',isA)).join(''));
+    const activeLabels=[['single','bolo suelto'],['monthly','plan mensual'],['annual','plan anual'],['pro_monthly','Pro mensual'],['pro_annual','Pro anual']].filter(([plan])=>cardReady(plan)).map(([,label])=>label);
+    if(activeLabels.length){const status=$('#pay-status');if(status)status.textContent='Tarjeta disponible para: '+activeLabels.join(', ')+'. Antes del pago se muestran el total, los impuestos y las condiciones. Los demás planes no están disponibles para contratación con tarjeta.';const faq=$('#payfaq');if(faq)faq.textContent='Tarjeta disponible para: '+activeLabels.join(', ')+'. Revisa el total y las condiciones antes de pagar. La transferencia requiere confirmación previa del plan y del importe por correo; no se activa automáticamente.';}
     document.querySelectorAll('[data-plan]').forEach(b=>b.onclick=async()=>{
-      b.disabled=true;try{const {requestThenCheckout}=await import('./request-contract-candidate/request-purchase-entry.js');await requestThenCheckout({plan:b.dataset.plan,method:document.getElementById('pay-method')?.value||'card',call});}
+      b.disabled=true;try{const {requestThenCheckout}=await import('./request-contract-candidate/request-purchase-entry.js');await requestThenCheckout({plan:b.dataset.plan,method:'card',call});}
       catch(e){alert(e.message||'No se pudo preparar el pago.');}finally{b.disabled=false;}
     });
     if(false&&c.enabled&&c.methods?.sepa_debit){const e=document.querySelector('#view h3');if(e)e.insertAdjacentHTML('beforebegin','<label>Método de pago<select id="pay-method"><option value="card">Tarjeta</option><option value="sepa_debit">Domiciliación SEPA</option></select></label><p class="meta">La domiciliación requiere un mandato y tarda en confirmarse. El acceso se activa cuando se confirme el pago.</p>');}
