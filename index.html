@@ -627,8 +627,8 @@ label.pfile span.btn.sec{background:#f0f0ed;border:0;border-radius:10px;padding:
 const API='https://bolo-backend-pd6z.onrender.com';
 const waLink=t=>'https://wa.me/?text='+encodeURIComponent(t);
 const waBolo=x=>`<a class="btn sec" style="display:inline-block;text-decoration:none;padding:14px 20px;line-height:1.2" target="_blank" rel="noopener" href="${waLink('Mira este bolo en TengoBolo: '+x.title+(x.location?' ('+x.location+')':'')+'. '+location.origin+'/')}">Compartir por WhatsApp</a>`;
-function freeBanner(){return `<div class="promo"><b>Artistas: perfil gratis, siempre.</b> Clientes: desde 25 € por bolo, sin comisión (<a href="#" data-go="precios">ver Precios</a>). Pago por transferencia bancaria. Tarjeta pendiente de activación.</div>`;}
-function payBox(){return `<div class="promo"><b>Para publicar más bolos necesitas un plan.</b> Bolo suelto 25 €, plan mensual 49 € o anual 490 € (sin IVA, sin comisión; <a href="#" data-go="precios">ver Precios</a>). Pago por transferencia bancaria. Tarjeta pendiente de activación.</div>`;}
+function freeBanner(){return `<div class="promo"><b>Artistas: perfil gratis, siempre.</b> Clientes: desde 25 € por bolo, sin comisión (<a href="#" data-go="precios">ver Precios</a>). Consulta en Precios los planes y métodos disponibles.</div>`;}
+function payBox(){return `<div class="promo"><b>Para publicar más bolos necesitas un plan.</b> Bolo suelto 25 €, plan mensual 49 € o anual 490 € (sin IVA, sin comisión; <a href="#" data-go="precios">ver Precios</a>). Consulta en Precios los planes y métodos disponibles.</div>`;}
 let session=null, me=null, tab='inicio', isAdmin=false;
 const RK='tb_rt';
 function keep(){try{if(session&&session.refresh_token)localStorage.setItem(RK,session.refresh_token);else localStorage.removeItem(RK);}catch{}}
@@ -1399,7 +1399,7 @@ function visPanel(m){
   return `<div class="card" style="margin:8px 0"><b>Visibilidad de tu perfil: ${pct} %</b><div class="pbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><div style="width:${pct}%"></div></div>${rows}<p class="meta" style="margin:6px 0 0">Para aparecer en el listado de artistas hacen falta las dos cosas: el perfil completo (100 %) y tu permiso con la casilla "Aparecer en el listado de artistas". Nadie aparece sin haberlo elegido.</p>${estado}</div>`;
 }
 function profile(v){return loading(v,async()=>{const m=await getMe();const full=await call('/api/profiles/'+encodeURIComponent(m.id),{auth:true});const md=mediaHtml(full.media,true);
-  v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?(m.pro_active?'Plan: Pro':'Plan: Basic (gratis), propuestas sin límite'):(m.plan==='free'?'Plan: sin plan contratado (todavía no se cobra)':'Plan Cliente: bolos ilimitados')}</p>
+  v.innerHTML=`<h2>Mi perfil</h2><p class="meta">${m.role==='artist'?(m.pro_active?'Plan: Pro':'Plan: Basic (gratis), propuestas sin límite'):(m.plan==='free'?'Plan: sin plan contratado':'Plan Cliente: bolos ilimitados')}</p>
   <div id="billing-management"></div>
   <div class="phead">${avatar(m)}<div class="pinfo"><div class="pname">${esc(m.name)}</div><div class="meta">${m.role==='artist'?'Artista':'Cliente'}</div><label class="pfile"><span class="btn sec" style="display:inline-block;padding:9px 16px;font-size:14px;justify-self:start">Cambiar foto</span><input type="file" id="av" accept="image/*"></label></div></div><div id="ae"></div>
   ${m.role==='artist'?visPanel(m):''}
