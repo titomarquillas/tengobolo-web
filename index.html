@@ -614,6 +614,7 @@ label.pfile span.btn.sec{background:#f0f0ed;border:0;border-radius:10px;padding:
 .dhow .dsteps{border:0;padding-top:0;margin-top:0}
 @media(max-width:560px){.land{padding-top:18px}.door{padding:20px}.land .lsub{font-size:15px;max-width:23em}.land .ltag{font-size:18px}}
 
+.rvsection{margin:34px 0 42px}.rvsection>h3{font-size:21px;margin-bottom:18px}.rvgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.rvstory{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;min-width:0}.rvvisual{margin:0;background:#f5f3ee}.rvvisual img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:contain}.rvvisual figcaption{font-size:10px;color:#666;padding:5px 12px 8px}.rvstorybody{padding:16px}.rvstory .rvt{margin:0 0 10px;font-size:16px;line-height:1.45}.rvstory .rvt a{color:var(--ink);text-decoration:none}.rvstory .rvt a:hover{text-decoration:underline}.rvstory .rvm{font-size:12px;line-height:1.5}.rvstory .rvs{font-size:14px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}.rvstory .meta{font-size:11px;line-height:1.5}.rvmore{margin-top:18px}.rvmore>.rvgrid{padding:16px}.rvatr{line-height:1.6;margin-top:14px}@media(max-width:1150px){.rvgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.rvgrid{grid-template-columns:1fr}.rvsection{margin-top:28px}.rvmore>.rvgrid{padding:10px}.rvstorybody{padding:17px}}
 </style>
 </head>
 <body>
@@ -749,6 +750,12 @@ function revistaDestacados(){
   if(hoy<'2026-11-04'||hoy>'2027-01-10')return '';
   return `<section aria-labelledby="rvayudas" style="margin:22px 0 30px"><h3 id="rvayudas">Ayudas y bonos culturales</h3><article class="card" style="padding:0;overflow:hidden;max-width:780px"><img src="images/revista-bonus-cultura.svg" alt="Ilustración editorial: Bonus Cultura Barcelona, 20 euros para vivir la cultura" width="960" height="600" style="display:block;width:100%;height:auto"><div style="padding:20px"><span class="tag">Barcelona · Convocatoria abierta</span><h3>Bonus Cultura: 20 € para disfrutar de la cultura en Barcelona</h3><p>Una iniciativa del Ayuntamiento de Barcelona, a través del ICUB, para personas mayores de edad con DNI o NIE.</p><p>El saldo se utiliza en propuestas adheridas de teatro, danza, circo y música, y en cine y libros en catalán. No sirve para cualquier compra cultural ni en cualquier establecimiento.</p><p><b>Primera oleada: del 4 de noviembre de 2026 al 10 de enero de 2027.</b> El saldo pendiente caduca al terminar cada oleada y no se acumula. El programa prevé tres oleadas de 20 €, con una solicitud por persona en cada una.</p><p><a class="btn" style="display:inline-block;height:auto;min-height:44px;padding:12px 18px;line-height:1.4;white-space:normal;text-decoration:none;max-width:100%;box-sizing:border-box" href="https://www.bonusbarcelonacultura.cat/" target="_blank" rel="external noopener">Consultar y solicitar en el portal oficial</a></p><p class="meta">Fuente: Ayuntamiento de Barcelona / ICUB · Verificado el 5/11/2026. Consulta las condiciones y la disponibilidad actual en el portal oficial. tengoBolo no tramita la solicitud.</p><p class="meta"><a href="https://ajuntament.barcelona.cat/premsa/2026/11/04/ja-es-poden-sollicitar-els-55-000-bonus-cultura-els-ajuts-de-20e-per-fomentar-el-consum-cultural-i-crear-nous-publics-a-barcelona/" target="_blank" rel="external noopener">Comunicado del Ayuntamiento</a> · Imagen editorial propia, no es un bono canjeable.</p></div></article></section>`;
 }
+function revistaVisual(x){
+ const t=((x.category||'')+' '+(x.title||'')).toLowerCase();
+ const key=/libro|lectura|literatur|encuadern|llibre|bibliotec/.test(t)?'libros':/músic|music|concert|òpera|opera|jazz/.test(t)?'musica':/cine|cinema|audiovisual|películ|film/.test(t)?'cine':/teatr|escén|escen|dansa|danza|circ/.test(t)?'escena':/ayuda|ajut|beca|convocatoria|subvenc/.test(t)?'ayudas':/museo|museu|patrimoni|arqueol/.test(t)?'patrimonio':/arte|artíst|artístic|expos|pintur|fotograf/.test(t)?'arte':'cultura';
+ const labels={libros:'Libros y lectura',musica:'Música',cine:'Cine y audiovisual',escena:'Artes escénicas',ayudas:'Ayudas y convocatorias',patrimonio:'Museos y patrimonio',arte:'Arte y exposiciones',cultura:'Vida cultural'};
+ return '<figure class="rvvisual"><img src="images/revista-'+key+'.svg" alt="Ilustración editorial: '+labels[key]+'. No es una fotografía del evento." width="720" height="450" loading="lazy"><figcaption>Ilustración editorial de tengoBolo · '+labels[key]+'</figcaption></figure>';
+}
 async function revista(v){
   v.innerHTML='<h2>Revista cultural</h2><p class="meta">Cargando…</p>';
   let d=null;try{const r=await fetch(API+'/api/public/revista');if(r.ok)d=await r.json();}catch{}
@@ -764,16 +771,16 @@ async function revista(v){
   for(const [src,g] of Object.entries(RV_GROUPS)){
     const items=by[src]||[];const meta=(d.sources||{})[src]||{};
     if(!items.length)continue;
-    h+='<details class="dgroup"><summary>'+g.t+' <span class="dgn">'+items.length+(meta.item_count>items.length?' de '+meta.item_count:'')+'</span></summary>'
-      +items.slice().sort((a,b)=>src==='mcult_noticias'?String(b.date_start||'').localeCompare(String(a.date_start||'')):0).map(x=>{
-        const fechas=x.kind==='noticia'?(x.date_start?fmtD(x.date_start):''):((x.date_start?fmtD(x.date_start):'')+(x.date_end&&x.date_end!==x.date_start?' – '+fmtD(x.date_end):''));
-        return '<div class="dline rvcard">'+(src==='bcn'?'<span class="rvt">'+esc(x.title)+'</span>':'<a class="rvt" href="'+esc(x.url)+'" target="_blank" rel="external noopener">'+esc(x.title)+'</a>')
-          +'<div class="rvm">'+[fechas,x.venue,x.city,x.category].filter(Boolean).map(esc).join(' · ')+'</div>'
-          +(x.summary?'<div class="rvs">'+esc(x.summary)+'</div>':'')+(src==='bcn'?'<div class="meta">Fuente: Open Data Barcelona · <a href="'+esc(x.url)+'" target="_blank" rel="external noopener">Ver conjunto de datos (no ficha del evento)</a></div>':'')
-        +'<div class="meta">'+esc(g.atr)+'</div></div>';
-      }).join('')
-      +'<div class="rvatr">'+esc(g.atr)+(src.startsWith('mcult_')?' · <a href="https://www.cultura.gob.es/comunes/aviso-legal.html" target="_blank" rel="external noopener">Condiciones de reutilización</a>':'')+(meta.last_success_at?' · datos del '+new Date(meta.last_success_at).toLocaleDateString('es-ES'):'')+(meta.status==='error'?' · fuente en revisión, se muestran los últimos datos válidos':'')+' · <a href="'+g.link+'" target="_blank" rel="external noopener">Ver en la fuente</a></div>'
-      +'</details>';
+    const cards=items.slice().sort((a,b)=>src==='mcult_noticias'?String(b.date_start||'').localeCompare(String(a.date_start||'')):0).map(x=>{
+      const fechas=x.kind==='noticia'?(x.date_start?fmtD(x.date_start):''):((x.date_start?fmtD(x.date_start):'')+(x.date_end&&x.date_end!==x.date_start?' – '+fmtD(x.date_end):''));
+      return '<article class="rvstory">'+revistaVisual(x)+'<div class="rvstorybody">'+(src==='bcn'?'<h4 class="rvt">'+esc(x.title)+'</h4>':'<h4 class="rvt"><a href="'+esc(x.url)+'" target="_blank" rel="external noopener">'+esc(x.title)+'</a></h4>')
+      +'<div class="rvm">'+[fechas,x.venue,x.city,x.category].filter(Boolean).map(esc).join(' · ')+'</div>'
+      +(x.summary?'<p class="rvs">'+esc(x.summary)+'</p>':'')+(src==='bcn'?'<p class="meta"><a href="'+esc(x.url)+'" target="_blank" rel="external noopener">Ver conjunto de datos (no ficha del evento)</a></p>':'')
+      +'<p class="meta">'+esc(g.atr)+'</p></div></article>';
+    });
+    h+='<section class="rvsection" aria-label="'+esc(g.t)+'"><h3>'+esc(g.t)+'</h3><div class="rvgrid">'+cards.slice(0,3).join('')+'</div>'
+      +(cards.length>3?'<details class="dgroup rvmore"><summary>Ver más · '+(cards.length-3)+' entradas <span class="dgn">'+items.length+' mostradas'+(meta.item_count>items.length?' de '+meta.item_count+' importadas':'')+'</span></summary><div class="rvgrid">'+cards.slice(3).join('')+'</div></details>':'')
+      +'<div class="rvatr">'+esc(g.atr)+(src.startsWith('mcult_')?' · <a href="https://www.cultura.gob.es/comunes/aviso-legal.html" target="_blank" rel="external noopener">Condiciones de reutilización</a>':'')+(meta.last_success_at?' · datos del '+new Date(meta.last_success_at).toLocaleDateString('es-ES'):'')+(meta.status==='error'?' · fuente en revisión, se muestran los últimos datos válidos':'')+' · <a href="'+g.link+'" target="_blank" rel="external noopener">Ver en la fuente</a></div></section>';
   }
   h+='</div>';
   if(upd&&Date.now()-upd.getTime()>4*864e5)h+=msg('warn','Estos datos llevan varios días sin actualizarse; estamos revisando la conexión con las fuentes.');
