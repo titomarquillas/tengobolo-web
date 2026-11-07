@@ -615,6 +615,17 @@ label.pfile span.btn.sec{background:#f0f0ed;border:0;border-radius:10px;padding:
 @media(max-width:560px){.land{padding-top:18px}.door{padding:20px}.land .lsub{font-size:15px;max-width:23em}.land .ltag{font-size:18px}}
 
 .rvsection{margin:34px 0 42px}.rvsection>h3{font-size:21px;margin-bottom:18px}.rvgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.rvstory{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;min-width:0}.rvvisual{margin:0;background:#f5f3ee}.rvvisual img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:contain}.rvvisual figcaption{font-size:10px;color:#666;padding:5px 12px 8px}.rvstorybody{padding:16px}.rvstory .rvt{margin:0 0 10px;font-size:16px;line-height:1.45}.rvstory .rvt a{color:var(--ink);text-decoration:none}.rvstory .rvt a:hover{text-decoration:underline}.rvstory .rvm{font-size:12px;line-height:1.5}.rvstory .rvs{font-size:14px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}.rvstory .meta{font-size:11px;line-height:1.5}.rvmore{margin-top:18px}.rvmore>.rvgrid{padding:16px}.rvatr{line-height:1.6;margin-top:14px}@media(max-width:1150px){.rvgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){.rvgrid{grid-template-columns:1fr}.rvsection{margin-top:28px}.rvmore>.rvgrid{padding:10px}.rvstorybody{padding:17px}}
+
+/* Invitación voluntaria: sin cupos, seguimiento ni acceso a contactos. */
+.invite-card{display:grid;grid-template-columns:136px minmax(0,1fr);gap:28px;align-items:start;background:#faf9f6;border:1px solid var(--line);border-radius:18px;padding:28px;margin:22px 0}
+.invite-heart{width:136px;height:152px;object-fit:contain;align-self:center}
+.invite-card h3{font-size:24px;line-height:1.18;letter-spacing:-.025em;margin:0 0 10px}
+.invite-card p{margin:0 0 14px;line-height:1.5}.invite-card label{font-size:13px;font-weight:600;margin:16px 0 7px}
+.invite-card textarea{background:#fff;font-size:14px;line-height:1.5;min-height:116px;resize:vertical;width:100%;box-sizing:border-box}
+.invite-card .invite-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.invite-card a.btn{display:inline-flex;text-decoration:none;align-items:center;justify-content:center;min-height:46px;padding:12px 20px;box-sizing:border-box}
+.invite-card .invite-note{font-size:12px;color:#62625c;margin:12px 0 0}
+@media(max-width:620px){.invite-card{grid-template-columns:1fr;gap:14px;padding:22px}.invite-heart{width:106px;height:116px;justify-self:center}.invite-card h3{font-size:24px}.invite-card textarea{min-height:168px}.invite-card .invite-actions a{width:100%}}
 </style>
 </head>
 <body>
@@ -1415,7 +1426,15 @@ function profile(v){return loading(v,async()=>{const m=await getMe();const full=
   <div id="billing-management"></div>
   <div class="phead">${avatar(m)}<div class="pinfo"><div class="pname">${esc(m.name)}</div><div class="meta">${m.role==='artist'?'Artista':'Cliente'}</div><label class="pfile"><span class="btn sec" style="display:inline-block;padding:9px 16px;font-size:14px;justify-self:start">Cambiar foto</span><input type="file" id="av" accept="image/*"></label></div></div><div id="ae"></div>
   ${m.role==='artist'?visPanel(m):''}
-  ${m.role==='artist'?`<p><a class="btn sec" style="display:inline-block;text-decoration:none;padding:14px 20px;line-height:1.2" target="_blank" rel="noopener" href="${waLink('Estoy en TengoBolo, la red de artistas y bolos. Échale un vistazo: '+location.origin+'/')}">Compartir TengoBolo por WhatsApp</a></p>`:''}
+  ${m.role==='artist'?`<section class="invite-card" aria-labelledby="invite-title" id="artist-invite">
+    <img class="invite-heart" src="logo-heart-b-alpha.png" alt="El corazón negro chorreante de TengoBolo" width="136" height="152">
+    <div><h3 id="invite-title">Esta red también crece contigo.</h3>
+    <p>Formas parte del arranque de TengoBolo. Gracias por estar aquí. Si te gusta la idea, invita a tus amigos artistas a construir esta red contigo.</p>
+    <label for="invite-message">Tu invitación. Puedes cambiarla antes de compartir.</label>
+    <textarea id="invite-message" rows="4" maxlength="1800">${esc('Estoy en TengoBolo, una red para artistas de todas las disciplinas. El perfil básico es gratuito y puedes compartir tu trabajo y conectar con otros artistas. Si te interesa, échale un vistazo: '+location.origin+'/')}</textarea>
+    <div class="invite-actions"><a class="btn" id="invite-whatsapp" target="_blank" rel="noopener noreferrer" href="${waLink('Estoy en TengoBolo, una red para artistas de todas las disciplinas. El perfil básico es gratuito y puedes compartir tu trabajo y conectar con otros artistas. Si te interesa, échale un vistazo: '+location.origin+'/')}">Invitar a mis amigos</a></div>
+    <p class="invite-note">Se abre WhatsApp. Tú eliges a quién invitar y confirmas el envío. No accedemos a tus contactos ni enviamos nada por ti. Sin límite de invitaciones.</p></div>
+  </section>`:''}
   ${DESTACADO&&m.role==='artist'?`<div class="promo"><b>Pro (opcional):</b> tu perfil, el primero en las listas y con la marca "Destacado", por 6 € al mes o 60 € al año (sin IVA). Basic sigue siendo gratis, siempre. <a href="#" data-go="precios">Ver Precios</a></div>`:''}
   ${m.role==='agency'?`<div class="card" style="margin:8px 0"><b>Disciplinas disponibles en TengoBolo</b><p class="meta">Las verás como opciones al publicar un bolo; los artistas eligen las suyas en su perfil.</p>${DISC.map(g=>`<details class="dg"><summary>${g[0]}</summary><p class="meta">${g[1].map(esc).join(' · ')}</p></details>`).join('')}</div>`:''}
   <form id="f">${m.role==='artist'?`<div class="pcard" style="margin:12px 0"><label class="chk" style="align-items:flex-start"><input type="checkbox" name="listed"${m.listed!==false?' checked':''} style="margin-top:4px"> <span><b>Aparecer en el listado de artistas</b><br><span class="meta">En el listado de la red, otros artistas registrados ven tu nombre y tu ciudad. Los clientes que publican un bolo pueden acceder a tu ficha si apareces en el listado. Tu correo no se muestra. Si añades teléfono, pueden verlo los clientes desbloqueados y aquellos a los que envíes una propuesta, como explica el aviso de abajo. Puedes quitarte del listado cuando quieras.</span></span></label><div class="avbox"><b>Disponible para... <span style="font-weight:400">(Red)</span></b><br><span class="meta">Se muestra en tus anuncios de la Red, solo a otros artistas.</span><div class="row" style="gap:14px;margin:8px 0 0">${Object.entries(AV).map(([k,l])=>`<label class="chk"><input type="checkbox" name="av" value="${k}"${(m.avail_for||[]).includes(k)?' checked':''}> ${l}</label>`).join('')}</div></div></div>`:''}
@@ -1426,6 +1445,10 @@ function profile(v){return loading(v,async()=>{const m=await getMe();const full=
   <div class="sect"><h2>Bolos en vídeo (${md.nVideos}/5)</h2>${md.videos||'<p class="meta">Aún no has añadido vídeos.</p>'}<form id="vf"><label>Enlace de YouTube, Vimeo, Instagram, Facebook o TikTok<input name="url" type="url" required placeholder="https://"></label><button class="btn" type="submit">Añadir vídeo</button><div id="ve"></div></form></div>
   <div class="row"><button class="btn sec" id="out">Salir</button></div>`;
   loadBillingManagement();
+  if(m.role==='artist'){
+    const invitation=$('#invite-message'),share=$('#invite-whatsapp');
+    invitation.addEventListener('input',()=>{share.href=waLink(invitation.value);});
+  }
   $('#f').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const body={name:f.name,bio:f.bio,location:f.location,portfolio_url:f.portfolio_url};if(m.role==='artist')body.disciplines=[...new Set([...[...e.target.querySelectorAll('input[name=d]:checked')].map(x=>x.value),...list(f.disciplines_other||'')])];SOCIALS.forEach(([k])=>body[k]=(f[k]||'').trim());
     if(m.role==='artist'){if(f.travel_scope!==undefined)body.travel_scope=f.travel_scope;body.listed=!!f.listed;body.avail_for=[...e.target.querySelectorAll('input[name=av]:checked')].map(x=>x.value);body.phone=(f.phone||'').trim();}
     if(m.role==='artist'&&body.disciplines.length>12){$('#e').innerHTML=msg('err','Máximo 12 disciplinas. Quita alguna.');return;}
